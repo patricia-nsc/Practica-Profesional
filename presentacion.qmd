@@ -1,0 +1,166 @@
+---
+title: "Practica Profesional"
+subtitle: "Serie del índice Agbarometer"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+# Librerias
+library(readxl)
+library(ggplot2)
+library(ggfortify)  #for plotting timeseries
+library(dplyr)
+library(forecast)
+library(lubridate)
+library(readr)
+library(patchwork)
+```
+
+
+```{r}
+# Cargo datos
+d <- read_excel("Agbarometer202601.xlsx")
+
+# Preparo datos
+
+# Creo columna con el nombre de los meses
+meses <- factor(c("Ene", "Mar", "May", "Jul", "Sep", "Nov"))
+d <- d %>% 
+  mutate(
+    Mes = factor(c('Oct', 'Nov',                       # 2018
+            meses,                                     # 2019
+            "Ene", "Abr", "Jul", "Sep", "Nov",         # 2020
+            rep(meses, times = 5),                     # 2021 - 2025
+            "Ene"                                      # 2026
+            ), 
+                 levels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun",
+                            "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")),
+    Año = as.numeric (c( rep("2018", times = 2),
+                         rep("2019", times = 6),
+                         rep("2020", times = 5),
+                         rep("2021", times = 6),
+                         rep("2022", times = 6),
+                         rep("2023", times = 6),
+                         rep("2024", times = 6),
+                         rep("2025", times = 6),
+                         "2026"))
+  )
+
+```
+
+
+Step 3: Preliminary (exploratory) analysis.
+
+Always start by graphing the data.
+
+Are there consistent patterns? 
+
+Is there a significant trend? 
+
+Is seasonality important? 
+
+Is there evidence of the presence of business cycles? 
+
+Are there any outliers in the data that need to be explained by those with expert knowledge? 
+
+How strong are the relationships among the variables available for analysis? Various tools have been developed to help with this analysis. These are discussed in Chapters 2 and 3.
+
+# Grafico de la serie
+
+```{r}
+# Creo serie y (agbarometer)
+y <- ts(d$`Ag Barometer`,
+        start = c(2018, 6),
+        frequency = 6,
+        class = "ts")
+
+
+# Gráfico serie
+ggplot(d, aes(x = Bimestre, y = `Ag Barometer`)) +
+  geom_line(color = "darkgreen") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+#  geom_point(color = "red", size = 2) +
+  scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+  labs(x = "Tiempo", y = "AgBarometer") +
+  theme_bw()
+```
+
+
+
+```{r}
+# Test de Portmanteau
+options(scipen = 999)
+Box.test(y, lag = 10, type = "Ljung-Box")
+```
+
+Test de Portmanteau, p-value = 0.000000000000002887 $\cong 0 \quad \forall lag$
+
+Q: en q parte del informe desarrollo los test? Portmanteau...
+
+
+# Graficos para explorar posible estacionalidad
+
+
+```{r}
+# grafico de los fideos por anio superpuestos (para ver estacionalidad)
+ggplot(d, aes(x = Mes, y = `Ag Barometer`, group = Año, color = factor(Año))) +
+  geom_line() +
+  geom_point(size = 1.5) +
+  labs(x = "Mes",
+       y = "AgBarometer",
+       color = "Año") +
+  scale_color_discrete(labels=unique(d$Año)) +
+  theme_bw()
+```
+
+
+
+```{r}
+# distribucion de los datos de la serie para cada mes. ¿el promedio de los datos es el mismo para todos los meses?
+
+# promedio de la serie fijando el mes (para ver estacionalidad)
+
+d %>% 
+  ggplot(aes(x = Mes, y = `Ag Barometer`)) +
+  geom_boxplot() +
+  stat_summary(fun = mean,
+               geom = "point",
+               color = "red",
+               size = 3) +
+  scale_x_discrete(drop = FALSE) +
+  labs(x = "Mes",
+       y = "AgBarometer") +
+  theme_bw()
+  
+```
+
+
+Q: hago un test para probar si todos los promedios son iguales? en el test no incluyo a los meses abril y octubre, no? (solo tengo una obs) QUE TEST SERIA???!!!!!
+
+Q: y si me da que al menos uno es distinto??
+
+```{r}
+ggmonthplot(y) +
+  labs(x = "Mes",
+       y = "AgBarometer") +
+  theme_bw()
+```
+
+
+
+
+
+
