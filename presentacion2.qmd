@@ -1,0 +1,159 @@
+---
+title: "Practica Profesional"
+subtitle: "Serie del índice Ag Barometer"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Librarias 
+# ------------------------------------------------------------- #
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Carga de datos 
+# ------------------------------------------------------------- # 
+
+# convierto Bimestre en formato Date
+# convierto los datos en un data temporal donde bimestre es el indice temporal y el resto de las cols son series
+
+d <- readxl::read_excel("Agbarometer202601.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre,
+             regular = FALSE) 
+  
+```
+
+
+# Descriptivo
+
+## Grafico de la serie
+
+```{r}
+d |> 
+  autoplot(`Ag Barometer`) +
+  labs(x = "Tiempo") +
+  scale_x_yearmonth(
+    date_breaks = "1 year",
+    date_labels = "%Y"
+  ) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  geom_point(size = 1) +
+  theme_bw()
+```
+-   Fines de 2018 hasta mediados de 2019, la confianza de los productores parece ser neutra e ir aumentando
+-   mitad 2019 hasta mitad 2020 cae abruptamente observandose los niveles mas bajos de confianza
+-   desde mitad de 2020 hasta mitad de 2023 (3 anios) empieza a aumentar pero la confianza continua siendo pesismista
+-   a partir de 2023 los deseos de inversion comenzaron a aumentar y ser optimistas. Las ultimas dos observaciones son los valores mas altos historicos.
+
+- no parece haber patrones de estacionalidad
+
+## Estacionalidad
+
+```{r}
+d |> 
+  gg_season(`Ag Barometer`, labels = 'left') +
+  geom_point(size = 1.5) +
+  scale_x_yearmonth(
+    date_breaks = "2 month",
+    date_labels = "%b"
+  ) +
+  theme_bw()
+
+```
+
+```{r}
+d |> 
+  # mutate(mes = month(Bimestre)) |> 
+  # filter(!(mes %in% c(4,10))) |>  # haceme el prom(serie), excepto
+  gg_subseries(`Ag Barometer`) +  # en abril y octubre
+  theme_bw()
+```
+
+## Variancia
+
+```{r}
+d |> 
+  mutate(anio = factor(year(Bimestre))) |> 
+  ggplot(aes(x = anio,  y = `Ag Barometer`)) +
+  geom_boxplot() +
+  labs(x = 'Año') +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  theme_bw()
+```
+
+
+
+## Correlaciones
+
+```{r}
+d |> 
+  GGally::ggpairs(columns = 2:4)
+```
+
+## ACF
+
+```{r}
+d |> 
+  ACF(`Ag Barometer`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+```
+
+## PACF
+
+```{r}
+d |> 
+  PACF(`Ag Barometer`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+```
+
+
+```{r}
+d |> 
+  features(`Ag Barometer`, unitroot_kpss)
+```
+
+
+
+
+
+
+-   Fines de 2018 hasta mediados de 2019, la confianza de los productores parece ser neutra e ir aumentando
+-   mitad 2019 hasta mitad 2020 cae abruptamente observandose los niveles mas bajos de confianza
+-   desde mitad de 2020 hasta mitad de 2023 (3 anios) empieza a aumentar pero la confianza continua siendo pesismista
+-   a partir de 2023 los deseos de inversion comenzaron a aumentar y ser optimistas. Las ultimas dos observaciones son los valores mas altos historicos.
+
+- no parece haber patrones de estacionalidad

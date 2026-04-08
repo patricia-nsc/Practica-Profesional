@@ -1,6 +1,6 @@
 ---
 title: "Practica Profesional"
-subtitle: "Serie del índice Agbarometer"
+subtitle: "Serie del índice Ag Barometer"
 author: "Patricia Analía Nesci"
 format:
   html:
@@ -37,7 +37,7 @@ d <- read_excel("Agbarometer202601.xlsx")
 # Preparo datos
 
 # Creo columna con el nombre de los meses
-meses <- factor(c("Ene", "Mar", "May", "Jul", "Sep", "Nov"))
+meses <- c("Ene", "Mar", "May", "Jul", "Sep", "Nov")
 d <- d %>% 
   mutate(
     Mes = factor(c('Oct', 'Nov',                       # 2018
@@ -94,7 +94,8 @@ ggplot(d, aes(x = Bimestre, y = `Ag Barometer`)) +
   geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
 #  geom_point(color = "red", size = 2) +
   scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
-  labs(x = "Tiempo", y = "AgBarometer") +
+  labs(x = "Tiempo", 
+       y = "Ag Barometer") +
   theme_bw()
 ```
 
@@ -120,10 +121,26 @@ ggplot(d, aes(x = Mes, y = `Ag Barometer`, group = Año, color = factor(Año))) 
   geom_line() +
   geom_point(size = 1.5) +
   labs(x = "Mes",
-       y = "AgBarometer",
+       y = "Ag Barometer",
        color = "Año") +
   scale_color_discrete(labels=unique(d$Año)) +
   theme_bw()
+```
+
+
+
+Q: hago un test para probar si todos los promedios son iguales? en el test no incluyo a los meses abril y octubre, no? (solo tengo una obs) QUE TEST SERIA???!!!!!
+
+Q: y si me da que al menos uno es distinto??
+
+```{r}
+# no me anda este!! no me pone el nombre de los meses en el eje x... pq es para sesries mensuales este grafico.
+ggmonthplot(y) +
+ # scale_x_discrete(labels = c("Ene", "Mar", "May", "Jul", "Sep", "Nov")) +
+  labs(x = "Mes",
+       y = "Ag Barometer") +
+  theme_bw()
+
 ```
 
 
@@ -142,22 +159,35 @@ d %>%
                size = 3) +
   scale_x_discrete(drop = FALSE) +
   labs(x = "Mes",
-       y = "AgBarometer") +
+       y = "Ag Barometer") +
   theme_bw()
-  
 ```
 
 
-Q: hago un test para probar si todos los promedios son iguales? en el test no incluyo a los meses abril y octubre, no? (solo tengo una obs) QUE TEST SERIA???!!!!!
-
-Q: y si me da que al menos uno es distinto??
+# ACF
 
 ```{r}
-ggmonthplot(y) +
-  labs(x = "Mes",
-       y = "AgBarometer") +
-  theme_bw()
+# ACF
+ggAcf(y, lag.max = 60) +
+  labs(x = "Retardo", 
+       y = "FACM",
+       title = NULL) + # hay q poner esto si o si, si no me pone "Series: z"
+  theme_bw() 
 ```
+
+
+# PACF
+
+```{r}
+# PACF 
+ggPacf(y, lag.max = 60) +
+  labs(x = "Retardo",
+       y = "FACPM",
+       title = NULL) +
+  theme_bw() 
+```
+
+
 
 
 
