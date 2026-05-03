@@ -30,6 +30,10 @@ library(feasts)         # para plots
 library(fabletools)     # para test dickey 
 library(ggplot2)
 library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+#library(ggpubr)
 ```
 
 
@@ -158,14 +162,16 @@ d |>
 # La dispersion de mis datos es cte a traves de t?
 
 d |> 
-  index_by(anio = year(Bimestre)) |> 
-  group_by(anio) |> 
+  index_by(Año = year(Bimestre)) |> 
+  group_by(Año) |> 
   summarise(
     N = n(),
     Variancia = var(`Ag Barometer`),
     Rango = diff(range(`Ag Barometer`)),
     Rango_Intercuartilico = IQR(`Ag Barometer`)
-  )
+  ) |> 
+  kable(digits = 2) |> 
+  kable_styling()
 ```
 
 
@@ -226,10 +232,8 @@ d |>
 ```
 
 
-```{r}
-d |> 
-  features(`Ag Barometer`, unitroot_kpss)
-```
+
+
 # Dif regular orden 1 del AgBarometer
 
 ```{r}
@@ -268,7 +272,7 @@ d |>
 
 Test Ljung-Box
 
-$H_0) \rho_1 =  \dots  =  \rho_{30} = 0$ , 
+$H_0) \quad \rho_1 =  \dots  =  \rho_{30} = 0$ , 
 
 $\rho_k:$ coeficiente de autocorrelación de la primer diferencia
 

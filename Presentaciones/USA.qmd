@@ -252,10 +252,6 @@ d |>
 ```
 
 
-```{r}
-d |> 
-  features(`Ag Barometer`, unitroot_kpss)
-```
 
 # Dif regular orden 1 del AgBarometer
 
@@ -290,11 +286,10 @@ d |>
 
 Test Ljung-Box
 
-$H_0) \rho_1 =  \dots  =  \rho_{50} = 0$ , 
+$H_0) \quad \rho_1 =  \dots  =  \rho_{50} = 0$ , 
 
 $\rho_k:$ coeficiente de autocorrelación de la primer diferencia
 
-$p-value = 0.74$
 
 ```{r}
 d |> 
