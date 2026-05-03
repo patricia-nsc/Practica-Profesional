@@ -182,6 +182,7 @@ d |>
   aes(x = media, y = desvio, label = anio) +
   geom_point(color = "#9984E1", size = 3) +
   geom_text(vjust = -0.5, size = 3) +   # ajusta posición vertical
+  ggpubr::stat_cor(method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
   labs(x = "Ag Barometer promedio",
        y = "Desvío del Ag Barometer") +
   theme_bw()
@@ -263,6 +264,26 @@ d |>
        x = 'Retardo') +
   theme_bw()
 ```
+
+
+Test Ljung-Box
+
+$H_0) \rho_1 =  \dots  =  \rho_{30} = 0$ , 
+
+$\rho_k:$ coeficiente de autocorrelación de la primer diferencia
+
+```{r}
+d |> 
+  fill_gaps() |>               # Rellena los meses que faltan con NA
+  # Ahora que hay huecos, tenemos que decir qué poner ahí. 
+  # Lo más común es interpolar o usar el último valor conocido:
+  tidyr::fill(`Ag Barometer`, .direction = "down") |> 
+  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  drop_na(dif1) |> 
+  pull(dif1) |> 
+  Box.test(lag = 30, type = "Ljung-Box")
+```
+
 
 ## PACF 
 
