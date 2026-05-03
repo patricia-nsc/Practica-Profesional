@@ -3431,12 +3431,13 @@ window.Quarto = {
   <li><a href="#variancia" id="toc-variancia" class="nav-link" data-scroll-target="#variancia"><span class="header-section-number">1.4</span> Variancia</a></li>
   <li><a href="#acf-agbarometer" id="toc-acf-agbarometer" class="nav-link" data-scroll-target="#acf-agbarometer"><span class="header-section-number">1.5</span> ACF AgBarometer</a></li>
   <li><a href="#pacf-agbarometer" id="toc-pacf-agbarometer" class="nav-link" data-scroll-target="#pacf-agbarometer"><span class="header-section-number">1.6</span> PACF AgBarometer</a></li>
-  </ul></li>
-  <li><a href="#dif-regular-orden-1-del-agbarometer" id="toc-dif-regular-orden-1-del-agbarometer" class="nav-link" data-scroll-target="#dif-regular-orden-1-del-agbarometer"><span class="header-section-number">2</span> Dif regular orden 1 del AgBarometer</a>
+  <li><a href="#dif-regular-orden-1-del-agbarometer" id="toc-dif-regular-orden-1-del-agbarometer" class="nav-link" data-scroll-target="#dif-regular-orden-1-del-agbarometer"><span class="header-section-number">1.7</span> Dif regular orden 1 del AgBarometer</a>
   <ul class="collapse">
-  <li><a href="#acf" id="toc-acf" class="nav-link" data-scroll-target="#acf"><span class="header-section-number">2.1</span> ACF</a></li>
-  <li><a href="#pacf" id="toc-pacf" class="nav-link" data-scroll-target="#pacf"><span class="header-section-number">2.2</span> PACF</a></li>
+  <li><a href="#acf" id="toc-acf" class="nav-link" data-scroll-target="#acf"><span class="header-section-number">1.7.1</span> ACF</a></li>
+  <li><a href="#pacf" id="toc-pacf" class="nav-link" data-scroll-target="#pacf"><span class="header-section-number">1.7.2</span> PACF</a></li>
   </ul></li>
+  </ul></li>
+  <li><a href="#imputacion" id="toc-imputacion" class="nav-link" data-scroll-target="#imputacion"><span class="header-section-number">2</span> Imputacion</a></li>
   </ul>
 </nav>
 </div>
@@ -3657,9 +3658,8 @@ window.Quarto = {
 </div>
 </div>
 </section>
-</section>
-<section id="dif-regular-orden-1-del-agbarometer" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Dif regular orden 1 del AgBarometer</h1>
+<section id="dif-regular-orden-1-del-agbarometer" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="dif-regular-orden-1-del-agbarometer"><span class="header-section-number">1.7</span> Dif regular orden 1 del AgBarometer</h2>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -3669,8 +3669,8 @@ window.Quarto = {
 </div>
 </div>
 </div>
-<section id="acf" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="acf"><span class="header-section-number">2.1</span> ACF</h2>
+<section id="acf" class="level3" data-number="1.7.1">
+<h3 data-number="1.7.1" class="anchored" data-anchor-id="acf"><span class="header-section-number">1.7.1</span> ACF</h3>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -3693,8 +3693,8 @@ X-squared = 22.503, df = 30, p-value = 0.8351</code></pre>
 </div>
 </div>
 </section>
-<section id="pacf" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="pacf"><span class="header-section-number">2.2</span> PACF</h2>
+<section id="pacf" class="level3" data-number="1.7.2">
+<h3 data-number="1.7.2" class="anchored" data-anchor-id="pacf"><span class="header-section-number">1.7.2</span> PACF</h3>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -3705,6 +3705,130 @@ X-squared = 22.503, df = 30, p-value = 0.8351</code></pre>
 </div>
 </div>
 </section>
+</section>
+</section>
+<section id="imputacion" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Imputacion</h1>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metodo</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">RMSE</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MAE</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MAPE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ilinear</td>
+<td style="text-align: right;">11.575</td>
+<td style="text-align: right;">9.257</td>
+<td style="text-align: right;">10.007</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">seadec</td>
+<td style="text-align: right;">11.607</td>
+<td style="text-align: right;">9.420</td>
+<td style="text-align: right;">10.177</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">istine</td>
+<td style="text-align: right;">11.873</td>
+<td style="text-align: right;">9.592</td>
+<td style="text-align: right;">10.363</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">kalmana</td>
+<td style="text-align: right;">12.121</td>
+<td style="text-align: right;">9.732</td>
+<td style="text-align: right;">10.487</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">kalmans</td>
+<td style="text-align: right;">12.219</td>
+<td style="text-align: right;">9.900</td>
+<td style="text-align: right;">10.763</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">maexponential</td>
+<td style="text-align: right;">12.088</td>
+<td style="text-align: right;">10.201</td>
+<td style="text-align: right;">11.698</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">nocb</td>
+<td style="text-align: right;">14.235</td>
+<td style="text-align: right;">11.505</td>
+<td style="text-align: right;">12.292</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">malinear</td>
+<td style="text-align: right;">13.381</td>
+<td style="text-align: right;">11.397</td>
+<td style="text-align: right;">13.467</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ispline</td>
+<td style="text-align: right;">14.985</td>
+<td style="text-align: right;">12.499</td>
+<td style="text-align: right;">13.656</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">locf</td>
+<td style="text-align: right;">15.393</td>
+<td style="text-align: right;">12.215</td>
+<td style="text-align: right;">13.810</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">masimple</td>
+<td style="text-align: right;">15.129</td>
+<td style="text-align: right;">12.782</td>
+<td style="text-align: right;">15.416</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mode</td>
+<td style="text-align: right;">34.242</td>
+<td style="text-align: right;">28.285</td>
+<td style="text-align: right;">27.121</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">seasplit</td>
+<td style="text-align: right;">27.621</td>
+<td style="text-align: right;">23.704</td>
+<td style="text-align: right;">28.303</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">median</td>
+<td style="text-align: right;">30.984</td>
+<td style="text-align: right;">27.175</td>
+<td style="text-align: right;">30.767</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">mean</td>
+<td style="text-align: right;">30.669</td>
+<td style="text-align: right;">27.136</td>
+<td style="text-align: right;">32.491</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">random</td>
+<td style="text-align: right;">45.454</td>
+<td style="text-align: right;">39.163</td>
+<td style="text-align: right;">45.875</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">replace</td>
+<td style="text-align: right;">99.906</td>
+<td style="text-align: right;">96.285</td>
+<td style="text-align: right;">100.000</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
 </section>
 
 </main>
