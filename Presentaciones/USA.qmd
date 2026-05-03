@@ -1,0 +1,295 @@
+---
+title: "USA"
+subtitle: "Serie del índice Ag Barometer USA"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Librarias 
+# ------------------------------------------------------------- #
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Carga de datos 
+# ------------------------------------------------------------- # 
+
+# convierto Bimestre en formato Date
+# convierto los datos en un data temporal donde bimestre es el indice temporal y el resto de las cols son series
+
+d <- readxl::read_excel("Datos/agbarometerUSA_marzo2026.xlsx") |> 
+  rename(mes = 1, 
+         anio = 2,
+         `Ag Barometer` = 3,
+         `Condiciones presentes` = 4,
+         `Expectativas futuras` = 5,
+         `Inversion de capital agricola` = 6) |> 
+  mutate(
+    fecha = yearmonth(sprintf("%d-%02d", anio, match(mes, month.name)))) |> 
+  relocate(fecha) |> 
+  as_tsibble(index = fecha)
+  
+```
+
+
+# Descriptivo
+
+## Ag Barometer
+
+```{r}
+d |> 
+  autoplot(`Ag Barometer`) +
+  labs(x = "Tiempo") +
+  scale_x_yearmonth(
+    date_breaks = "1 year",
+    date_labels = "%Y"
+  ) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  geom_point(size = 1) +
+  theme_bw()
+```
+
+
+## Los 3 índices
+
+### Graficos de las series
+
+```{r}
+d |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`, `Inversion de capital agricola`), 
+               names_to = "Índice", 
+               values_to = "valor") |> 
+  ggplot(aes(x = fecha, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer" = "black",          
+    "Condiciones presentes" = "#86A397", 
+    "Expectativas futuras" = "#FF88DC" ,
+    "Inversion de capital agricola" = "#E1B07E"
+  )) +
+  labs(x = "Tiempo",
+       y = "Índice") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") + 
+  guides(color = guide_legend(nrow = 2))
+  
+```
+
+
+
+
+### Correlaciones entre los indices
+
+```{r}
+d |> 
+  GGally::ggpairs(columns = 4:7)
+```
+
+
+
+
+
+## Estacionalidad
+
+```{r}
+d |> 
+  gg_season(`Ag Barometer`, labels = "left") +
+  geom_point(size = 1.5) +
+  scale_x_yearmonth(
+    date_breaks = "1 month",
+    date_labels = "%b",
+    expand = expansion(mult = c(0.1, 0.05))
+  ) +
+  labs(x = 'Tiempo') +
+  theme_bw() +
+  theme(
+    plot.margin = margin(5.5, 5.5, 5.5, 20)
+  )
+
+
+```
+
+```{r}
+d |> 
+  # mutate(mes = month(Bimestre)) |> 
+  # filter(!(mes %in% c(4,10))) |>  # haceme el prom(serie), excepto
+  gg_subseries(`Ag Barometer`) +  # en abril y octubre
+  theme_bw()
+```
+
+
+
+
+## Variancia
+
+```{r}
+d |> 
+  ggplot(aes(x = factor(anio),  y = `Ag Barometer`)) +
+  geom_boxplot() +
+  labs(x = 'Año') +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  theme_bw()
+```
+
+```{r}
+# Medidas de dispersion del agbarometer. 
+# La dispersion de mis datos es cte a traves de t?
+
+d |> 
+  index_by(anio) |> 
+  group_by(anio) |> 
+  summarise(
+    N = n(),
+    Variancia = var(`Ag Barometer`),
+    Rango = diff(range(`Ag Barometer`)),
+    Rango_Intercuartilico = IQR(`Ag Barometer`)
+  )
+```
+
+
+```{r}
+# desvio vs media de la serie por anio
+
+  d |> 
+  index_by(anio) |> 
+  group_by(anio) |> 
+  summarise(media = mean(`Ag Barometer`),
+            desvio = sd(`Ag Barometer`)
+  ) |> 
+  ggplot() + 
+  aes(x = media, y = desvio, label = anio) +
+  geom_point(color = "#9984E1", size = 3) +
+  geom_text(vjust = -0.5, size = 3) +   # ajusta posición vertical
+  labs(x = "Ag Barometer promedio",
+       y = "Desvío del Ag Barometer") +
+  theme_bw()
+
+```
+
+```{r}
+# calculo el lamda por no tenr variancia cte
+lamda <- forecast::BoxCox.lambda(d$`Ag Barometer`)
+
+# agrego una columna al data q es la serie transformada (transf box-cox)
+# d <- d  |> 
+#   mutate(agbarometer_transf = (`Ag Barometer`^lamda - 1) / lamda)
+```
+
+
+
+
+## ACF AgBarometer
+
+```{r}
+d |> 
+  ACF(`Ag Barometer`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+```
+
+## PACF AgBarometer
+
+```{r}
+d |> 
+  PACF(`Ag Barometer`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+```
+
+
+```{r}
+d |> 
+  features(`Ag Barometer`, unitroot_kpss)
+```
+
+# Dif regular orden 1 del AgBarometer
+
+```{r}
+# diferencia de primer orden
+d |> 
+  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  autoplot(dif1) +
+  labs(x = "Tiempo") +
+  scale_x_yearmonth(
+    date_breaks = "1 year",
+    date_labels = "%Y"
+  ) +
+  #geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  geom_point(size = 1) +
+  theme_bw()
+  
+  
+
+  
+```
+
+## ACF
+
+```{r}
+d |> 
+  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  ACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+```
+
+## PACF 
+
+```{r}
+d |> 
+  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  PACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACMP',
+       x = 'Retardo') +
+  theme_bw()
+```
+
+
+
+
+
+
+
