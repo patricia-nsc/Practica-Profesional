@@ -13,26 +13,23 @@ library(tidyr)
 library(dplyr)
 library(zoo)
 
+
 # ------------------------------------------------------------- #
 # Carga de datos Ag Barometer ARG
 # ------------------------------------------------------------- #
 
-# Se lee el Excel y se extrae la columna `Ag Barometer` como ts.
-# La serie tiene 44 observaciones bimestrales (meses impares).
-# En 2020 la observacion de abril (unica de ese año al inicio) ya fue
-# removida del Excel; la serie se trata como completa para este analisis.
-# frequency = 6 porque hay 6 bimestres por año (ene,mar,may,jul,sep,nov).
 
-
-d <- readxl::read_excel("agbarometerARG_enero2026.xlsx") |>
+# Trabajo con la serie Ag Barometer como si estuviera completa
+d <- readxl::read_excel("ARG/agbarometerARG_enero2026.xlsx") |>
   mutate(Bimestre = yearmonth(Bimestre)) |>
   as_tsibble(index = Bimestre, regular = FALSE)
 
-datosts <- ts(d$`Ag Barometer`, frequency = 6)
+datosts <- ts(d$`Ag Barometer`, frequency = 6) # (ene,mar,may,jul,sep,nov)
 datostsNA <- datosts
 
+
 # ------------------------------------------------------------- #
-# Script de Lucia (sin modificaciones)
+# Encontrar el mejor metodo de imputacion entre 17
 # ------------------------------------------------------------- #
 
 Box.test(datosts, lag = 1, type = c("Box-Pierce", "Ljung-Box"), fitdf = 0)
@@ -173,3 +170,4 @@ resultados_promedio <- data.frame(
 )
 
 # print(resultados_promedio)
+

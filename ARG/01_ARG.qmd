@@ -45,9 +45,8 @@ library(tidyr)
 # convierto Bimestre en formato Date
 # convierto los datos en un data temporal donde bimestre es el indice temporal y el resto de las cols son series
 
-d <- readxl::read_excel("agbarometerARG_enero2026.xlsx") |>
-  mutate(Bimestre = yearmonth(Bimestre)) |>
-  as_tsibble(index = Bimestre, regular = FALSE)
+d <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
+  mutate(Bimestre = yearmonth(Bimestre))
   
 
 ```
