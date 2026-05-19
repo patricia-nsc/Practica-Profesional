@@ -1,0 +1,185 @@
+---
+title: "USA - Correlaciones"
+subtitle: "Serie del índice Ag Barometer USA"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Librarias 
+# ------------------------------------------------------------- #
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+#library(ggpubr)
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Carga del AgB: y
+# ------------------------------------------------------------- # 
+
+dy <- readxl::read_excel("agbarometerUSA_marzo2026.xlsx") |> 
+  rename(mes = 1, 
+         anio = 2,
+         `Ag Barometer` = 3,
+         `Condiciones presentes` = 4,
+         `Expectativas futuras` = 5,
+         `Inversion de capital agricola` = 6) |> 
+  mutate(
+    fecha = yearmonth(sprintf("%d-%02d", anio, match(mes, month.name)))) |> 
+  relocate(fecha) |> 
+  as_tsibble(index = fecha)
+  
+```
+
+
+```{r}
+#| include: false
+# ------------------------------------------------------------- #
+# Carga de las x
+# ------------------------------------------------------------- # 
+
+dx <- readxl::read_excel("Covariables.xlsx", sheet = "Monthly Prices") |> 
+  mutate(fecha = yearmonth(fecha1), .keep ="unused") |> 
+  relocate(fecha) |> 
+  select(-fecha2) |> 
+  filter(fecha >= yearmonth("2015-10")) |> 
+  as_tsibble(index = fecha)
+
+# Un dataset con las x y la y
+
+d <- left_join(dy, dx, by = "fecha") |> 
+  select(-mes,
+         -anio,
+         -`Condiciones presentes`,
+         -`Expectativas futuras`,
+         -`Inversion de capital agricola`) |> 
+  mutate(across(2:15, as.numeric))
+
+writexl::write_xlsx(d, "datos.xlsx")
+```
+
+
+# Correls entre el Ag Barometer vs covariables
+
+```{r}
+
+cors <- cor(d[, 3:15], d[["Ag Barometer"]], use = "pairwise.complete.obs")
+
+df_cor <- tibble(
+  variable = rownames(cors),
+  r        = cors[, 1]
+) |> arrange(r)
+
+df_cor$variable <- factor(df_cor$variable, levels = df_cor$variable)
+
+# grafico
+ggplot(df_cor, aes(x = r, y = variable, fill = r > 0)) +
+  geom_col(width = 0.6) +
+  geom_vline(xintercept = 0, linewidth = 0.4, color = "grey30") +
+  geom_text(aes(label = round(r, 2),
+                hjust = ifelse(r > 0, -0.2, 1.2)),
+            size = 3.2, color = "grey20") +
+  scale_fill_manual(values = c("TRUE" = "#2980b9", "FALSE" = "#c0392b"),
+                    guide = "none") +
+  scale_x_continuous(limits = c(-0.35, 0.40), expand = c(0, 0)) +
+  labs(x = "r de Pearson", 
+       y = NULL) +
+  theme_bw(base_size = 12)
+```
+
+```{r}
+# desfasar las covs un periodo para atras
+d_lag <- d |> mutate(across(3:15, lead))
+
+
+
+cors <- cor(d_lag[, 3:15], d_lag[["Ag Barometer"]], use = "pairwise.complete.obs")
+
+df_cor <- tibble(
+  variable = rownames(cors),
+  r        = cors[, 1]
+) |> arrange(r)
+
+df_cor$variable <- factor(df_cor$variable, levels = df_cor$variable)
+
+ggplot(df_cor, aes(x = r, y = variable, fill = r > 0)) +
+  geom_col(width = 0.6) +
+  geom_vline(xintercept = 0, linewidth = 0.4, color = "grey30") +
+  geom_text(aes(label = round(r, 2),
+                hjust = ifelse(r > 0, -0.2, 1.2)),
+            size = 3.2, color = "grey20") +
+  scale_fill_manual(values = c("TRUE" = "#2980b9", "FALSE" = "#c0392b"),
+                    guide = "none") +
+  scale_x_continuous(limits = c(-0.35, 0.40), expand = c(0, 0)) +
+  labs(title = "Ag Barometer (t) vs covariables (t-1)",
+       x = "r de Pearson", y = NULL) +
+  theme_bw(base_size = 12)
+```
+
+
+```{r}
+# desfasar las covs un periodo para atras
+d_lag <- d |> mutate(across(3:15, ~lead(., 2)))
+
+
+
+cors <- cor(d_lag[, 3:15], d_lag[["Ag Barometer"]], use = "pairwise.complete.obs")
+
+df_cor <- tibble(
+  variable = rownames(cors),
+  r        = cors[, 1]
+) |> arrange(r)
+
+df_cor$variable <- factor(df_cor$variable, levels = df_cor$variable)
+
+ggplot(df_cor, aes(x = r, y = variable, fill = r > 0)) +
+  geom_col(width = 0.6) +
+  geom_vline(xintercept = 0, linewidth = 0.4, color = "grey30") +
+  geom_text(aes(label = round(r, 2),
+                hjust = ifelse(r > 0, -0.2, 1.2)),
+            size = 3.2, color = "grey20") +
+  scale_fill_manual(values = c("TRUE" = "#2980b9", "FALSE" = "#c0392b"),
+                    guide = "none") +
+  scale_x_continuous(limits = c(-0.35, 0.40), expand = c(0, 0)) +
+  labs(title = "Ag Barometer (t) vs covariables (t-2)",
+       x = "r de Pearson", y = NULL) +
+  theme_bw(base_size = 12)
+```
+```{r}
+
+  plot(d$Soybeans)
+```
+
+
+```{r}
+#| echo: false
+
+#d |> 
+#  GGally::ggpairs(columns = 3:15)
+```
+

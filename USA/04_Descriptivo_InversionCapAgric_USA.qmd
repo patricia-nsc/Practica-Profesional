@@ -1,5 +1,5 @@
 ---
-title: "USA"
+title: "USA - Inversion de Capital Agricola"
 subtitle: "Serie del índice Ag Barometer USA"
 author: "Patricia Analía Nesci"
 format:
@@ -60,13 +60,13 @@ d <- readxl::read_excel("agbarometerUSA_marzo2026.xlsx") |>
 ```
 
 
-# Descriptivo
 
-## Ag Barometer
+
+# Inversion de Cap. Agric.
 
 ```{r}
 d |> 
-  autoplot(`Ag Barometer`) +
+  autoplot(`Inversion de capital agricola`) +
   labs(x = "Tiempo") +
   scale_x_yearmonth(
     date_breaks = "1 year",
@@ -79,60 +79,6 @@ d |>
 ```
 
 
-## Los 4 índices
-
-### Graficos de las series
-
-```{r}
-d |> 
-  tidyr::pivot_longer(
-    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`, `Inversion de capital agricola`), 
-               names_to = "Índice", 
-               values_to = "valor") |> 
-  ggplot(aes(x = fecha, y = valor, color = Índice)) +
-  geom_line() +
-  geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  scale_color_manual(values = c(
-    "Ag Barometer" = "black",          
-    "Condiciones presentes" = "#86A397", 
-    "Expectativas futuras" = "#FF88DC" ,
-    "Inversion de capital agricola" = "#E1B07E"
-  )) +
-  labs(x = "Tiempo",
-       y = "Índice") +
-  theme_bw() +
-  theme(legend.title = element_blank(),
-        legend.position = "bottom") + 
-  guides(color = guide_legend(nrow = 2))
-  
-```
-
-
-```{r}
-# hay observaciones q superan el 200!!
-d |> 
-  slice(60:70) |> 
-  select(fecha,
-         `Ag Barometer`,
-         `Condiciones presentes`,
-         `Expectativas futuras`,
-         `Inversion de capital agricola`) |>  # <--- Aquí elegís cuáles querés
-  kable() |> 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
-```
-
-
-### Correlaciones entre los indices
-
-```{r}
-d |> 
-  GGally::ggpairs(columns = 4:7)
-```
-
-
 
 
 
@@ -140,7 +86,7 @@ d |>
 
 ```{r}
 d |> 
-  gg_season(`Ag Barometer`, labels = "left") +
+  gg_season(`Inversion de capital agricola`, labels = "left") +
   geom_point(size = 1.5) +
   scale_x_yearmonth(
     date_breaks = "1 month",
@@ -160,8 +106,13 @@ d |>
 d |> 
   # mutate(mes = month(Bimestre)) |> 
   # filter(!(mes %in% c(4,10))) |>  # haceme el prom(serie), excepto
-  gg_subseries(`Ag Barometer`) +  # en abril y octubre
+  gg_subseries(`Inversion de capital agricola`) +  # en abril y octubre
   labs(x = 'Tiempo') +
+  scale_x_yearmonth(
+    date_breaks = "7 years",# Muestra una etiqueta cada 2 años 
+    date_labels = "%Y" ,    # %y: Muestra 22 en vez de 2022
+    expand = expansion(mult = c(0.13, 0.12))
+  ) +
   theme_bw()
 ```
 
@@ -172,7 +123,7 @@ d |>
 
 ```{r}
 d |> 
-  ggplot(aes(x = factor(anio),  y = `Ag Barometer`)) +
+  ggplot(aes(x = factor(anio),  y = `Inversion de capital agricola`)) +
   geom_boxplot() +
   labs(x = 'Año') +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
@@ -189,9 +140,9 @@ d |>
   group_by(Año) |> 
   summarise(
     N = n(),
-    Variancia = var(`Ag Barometer`),
-    Rango = diff(range(`Ag Barometer`)),
-    Rango_Intercuartilico = IQR(`Ag Barometer`)
+    Variancia = var(`Inversion de capital agricola`),
+    Rango = diff(range(`Inversion de capital agricola`)),
+    Rango_Intercuartilico = IQR(`Inversion de capital agricola`)
   ) |> 
   kable(digits = 2) |> # El 'digits' te ahorra el mutate y redondea todo
   kable_styling()      # El formato básico que ya se ve mil veces mejor que el texto plano
@@ -204,20 +155,20 @@ d |>
 d |> 
   index_by(anio) |> 
   group_by(anio) |> 
-  summarise(media = mean(`Ag Barometer`),
-            desvio = sd(`Ag Barometer`)) |> 
+  summarise(media = mean(`Inversion de capital agricola`),
+            desvio = sd(`Inversion de capital agricola`)) |> 
   ggplot(aes(x = media, y = desvio, label = anio)) +
   geom_point(color = "#9984E1", size = 3) +
   geom_text(vjust = -0.8, size = 3) + 
   ggpubr::stat_cor(method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
   expand_limits(x = 150, y = 32) +
-  labs(x = "Ag Barometer promedio", y = "Desvío") +
+  labs(x = "Inversion cap. agric. promedio", y = "Desvío") +
   theme_bw()
 ```
 
 ```{r}
 # calculo el lamda por no tenr variancia cte
-lamda <- forecast::BoxCox.lambda(d$`Ag Barometer`)
+lamda <- forecast::BoxCox.lambda(d$`Inversion de capital agricola`)
 
 # agrego una columna al data q es la serie transformada (transf box-cox)
 # d <- d  |> 
@@ -227,11 +178,11 @@ lamda <- forecast::BoxCox.lambda(d$`Ag Barometer`)
 
 
 
-## ACF AgBarometer
+## ACF Inversion de Cap. Agric.
 
 ```{r}
 d |> 
-  ACF(`Ag Barometer`, lag_max = 60) |> 
+  ACF(`Inversion de capital agricola`, lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
@@ -239,11 +190,11 @@ d |>
   theme_bw()
 ```
 
-## PACF AgBarometer
+## PACF Inversion de Cap. Agric.
 
 ```{r}
 d |> 
-  PACF(`Ag Barometer`, lag_max = 60) |> 
+  PACF(`Inversion de capital agricola`, lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
@@ -253,12 +204,12 @@ d |>
 
 
 
-# Dif regular orden 1 del AgBarometer
+# Dif regular orden 1 de las Inversion de Cap. Agric.
 
 ```{r}
 # diferencia de primer orden
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
   autoplot(dif1) +
   labs(x = "Tiempo") +
   scale_x_yearmonth(
@@ -275,7 +226,7 @@ d |>
 
 ```{r}
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
   ACF(dif1 , lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
@@ -283,6 +234,8 @@ d |>
        x = 'Retardo') +
   theme_bw()
 ```
+
+### TH 
 
 Test Ljung-Box
 
@@ -293,18 +246,76 @@ $\rho_k:$ coeficiente de autocorrelación de la primer diferencia
 
 ```{r}
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
   drop_na(dif1) |>           # ¡Importante! El primer valor de dif1 es NA y el test falla si lo ve
   pull(dif1) |>              # Extrae la columna como un vector
   Box.test(lag = 50, type = "Ljung-Box") 
 ```
+Test Ljung-Box
 
+$H_0) \quad \rho_1 =  \dots  =  \rho_{40} = 0$ , 
+
+$\rho_k:$ coeficiente de autocorrelación de la primer diferencia
+
+
+```{r}
+d |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
+  drop_na(dif1) |>           # ¡Importante! El primer valor de dif1 es NA y el test falla si lo ve
+  pull(dif1) |>              # Extrae la columna como un vector
+  Box.test(lag = 40, type = "Ljung-Box") 
+```
+
+Test Ljung-Box
+
+$H_0) \quad \rho_1 =  \dots  =  \rho_{30} = 0$ , 
+
+$\rho_k:$ coeficiente de autocorrelación de la primer diferencia
+
+
+```{r}
+d |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
+  drop_na(dif1) |>           # ¡Importante! El primer valor de dif1 es NA y el test falla si lo ve
+  pull(dif1) |>              # Extrae la columna como un vector
+  Box.test(lag = 30, type = "Ljung-Box") 
+```
+
+Test Ljung-Box
+
+$H_0) \quad \rho_1 =  \dots  =  \rho_{15} = 0$ , 
+
+$\rho_k:$ coeficiente de autocorrelación de la primer diferencia
+
+
+```{r}
+d |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
+  drop_na(dif1) |>           # ¡Importante! El primer valor de dif1 es NA y el test falla si lo ve
+  pull(dif1) |>              # Extrae la columna como un vector
+  Box.test(lag = 15, type = "Ljung-Box") 
+```
+
+Test Ljung-Box
+
+$H_0) \quad \rho_1 =  \dots  =  \rho_{5} = 0$ , 
+
+$\rho_k:$ coeficiente de autocorrelación de la primer diferencia
+
+
+```{r}
+d |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
+  drop_na(dif1) |>           # ¡Importante! El primer valor de dif1 es NA y el test falla si lo ve
+  pull(dif1) |>              # Extrae la columna como un vector
+  Box.test(lag = 5, type = "Ljung-Box") 
+```
 
 ## PACF 
 
 ```{r}
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Inversion de capital agricola`)) |> 
   PACF(dif1 , lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +

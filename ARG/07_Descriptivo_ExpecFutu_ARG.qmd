@@ -1,5 +1,5 @@
 ---
-title: "ARG"
+title: "ARG - Expec Futu."
 subtitle: "Serie del índice Ag Barometer ARG"
 author: "Patricia Analía Nesci"
 format:
@@ -16,8 +16,7 @@ execute:
   warning: false
   message: false
 ---
-
-
+  
 ```{r}
 # ------------------------------------------------------------- #
 # Librarias 
@@ -33,109 +32,51 @@ library(fable)          # para ajustar modelos
 library(knitr)
 library(kableExtra)
 library(tidyr)
+library(imputeTS)
 #library(ggpubr)
 ```
 
 
+
 ```{r}
-# ------------------------------------------------------------- #
-# Carga de datos 
-# ------------------------------------------------------------- # 
-
-# convierto Bimestre en formato Date
-# convierto los datos en un data temporal donde bimestre es el indice temporal y el resto de las cols son series
-
-d <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
-  mutate(Bimestre = yearmonth(Bimestre))
-  
-
+# carga de datos imputados
+d <- readxl::read_excel("agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre)
 ```
 
 
-# Descriptivo
-
-## Ag Barometer
-
-```{r}
-d |> 
-  autoplot(`Ag Barometer`) +
-  labs(x = "Tiempo") +
-  scale_x_yearmonth(
-    date_breaks = "1 year",
-    date_labels = "%Y"
-  ) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  geom_point(size = 1) +
-  theme_bw()
-```
-
-
-## Los 3 índices
-
-### Graficos de las series
-
-```{r}
-d |> 
-  tidyr::pivot_longer(
-    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`), 
-               names_to = "Índice", 
-               values_to = "valor") |> 
-  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
-  geom_line() +
-  geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  scale_color_manual(values = c(
-    "Ag Barometer" = "black",          
-    "Condiciones presentes" = "#417B5A", 
-    "Expectativas futuras" = "#FF88DC"  
-  )) +
-  labs(x = "Tiempo",
-       y = "Índice") +
-  theme_bw() +
-  theme(legend.title = element_blank(),
-        legend.position = "bottom") 
-  
-```
-
-
-
-
-### Correlaciones entre los indices
-
-```{r}
-d |> 
-  GGally::ggpairs(columns = 2:4)
-```
-
-
+# Expectativas futuras: descriptivo
 
 ## Estacionalidad
 
 ```{r}
 d |> 
-  gg_season(`Ag Barometer`, labels = 'left') +
+  gg_season(`Expectativas futuras`, labels = 'left') +
   geom_point(size = 1.5) +
   scale_x_yearmonth(
     date_breaks = "1 month",
     date_labels = "%b",
-    expand = expansion(mult = c(0.1, 0.05))
+    expand = expansion(mult = c(0.11, 0.12))
   ) +
+  labs(x = 'Tiempo') +
   theme_bw() +
   theme(
-    plot.margin = margin(5.5, 5.5, 5.5, 20)
+    plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5)
   )
-  
+
 
 ```
 
 ```{r}
 d |> 
-  # mutate(mes = month(Bimestre)) |> 
-  # filter(!(mes %in% c(4,10))) |>  # haceme el prom(serie), excepto
-  gg_subseries(`Ag Barometer`) +  # en abril y octubre
+  gg_subseries(`Condiciones presentes`) +  
+  labs(x = "Tiempo") +
+  scale_x_yearmonth(
+    date_breaks = "4 years",# Muestra una etiqueta cada 2 años 
+    date_labels = "%Y" ,    # %y: Muestra 22 en vez de 2022
+    expand = expansion(mult = c(0.13, 0.12))
+  ) +
   theme_bw()
 ```
 
@@ -147,7 +88,7 @@ d |>
 ```{r}
 d |> 
   mutate(anio = factor(year(Bimestre))) |> 
-  ggplot(aes(x = anio,  y = `Ag Barometer`)) +
+  ggplot(aes(x = anio,  y = `Expectativas futuras`)) +
   geom_boxplot() +
   labs(x = 'Año') +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
@@ -163,9 +104,9 @@ d |>
   group_by(Año) |> 
   summarise(
     N = n(),
-    Variancia = var(`Ag Barometer`),
-    Rango = diff(range(`Ag Barometer`)),
-    Rango_Intercuartilico = IQR(`Ag Barometer`)
+    Variancia = var(`Expectativas futuras`),
+    Rango = diff(range(`Expectativas futuras`)),
+    Rango_Intercuartilico = IQR(`Expectativas futuras`)
   ) |> 
   kable(digits = 2) |> 
   kable_styling()
@@ -175,11 +116,11 @@ d |>
 ```{r}
 # desvio vs media de la serie por anio
 
-  d |> 
+d |> 
   index_by(anio = year(Bimestre)) |> 
   group_by(anio) |> 
-  summarise(media = mean(`Ag Barometer`),
-            desvio = sd(`Ag Barometer`)
+  summarise(media = mean(`Expectativas futuras`),
+            desvio = sd(`Expectativas futuras`)
   ) |> 
   ggplot() + 
   aes(x = media, y = desvio, label = anio) +
@@ -194,7 +135,7 @@ d |>
 
 ```{r}
 # calculo el lamda por no tenr variancia cte
-lamda <- forecast::BoxCox.lambda(d$`Ag Barometer`)
+lamda <- forecast::BoxCox.lambda(d$`Expectativas futuras`)
 
 # agrego una columna al data q es la serie transformada (transf box-cox)
 # d <- d  |> 
@@ -204,11 +145,11 @@ lamda <- forecast::BoxCox.lambda(d$`Ag Barometer`)
 
 
 
-## ACF AgBarometer
+## ACF
 
 ```{r}
 d |> 
-  ACF(`Ag Barometer`, lag_max = 60) |> 
+  ACF(`Expectativas futuras`, lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
@@ -216,11 +157,11 @@ d |>
   theme_bw()
 ```
 
-## PACF AgBarometer
+## PACF 
 
 ```{r}
 d |> 
-  PACF(`Ag Barometer`, lag_max = 60) |> 
+  PACF(`Expectativas futuras`, lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
@@ -231,12 +172,12 @@ d |>
 
 
 
-## Dif regular orden 1 del AgBarometer
+## Dif1
 
 ```{r}
 # diferencia de primer orden
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
   autoplot(dif1) +
   labs(x = "Tiempo") +
   scale_x_yearmonth(
@@ -247,17 +188,13 @@ d |>
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   geom_point(size = 1) +
   theme_bw()
-  
-  
-
-  
 ```
 
-### ACF
+### ACF dif1
 
 ```{r}
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
   ACF(dif1 , lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
@@ -278,7 +215,7 @@ d |>
   fill_gaps() |>               # Rellena los meses que faltan con NA
   # Ahora que hay huecos, tenemos que decir qué poner ahí. 
   # Lo más común es interpolar o usar el último valor conocido:
-  tidyr::fill(`Ag Barometer`, .direction = "down") |> 
+  tidyr::fill(`Expectativas futuras`, .direction = "down") |> 
   mutate(dif1 = difference(`Ag Barometer`)) |> 
   drop_na(dif1) |> 
   pull(dif1) |> 
@@ -286,11 +223,11 @@ d |>
 ```
 
 
-### PACF 
+### PACF dif1
 
 ```{r}
 d |> 
-  mutate(dif1 = difference(`Ag Barometer`)) |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
   PACF(dif1 , lag_max = 60) |> 
   autoplot() +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
@@ -298,21 +235,6 @@ d |>
        x = 'Retardo') +
   theme_bw()
 ```
-
-# Imputacion
-
-```{r}
-source('02_imputacion_agbarometer_ARG.R')
-
-resultados_promedio |>
-  arrange(MAPE) |>
-  kable(digits = 3) |>
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-```
-
-
-
 
 
 

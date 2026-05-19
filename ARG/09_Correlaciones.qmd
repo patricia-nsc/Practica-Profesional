@@ -1,0 +1,48 @@
+---
+title: "ARG - Correlaciones"
+subtitle: "Serie del índice Ag Barometer USA"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# cargo la y
+dy <- readxl::read_excel("agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre) |> 
+  select(`Ag Barometer`, Bimestre) |> 
+  mutate(fecha = Bimestre, .keep = "unused") |> 
+  relocate(fecha)
+
+# cargo las x (mensuales). Les elimino filas para q tenga igual period q AgB
+dx <- readxl::read_excel("Covariables.xlsx", sheet = "Monthly Prices") |> 
+  mutate(fecha = yearmonth(fecha1), .keep ="unused") |> 
+  relocate(fecha) |> 
+  select(-fecha2) |> 
+  filter(fecha >= yearmonth("2015-10")) |> 
+  as_tsibble(index = fecha)
+
+
+# uno la y con las x
+```
+
+
+
+
+
+
+
+

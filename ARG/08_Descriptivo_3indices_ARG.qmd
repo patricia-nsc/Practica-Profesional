@@ -1,0 +1,91 @@
+---
+title: "ARG - Los 3 indices"
+subtitle: "Serie del índice Ag Barometer ARG"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Librarias 
+# ------------------------------------------------------------- #
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+library(imputeTS)
+#library(ggpubr)
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Carga de datos imputados
+# ------------------------------------------------------------- # 
+
+d <- readxl::read_excel("agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre)
+```
+
+
+## Los 3 índices juntos 
+
+### Graficos de las series
+
+```{r}
+d |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`), 
+               names_to = "Índice", 
+               values_to = "valor") |> 
+  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer" = "black",          
+    "Condiciones presentes" = "#417B5A", 
+    "Expectativas futuras" = "#FF88DC"  
+  )) +
+  labs(x = "Tiempo",
+       y = "Índice") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") 
+  
+```
+
+
+
+
+### Correlaciones entre los indices
+
+```{r}
+d |> 
+  GGally::ggpairs(columns = 2:4)
+```
+
+
