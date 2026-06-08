@@ -1,0 +1,405 @@
+---
+title: "Comparación"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+```{r}
+# ------------------------------------------------------------- #
+# Librarias 
+# ------------------------------------------------------------- #
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+#library(ggpubr)
+```
+
+
+
+
+```{r}
+# --------------------------------------------------------------------- #
+# cargo ARG
+# --------------------------------------------------------------------- #
+
+d_arg <- readxl::read_excel("agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre) |> 
+#  select(`Ag Barometer`, Bimestre) |> 
+  mutate(fecha = Bimestre, .keep = "unused") |> 
+  relocate(fecha)
+
+# indico q las cols de d_arg son de arg
+d_arg <- d_arg |> 
+  mutate(
+  `Ag Barometer Arg` = `Ag Barometer`,
+  `Cond pres. Arg` = `Condiciones presentes`,
+  `Expec fut. Arg` = `Expectativas futuras`,
+  .keep = "unused"
+)
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Carga del AgB: USA
+# ------------------------------------------------------------- # 
+
+d_usa <- readxl::read_excel("agbarometerUSA_marzo2026.xlsx") |> 
+  rename(mes = 1, 
+         anio = 2,
+         `Ag Barometer` = 3,
+         `Condiciones presentes` = 4,
+         `Expectativas futuras` = 5,
+         `Inversion de capital agricola` = 6) |> 
+  mutate(
+    fecha = yearmonth(sprintf("%d-%02d", anio, match(mes, month.name)))) |> 
+  relocate(fecha) |> 
+  as_tsibble(index = fecha)
+
+
+# indico q las cols de d_usa son de usa, excepto inversion porq solo esta en usa
+d_usa <- d_usa |> 
+  select(-anio, -mes) |> 
+  mutate(
+    `Ag Barometer Usa` = `Ag Barometer`,
+    `Cond pres. Usa` = `Condiciones presentes`,
+    `Expec fut. Usa` = `Expectativas futuras`,
+    .keep = "unused"
+  )
+  
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Uno arg con usa
+# ------------------------------------------------------------- #
+
+d <- full_join(d_usa, d_arg, by = "fecha") |> 
+  as_tsibble(index = fecha)
+
+```
+
+# Ambas superpuestas
+
+```{r}
+# grafico de AgB arg y usa superpuestos
+
+d |> 
+  # 1. Rompemos la estructura rígida de tsibble convirtiéndolo a un data frame común
+  as_tibble() |> 
+  
+  # 2. Pasamos a formato largo
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer Arg`, `Ag Barometer Usa`), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  
+  # 3. Eliminamos físicamente las filas vacías para que no queden baches mensuales en Argentina
+  tidyr::drop_na(valor) |> 
+  
+  # 4. Graficamos usando la columna original 'fecha' (que mantiene su formato yearmonth)
+  ggplot(aes(x = fecha, y = valor, color = Índice, group = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  
+  # Tus capas de personalización idénticas
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer Arg" = "#6D9DC5",          
+    "Ag Barometer Usa" = "#BF211E" 
+  )) +
+  labs(x = "Tiempo", 
+       y = "Ag Barometer") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom"
+        )
+
+```
+
+# Cointegración
+
+## Grafico
+
+```{r}
+d |> 
+  filter(
+    fecha >= yearmonth("2018-11"),
+    fecha <= yearmonth("2026-01"),
+    (month(fecha) %% 2) != 0
+  ) |> 
+  ggplot() +
+  geom_point() +
+  geom_smooth(method = "lm", color = "#BF211E",se = F, linewidth = 0.8) + 
+  ggpubr::stat_cor(method = "pearson", aes(label = ..r.label..), label.x.npc = "left", label.y.npc = "top") +
+  aes(x = `Ag Barometer Arg`, y = `Ag Barometer Usa`) +
+  labs(
+    x = 'Ag Barometer Arg',
+    y = 'Ag Barometer Usa'
+  ) +
+  theme_bw()
+```
+
+##  CCF: Crossed Correlation Function
+
+```{r}
+d_bimensuales <- d |> 
+  as_tsibble(index = fecha) |> 
+  filter(
+    fecha >= yearmonth("2018-11"),
+    fecha <= yearmonth("2026-01"),
+    (month(fecha) %% 2) != 0
+  )|> 
+  rename(
+    agb_arg = `Ag Barometer Arg`,
+    agb_usa = `Ag Barometer Usa`
+  ) |> 
+  as_tsibble(index = fecha)
+
+d_bimensuales |> 
+  feasts::CCF(agb_arg, agb_usa, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    title = "Función de Correlación Cruzada (CCF)",
+    x = "Rezago (Bimestre)",
+    y = "CCF"
+  ) +
+  theme_bw()
+```
+
+
+
+## Test de ARDL
+
+$H_0)$: Los Ag Barometers no están cointegrados.
+
+$H_1)$: Los Ag Barometers están cointegrados.
+
+
+```{r}
+# creo un data donde AgB de arg y usa tengan igual periodo
+# de relevamiento e igual periodicidad (le saco meses pares a usa)
+
+d_bimensuales <- d |> 
+  as_tsibble(index = fecha) |> 
+  filter(
+    fecha >= yearmonth("2018-11"),
+    fecha <= yearmonth("2026-01"),
+    (month(fecha) %% 2) != 0
+  )|> 
+  rename(
+    agb_arg = `Ag Barometer Arg`,
+    agb_usa = `Ag Barometer Usa`
+  )
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Forma 1: arg ~ usa
+# ------------------------------------------------------------- #
+
+# modelo q asume q la relacion es lineal (esta por detras del test)
+modelo_ardl <- ARDL::auto_ardl(agb_arg ~ agb_usa, data = d_bimensuales, max_order = c(3,3))
+
+```
+```{r}
+# checkeo sups, residuos RB y normales, a_t son RB
+forecast::checkresiduals(ts(modelo_ardl$best_model$residuals))
+```
+
+
+
+```{r}
+# a_t ~ N ? no y como tengo muestra chica, me distorsiona el test
+shapiro.test(ts(modelo_ardl$best_model$residuals))
+```
+
+
+```{r}
+# test
+ARDL::bounds_f_test(modelo_ardl$best_model, case = 3)
+```
+
+
+```{r}
+modelo_ardl2 <- ARDL::auto_ardl(agb_usa ~ agb_arg, data = d_bimensuales, max_order = c(3,3))
+
+# Ejecutás el test de cointegración (Bounds Test)
+ARDL::bounds_f_test(modelo_ardl2$best_model, case = 3)
+```
+
+
+# Media y variancia por año
+
+
+```{r}
+tabla_medidas <- d |> 
+  as_tibble() |> 
+  mutate(Año = factor(year(fecha))) |> 
+  group_by(Año) |> 
+  dplyr::summarise(
+    N_Arg = sum(!is.na(`Ag Barometer Arg`)),
+    N_Usa = sum(!is.na(`Ag Barometer Usa`)),
+    Media_Arg = mean(`Ag Barometer Arg`, na.rm = T),
+    Media_Usa = mean(`Ag Barometer Usa`),
+    Variancia_Arg = var(`Ag Barometer Arg`, na.rm = T),
+    Variancia_Usa = var(`Ag Barometer Usa`)
+  )
+
+tabla_medidas |> 
+  kable(digits = 2) |> 
+  kable_styling()
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# grafico q compara las medias de arg y usa
+# ------------------------------------------------------------- #
+
+
+# 2. Gráfico que compara las medias anuales
+g1 <- tabla_medidas |> 
+  # Convertimos el factor Año a caracter y luego a número de forma segura
+  mutate(Año = as.numeric(as.character(Año))) |> 
+  
+  # Pasamos a formato largo
+  tidyr::pivot_longer(
+    cols = c(Media_Arg, Media_Usa), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  
+  tidyr::drop_na(Año) |> 
+  
+  # Graficamos usando el Año numérico en el eje X
+  ggplot(aes(x = Año, y = valor, color = Índice, group = Índice)) +
+  geom_line() +
+  geom_point(size = 1.5) + # Un puntito un poco más grande para que se note el año discreto
+  
+  # Capas de personalización
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  
+  # CAMBIO: Usamos escala continua porque X ahora son años enteros (2015, 2016...)
+  scale_x_continuous(breaks = seq(min(as.numeric(as.character(tabla_medidas$Año))), 
+                                  max(as.numeric(as.character(tabla_medidas$Año))), 
+                                  by = 1)) +
+  
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Media_Arg" = "#6D9DC5",          
+    "Media_Usa" = "#BF211E" 
+  ), labels = c("Media Ag Barometer Arg", "Media Ag Barometer Usa")) + # Etiquetas más limpias para la leyenda
+  labs(x = "Año", 
+       y = "Ag Barometer medio",
+       title = "Promedio del Ag Barometer") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom")
+
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# grafico q compara las variancias de arg y usa
+# ------------------------------------------------------------- #
+
+
+# 2. Gráfico que compara las medias anuales
+g2 <- tabla_medidas |> 
+  # Convertimos el factor Año a caracter y luego a número de forma segura
+  mutate(Año = as.numeric(as.character(Año))) |> 
+  
+  # Pasamos a formato largo
+  tidyr::pivot_longer(
+    cols = c(Variancia_Arg, Variancia_Usa), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  
+  tidyr::drop_na(Año) |> 
+  
+  # Graficamos usando el Año numérico en el eje X
+  ggplot(aes(x = Año, y = valor, color = Índice, group = Índice)) +
+  geom_line() +
+  geom_point(size = 1.5) + 
+  
+  # Capas de personalización
+  # CAMBIO: Usamos escala continua porque X ahora son años enteros (2015, 2016...)
+  scale_x_continuous(breaks = seq(min(as.numeric(as.character(tabla_medidas$Año))), 
+                                  max(as.numeric(as.character(tabla_medidas$Año))), 
+                                  by = 1)) +
+  
+  scale_y_continuous(breaks = scales::breaks_width(100)) +
+  scale_color_manual(values = c(
+    "Variancia_Arg" = "#6D9DC5",          
+    "Variancia_Usa" = "#BF211E" 
+  ), labels = c("Variancia Ag Barometer Arg", "Variancia Ag Barometer  Usa")) + # Etiquetas más limpias para la leyenda
+  labs(x = "Año", 
+       y = "Variancia del Ag Barometer",
+       title = "Variancia del Ag Barometer") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom")
+```
+
+
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+
+# muestro los graficos uno al lado del otro
+
+library(patchwork)
+
+g1 | g2
+
+```
+
+
+
+
+# Correlaciones
+
+```{r}
+#| fig-width: 9
+#| fig-height: 7
+d |> 
+  filter(
+    fecha >= yearmonth("2018-11"),
+    fecha <= yearmonth("2026-01"),
+    (month(fecha) %% 2) != 0
+  ) |> 
+  GGally::ggpairs(columns = 2:8)
+```
+

@@ -89,3 +89,63 @@ d |>
 ```
 
 
+### CCf
+
+$x=$ Ag Barometer
+
+$y=$ Condiciones presentes
+
+
+```{r}
+d |> 
+  feasts::CCF(`Ag Barometer`, `Condiciones presentes`, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    title = "AgB y Condiciones Presentes",
+    x = "Rezago (Bimestre)",
+    y = "CCF"
+  ) +
+  theme_bw()
+```
+
+
+$x=$ Ag Barometer
+
+$y=$ Expectativas futuras
+
+
+```{r}
+d |> 
+  feasts::CCF(`Ag Barometer`, `Expectativas futuras`, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    title = "AgB y Condiciones Presentes",
+    x = "Rezago (Bimestre)",
+    y = "CCF"
+  ) +
+  theme_bw()
+```
+
+
+$x=$ Condiciones
+
+$y=$ Expectativas
+
+
+```{r}
+d |> 
+  feasts::CCF(`Condiciones presentes`, `Expectativas futuras`, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    title = "AgB y Condiciones Presentes",
+    x = "Rezago (Bimestre)",
+    y = "CCF"
+  ) +
+  theme_bw()
+```
