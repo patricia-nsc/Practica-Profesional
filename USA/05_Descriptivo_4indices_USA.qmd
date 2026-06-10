@@ -1,0 +1,172 @@
+---
+title: "USA - Los 4 índices"
+author: "Patricia Analía Nesci"
+format:
+  html:
+    toc: true           # activa el TOC
+    toc-depth: 3        # niveles que se muestran
+    toc-location: right  # lo pone flotando a la izquierda
+    number-sections: true  # opcional, numera secciones
+    self-contained: true
+editor: source
+lang: es
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Librarias 
+# ------------------------------------------------------------- #
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+library(imputeTS)
+#library(ggpubr)
+```
+
+
+```{r}
+# ------------------------------------------------------------- #
+# Carga de datos imputados
+# ------------------------------------------------------------- # 
+
+d <- readxl::read_excel("agbarometerUSA_marzo2026.xlsx") |> 
+  rename(mes = 1, 
+         anio = 2,
+         `Ag Barometer` = 3,
+         `Condiciones presentes` = 4,
+         `Expectativas futuras` = 5,
+         `Inversion de capital agricola` = 6) |> 
+  mutate(
+    fecha = yearmonth(sprintf("%d-%02d", anio, match(mes, month.name)))) |> 
+  relocate(fecha) |> 
+  as_tsibble(index = fecha) 
+
+# !! sacaar mes y anio en todos los .qmd de esta carpeta!!!
+
+```
+
+
+# Graficos de las series
+
+```{r}
+d |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`, `Inversion de capital agricola`), 
+               names_to = "Índice", 
+               values_to = "valor") |> 
+  ggplot(aes(x = fecha, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer" = "black",          
+    "Condiciones presentes" = "#86A397", 
+    "Expectativas futuras" = "#FF88DC" ,
+    "Inversion de capital agricola" = "#E1B07E"
+  )) +
+  labs(x = "Tiempo",
+       y = "Índice") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") + 
+  guides(color = guide_legend(nrow = 2))
+  
+```
+
+
+
+
+# Correlaciones entre los indices
+
+```{r}
+d |> 
+  GGally::ggpairs(columns = 4:7)
+```
+
+
+# CCF: Crossed Correlation Function
+
+$$\rho_k = corr(x_t, y_{t+k}) \quad k \in \mathbb{Z}$$
+
+## AgB y Condiciones presentes
+
+
+```{r}
+d |> 
+  feasts::CCF(`Ag Barometer`, `Condiciones presentes`, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    x = "Rezago",
+    y = "CCF",
+    caption = "x = Ag Barometer \n y = Condiciones presentes"
+  ) +
+  theme_bw()
+```
+*Opción 1:*
+
+El Ag Barometer está relacionado con las condiciones presentes de meses posteriores. Es decir que el Ag Barometer anticipa las condiciones presentes. (El decaimiento es más lento hacia la derecha)
+
+*Opción 2:*
+
+El Ag Barometer está relacionado con valores de las condiciones presentes de meses anteriores y posteriores.
+
+## AgB y Expectativas futuras
+
+
+
+```{r}
+d |> 
+  feasts::CCF(`Ag Barometer`, `Expectativas futuras`, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    x = "Rezago",
+    y = "CCF",
+    caption = "x = Ag Barometer \n y = Expectativas futuras"
+  ) +
+  theme_bw()
+```
+*Opción 1:*
+
+El Ag Barometer está relacionado con las expectativas futuras de meses anteriores, quiere decir que las expectativas futuras anticipan el Ag Barometer. (El decaimiento es mas lento hacia la izquierda)
+
+*Opción 2:*
+
+El Ag Barometer está relacionado con valores de las expectativas futuras de meses anteriores y posteriores.
+
+## Expectativas futuras y Condiciones presentes
+
+```{r}
+d |> 
+  feasts::CCF(`Expectativas futuras`, `Condiciones presentes`, lag_max = 20) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-20, 20, by = 2)) +
+  labs(
+    x = "Rezago",
+    y = "CCF",
+    caption = "x = Expectativas futuras \n y = Condiciones presentes"
+  ) +
+  theme_bw()
+```
+
+
+Las expectativas futuras están relacionadas con las condiciones presentes de meses posteriores. Es decir que las expectativas futuras anticipan las condiciones presentes.

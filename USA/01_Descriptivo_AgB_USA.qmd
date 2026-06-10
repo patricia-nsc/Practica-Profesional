@@ -1,6 +1,5 @@
 ---
-title: "USA"
-subtitle: "Serie del índice Ag Barometer USA"
+title: "USA - AgB"
 author: "Patricia Analía Nesci"
 format:
   html:
@@ -60,9 +59,9 @@ d <- readxl::read_excel("agbarometerUSA_marzo2026.xlsx") |>
 ```
 
 
-# Descriptivo
 
-## Ag Barometer
+
+# Ag Barometer
 
 ```{r}
 d |> 
@@ -78,59 +77,6 @@ d |>
   theme_bw()
 ```
 
-
-## Los 4 índices
-
-### Graficos de las series
-
-```{r}
-d |> 
-  tidyr::pivot_longer(
-    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`, `Inversion de capital agricola`), 
-               names_to = "Índice", 
-               values_to = "valor") |> 
-  ggplot(aes(x = fecha, y = valor, color = Índice)) +
-  geom_line() +
-  geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  scale_color_manual(values = c(
-    "Ag Barometer" = "black",          
-    "Condiciones presentes" = "#86A397", 
-    "Expectativas futuras" = "#FF88DC" ,
-    "Inversion de capital agricola" = "#E1B07E"
-  )) +
-  labs(x = "Tiempo",
-       y = "Índice") +
-  theme_bw() +
-  theme(legend.title = element_blank(),
-        legend.position = "bottom") + 
-  guides(color = guide_legend(nrow = 2))
-  
-```
-
-
-```{r}
-# hay observaciones q superan el 200!!
-d |> 
-  slice(60:70) |> 
-  select(fecha,
-         `Ag Barometer`,
-         `Condiciones presentes`,
-         `Expectativas futuras`,
-         `Inversion de capital agricola`) |>  # <--- Aquí elegís cuáles querés
-  kable() |> 
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
-```
-
-
-### Correlaciones entre los indices
-
-```{r}
-d |> 
-  GGally::ggpairs(columns = 4:7)
-```
 
 
 
@@ -214,9 +160,11 @@ d |>
   ggplot(aes(x = media, y = desvio, label = anio)) +
   geom_point(color = "#9984E1", size = 3) +
   geom_text(vjust = -0.8, size = 3) + 
-  ggpubr::stat_cor(method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
+  ggpubr::stat_cor(aes(label = paste("r", after_stat(r), sep = " ~ '=' ~ ")), method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
   expand_limits(x = 150, y = 32) +
-  labs(x = "Ag Barometer promedio", y = "Desvío") +
+  labs(x = "Ag Barometer promedio",
+       y = "Desvío",
+       caption = "r: Coeficiente estimado de correlación de Pearson") +
   theme_bw()
 ```
 
@@ -276,7 +224,7 @@ d |>
   theme_bw()
 ```
 
-## ACF
+## ACF dif1
 
 ```{r}
 d |> 
@@ -305,7 +253,7 @@ d |>
 ```
 
 
-## PACF 
+## PACF dif1
 
 ```{r}
 d |> 

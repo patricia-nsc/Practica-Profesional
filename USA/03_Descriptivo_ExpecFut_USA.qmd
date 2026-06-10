@@ -1,6 +1,5 @@
 ---
 title: "USA - Expec Fut."
-subtitle: "Serie del índice Ag Barometer USA"
 author: "Patricia Analía Nesci"
 format:
   html:
@@ -160,9 +159,11 @@ d |>
   ggplot(aes(x = media, y = desvio, label = anio)) +
   geom_point(color = "#9984E1", size = 3) +
   geom_text(vjust = -0.8, size = 3) + 
-  ggpubr::stat_cor(method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
+  ggpubr::stat_cor(aes(label = paste("r", after_stat(r), sep = " ~ '=' ~ ")), method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
   expand_limits(x = 150, y = 32) +
-  labs(x = "Expectativas futuras promedio", y = "Desvío") +
+  labs(x = "Expectativas futuras promedio", 
+       y = "Desvío",
+       caption = "r: Coeficiente estimado de correlación de Pearson") +
   theme_bw()
 ```
 
@@ -222,7 +223,7 @@ d |>
   theme_bw()
 ```
 
-## ACF
+## ACF dif1
 
 ```{r}
 d |> 
@@ -251,7 +252,7 @@ d |>
 ```
 
 
-## PACF 
+## PACF dif1
 
 ```{r}
 d |> 

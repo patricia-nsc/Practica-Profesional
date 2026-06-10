@@ -1,6 +1,5 @@
 ---
 title: "ARG - Cond Pres."
-subtitle: "Serie del índice Ag Barometer ARG"
 author: "Patricia Analía Nesci"
 format:
   html:
@@ -125,9 +124,10 @@ d |>
   aes(x = media, y = desvio, label = anio) +
   geom_point(color = "#9984E1", size = 3) +
   geom_text(vjust = -0.5, size = 3) +   # ajusta posición vertical
-  ggpubr::stat_cor(method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
+  ggpubr::stat_cor(aes(label = paste("r", after_stat(r), sep = " ~ '=' ~ ")), method = "pearson", label.x.npc = "left", label.y.npc = "top") + # npc lo ubica proporcionalmente
   labs(x = "Ag Barometer promedio",
-       y = "Desvío del Ag Barometer") +
+       y = "Desvío del Ag Barometer",
+       caption = "r: Coeficiente estimado de correlación de Pearson") +
   theme_bw()
 
 ```
