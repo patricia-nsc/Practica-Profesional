@@ -82,9 +82,9 @@ d_usa <- readxl::read_excel("agbarometerUSA_marzo2026.xlsx") |>
 d_usa <- d_usa |> 
   select(-anio, -mes) |> 
   mutate(
-    `Ag Barometer Usa` = `Ag Barometer`,
-    `Cond pres. Usa` = `Condiciones presentes`,
-    `Expec fut. Usa` = `Expectativas futuras`,
+    `Ag Barometer EEUU` = `Ag Barometer`,
+    `Cond pres. EEUU` = `Condiciones presentes`,
+    `Expec fut. EEUU` = `Expectativas futuras`,
     .keep = "unused"
   )
   
@@ -112,7 +112,7 @@ d |>
   
   # 2. Pasamos a formato largo
   tidyr::pivot_longer(
-    cols = c(`Ag Barometer Arg`, `Ag Barometer Usa`), 
+    cols = c(`Ag Barometer Arg`, `Ag Barometer EEUU`), 
     names_to = "Índice", 
     values_to = "valor"
   ) |> 
@@ -131,7 +131,7 @@ d |>
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   scale_color_manual(values = c(
     "Ag Barometer Arg" = "#6D9DC5",          
-    "Ag Barometer Usa" = "#BF211E" 
+    "Ag Barometer EEUU" = "#BF211E" 
   )) +
   labs(x = "Tiempo", 
        y = "Ag Barometer") +
@@ -157,10 +157,10 @@ d |>
   geom_point() +
   geom_smooth(method = "lm", color = "red",se = F, linewidth = 0.8) + 
   ggpubr::stat_cor(method = "pearson", aes(label = paste("r", ..r.., sep = " ~ '=' ~ ")), label.x.npc = "left", label.y.npc = "top") +
-  aes(x = `Ag Barometer Arg`, y = `Ag Barometer Usa`) +
+  aes(x = `Ag Barometer Arg`, y = `Ag Barometer EEUU`) +
   labs(
     x = 'Ag Barometer Arg',
-    y = 'Ag Barometer Usa',
+    y = 'Ag Barometer EEUU',
        caption = "r: Coeficiente estimado de correlación de Pearson"
   ) +
   theme_bw()
@@ -182,7 +182,7 @@ d_bimensuales <- d |>
   )|> 
   rename(
     agb_arg = `Ag Barometer Arg`,
-    agb_usa = `Ag Barometer Usa`
+    agb_usa = `Ag Barometer EEUU`
   ) |> 
   as_tsibble(index = fecha)
 
@@ -221,7 +221,7 @@ d_bimensuales <- d |>
   )|> 
   rename(
     agb_arg = `Ag Barometer Arg`,
-    agb_usa = `Ag Barometer Usa`
+    agb_usa = `Ag Barometer EEUU`
   )
 ```
 
@@ -272,11 +272,11 @@ tabla_medidas <- d |>
   group_by(Año) |> 
   dplyr::summarise(
     N_Arg = sum(!is.na(`Ag Barometer Arg`)),
-    N_Usa = sum(!is.na(`Ag Barometer Usa`)),
+    N_Usa = sum(!is.na(`Ag Barometer EEUU`)),
     Media_Arg = mean(`Ag Barometer Arg`, na.rm = T),
-    Media_Usa = mean(`Ag Barometer Usa`),
+    Media_Usa = mean(`Ag Barometer EEUU`),
     Variancia_Arg = var(`Ag Barometer Arg`, na.rm = T),
-    Variancia_Usa = var(`Ag Barometer Usa`)
+    Variancia_Usa = var(`Ag Barometer EEUU`)
   )
 
 tabla_medidas |> 
