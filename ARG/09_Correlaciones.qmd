@@ -61,7 +61,7 @@ dy <- readxl::read_excel("agbarometer_ARG_imputado.xlsx") |>
 dx <- readxl::read_excel("Covariables.xlsx", sheet = "Monthly Prices") |> 
   mutate(fecha = yearmonth(lubridate::ym(fecha1)), .keep ="unused") |> 
   relocate(fecha) |> 
-  select(-fecha2) |> 
+  select(-fecha2, -`ICC Michigan`) |> 
   filter(fecha >= yearmonth("2018-10"),
          fecha <= yearmonth("2026-01")) |>    #, month(fecha) %% 2 == 0) |> 
   as_tsibble(index = fecha)
@@ -74,7 +74,7 @@ dx <- readxl::read_excel("Covariables.xlsx", sheet = "Monthly Prices") |>
 # --------------------------------------------------------------------- 
 
 # El d resultante va a tener 20 cols
-# x : d[ , 3:20]
+# x : d[ , 3:ncol]
 # y : col 2 de d
 
 
@@ -84,21 +84,21 @@ d <- dy |>
   full_join(dx |> as_tibble(), by = "fecha") |> 
   arrange(fecha) |> 
   as_tsibble(index = fecha) |> 
-  mutate(across(2:20, as.numeric))
+  mutate(across(2:ncol(dx), as.numeric))
 ```
 
 ## AgB(t) vs covariables(t)
 
 
 ```{r}
-# x : d[ , 3:20]
+# x : d[ , 3:ncol(d)]
 # y : col 2 de d
 
 # saco los filas con NA de AgB
 d_sin_NA <- d |> filter(!is.na(`Ag Barometer`))|> 
-  mutate(across(2:20, as.numeric))
+  mutate(across(2:ncol(d), as.numeric))
 
-cors <- cor(d_sin_NA[, 3:20], 
+cors <- cor(d_sin_NA[, 3:ncol(d_sin_NA)], 
             d_sin_NA[["Ag Barometer"]], 
             use = "pairwise.complete.obs",
             method = "pearson")
@@ -148,7 +148,7 @@ ggplot(df_cor, aes(x = r, y = variable, fill = r > 0)) +
 ## Scatter AgB(t) vs covariables(t)
 
 d |>
-  select(fecha, `Ag Barometer`, 3:20) |>
+  select(fecha, `Ag Barometer`, 3:ncol(d)) |>
   pivot_longer(cols = -c(fecha, `Ag Barometer`),
                names_to = "variable", values_to = "valor") |>
   left_join(df_cor |> select(variable, r, p_label), 
@@ -172,12 +172,12 @@ d |>
 ```{r}
 # 1. muevo las x una fila abajo --> agbarometer marzo vs x febrero
 d_lag <- d |>
-  mutate(across(3:20, \(x) lag(x, 1)))  # todas las X pasan a ser X(t-1)
+  mutate(across(3:ncol(d), \(x) lag(x, 1)))  # todas las X pasan a ser X(t-1)
 
 # 2. saco las filas con NA
 d_sin_NA <- d_lag |> filter(!is.na(`Ag Barometer`))
 
-cors <- cor(d_sin_NA[, 3:20], 
+cors <- cor(d_sin_NA[, 3:ncol(d_sin_NA)], 
             d_sin_NA[["Ag Barometer"]], 
             use = "pairwise.complete.obs",
             method = "pearson")
@@ -226,7 +226,7 @@ ggplot(df_cor, aes(x = r, y = variable, fill = r > 0)) +
 ## Scatter AgB(t) vs covariables(t-1)
 
 d |>
-  select(fecha, `Ag Barometer`, 3:20) |>
+  select(fecha, `Ag Barometer`, 3:ncol(d)) |>
   pivot_longer(cols = -c(fecha, `Ag Barometer`),
                names_to = "variable", values_to = "valor") |>
   left_join(df_cor |> select(variable, r, p_label), 

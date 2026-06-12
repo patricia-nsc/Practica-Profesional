@@ -46,11 +46,17 @@ library(imputeTS)
 # convierto Bimestre en formato Date
 # convierto los datos en un data temporal donde bimestre es el indice temporal y el resto de las cols son series
 
+# el data q tiene abril 2020 pero no tiene los NA
 d <- readxl::read_excel("agbarometerARG_enero2026.xlsx") |>
   mutate(Bimestre = yearmonth(Bimestre)) |> 
   as_tsibble(index = Bimestre,
              regular = FALSE) 
-  
+
+# el data con los NA
+d_conNA <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre,
+             regular = F) 
 
 ```
 
@@ -59,49 +65,11 @@ d <- readxl::read_excel("agbarometerARG_enero2026.xlsx") |>
 # Caracteristicas de los indices (sin imputar)
 
 
-## Los 3 índices juntos 
-
-### Graficos de las series
-
-```{r}
-d |> 
-  tidyr::pivot_longer(
-    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`), 
-               names_to = "Índice", 
-               values_to = "valor") |> 
-  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
-  geom_line() +
-  geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  scale_color_manual(values = c(
-    "Ag Barometer" = "black",          
-    "Condiciones presentes" = "#417B5A", 
-    "Expectativas futuras" = "#FF88DC"  
-  )) +
-  labs(x = "Tiempo",
-       y = "Índice") +
-  theme_bw() +
-  theme(legend.title = element_blank(),
-        legend.position = "bottom") 
-  
-```
-
-
-
-
-### Correlaciones entre los indices
-
-```{r}
-d |> 
-  GGally::ggpairs(columns = 2:4)
-```
 
 ## Ag Barometer
 
 ```{r}
-d |> 
+d_conNA |> 
   autoplot(`Ag Barometer`) +
   labs(x = "Tiempo") +
   scale_x_yearmonth(
@@ -163,8 +131,8 @@ d |>
 ## Condiciones Presentes
 
 ```{r}
-d |> 
-  autoplot(`Condiciones presentes`) +
+d_conNA |> 
+  autoplot(`Condiciones presentes`, color = "#417B5A") +
   labs(x = "Tiempo") +
   scale_x_yearmonth(
     date_breaks = "1 year",
@@ -172,7 +140,7 @@ d |>
   ) +
   geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
-  geom_point(size = 1) +
+  geom_point(size = 1, color = "#417B5A") +
   theme_bw()
 ```
 
@@ -221,11 +189,12 @@ d |>
        x = 'Retardo') +
   theme_bw()
 ```
+
 ## Expectativas Futuras
 
 ```{r}
-d |> 
-  autoplot(`Expectativas futuras`) +
+d_conNA |> 
+  autoplot(`Expectativas futuras`, color = "#FF88DC") +
   labs(x = "Tiempo") +
   scale_x_yearmonth(
     date_breaks = "1 year",
@@ -233,7 +202,7 @@ d |>
   ) +
   geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
-  geom_point(size = 1) +
+  geom_point(size = 1, color = "#FF88DC") +
   theme_bw()
 ```
 
@@ -288,64 +257,58 @@ d |>
 
 
 
-
-
-
-# Imputacion: Busqueda del mejor metodo
-
-## Ag Barometer
-
-```{r}
-#| warning: false
-
-invisible(capture.output(source('02_imputacion_agbarometer_ARG.R')))
-
-resultados_promedio |>
-  arrange(MAPE) |>
-  kable(digits = 3) |>
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-```
-
-
-
-## Condiciones presentes
-
-```{r}
-#| warning: false
-
-invisible(capture.output(source('03_imputacion_condpresentes_ARG.R')))
-
-resultados_promedio |>
-  arrange(MAPE) |>
-  kable(digits = 3) |>
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-```
-
-
-## Expectativas futuras
-
-```{r}
-#| warning: false
-
-invisible(capture.output(source('04_imputacion_expecfuturas_ARG.R')))
-
-resultados_promedio |>
-  arrange(MAPE) |>
-  kable(digits = 3) |>
-  kable_styling(bootstrap_options = "striped", full_width = FALSE)
-
-```
-
-
 # Imputacion de las series
 
--   Imputamos las dos fechas: marzo 2020 y mayo 2020 para los 3 indices.
 
--   Las observaciones de octubre 2018 y abril 2020 fueron consideradas a la hora de imputar pero no se las tendra en cuenta en el resto del trabajo para lograr que las series tengan periodicidad regular (bimensual).
+Los valores de las series en las fechas marzo 2020 y mayo 2020 son faltantes y deben ser imputados para lograr series de periodicidad regular.
 
--   Se obtienen 44 datos para las 3 series.
+
+
+```{r}
+# ---------------------------------------------------------------- #
+# grafico de las SERIES ORIGINALES (q se vean los huecos)
+# ---------------------------------------------------------------- #
+
+d_conNA <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre,
+             regular = F)
+
+
+graf_serie_conNA <- d_conNA |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`), 
+               names_to = "Índice", 
+               values_to = "valor") |> 
+  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer" = "black",          
+    "Condiciones presentes" = "#417B5A", 
+    "Expectativas futuras" = "#FF88DC"  
+  )) +
+  labs(x = "Tiempo",
+       y = "Índice") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") 
+
+graf_serie_conNA
+
+```
+
+
+
+
+
+Según las conclusiones de la tesina de Lucía Tamplin y dadas las características de estas tres series analizadas (las tres son paseos aleatorios, visto en la sección 1), el método que más conviene para imputar las dos fechas es *interpolación lineal*.
+
+Las observaciones de octubre 2018 y abril 2020 fueron consideradas a la hora de imputar pero no se las tendrá en cuenta en el resto del trabajo para lograr que las tres series tengan periodicidad regular (bimensual).
+
 
 ```{r}
 # IMPUTO LAS 3 SERIES
@@ -355,7 +318,7 @@ resultados_promedio |>
   # 4. ahora el data tiene 3 series de periodicidad regular (bimensual)
 
   # 1
-d <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
+d_conNA <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
   mutate(Bimestre = yearmonth(Bimestre)) |> 
   as_tsibble(index = Bimestre,
              regular = F) |> 
@@ -377,10 +340,75 @@ d <- readxl::read_excel("agbarometerARG_enero2026_conNA.xlsx") |>
 
 # ME GUARDO EL DATA IMPUTADO (Ctrl + Shift + c para sacar #'s)
 
-# d |> 
+# d_conNA |> 
 #   as_tibble() |>               # 1. Lo volvemos a formato tabla simple
 #   mutate(Bimestre = as.Date(Bimestre)) |> # 2. yearmonth a Date
 #   writexl::write_xlsx("agbarometer_ARG_imputado.xlsx") # 3. Guardamos
+```
+
+```{r}
+# ---------------------------------------------------------------- #
+# grafico de las SERIES IMPUTADAS marzo y mayo 2020 pintados
+# ---------------------------------------------------------------- #
+
+
+# 1. cargo el data immputado
+d <- readxl::read_excel("agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre)
+
+# 2. retoco el graf q ya tenia pintando las dos fechas imputadas
+fechas_imputadas <- yearmonth(c("2020 Mar", "2020 May"))
+
+graf_serie_imputada <- d |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer`, `Condiciones presentes`, `Expectativas futuras`), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  # capa extra: puntos azules sobre las fechas imputadas
+  geom_point(
+    data = ~ filter(.x, Bimestre %in% fechas_imputadas),
+    color = "blue", size = 1.2
+  ) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer"          = "black",
+    "Condiciones presentes" = "#417B5A",
+    "Expectativas futuras"  = "#FF88DC"
+  )) +
+  labs(x = "Tiempo", y = "Índice") +
+  theme_bw() +
+  theme(legend.title    = element_blank(),
+        legend.position = "bottom")
+
+graf_serie_imputada
+```
+
+
+
+
+Se obtienen 44 datos para las 3 series.
+
+En resumen,
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+
+
+# ---------------------------------------------------------------- #
+# muestro las series ORIGINALES vs IMPUTADAS
+# ---------------------------------------------------------------- #
+
+library(patchwork)
+
+graf_serie_conNA / graf_serie_imputada
 ```
 
 
