@@ -1,0 +1,93 @@
+\documentclass[12pt]{article}
+
+%paquete para poder cambiar interlineado
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.1} %cambio interlineado
+\setlength{\parskip}{0.8em} % para q haya espacio entre parrafos
+
+\usepackage{graphicx}                  % Para tener 'includegraphics'
+%\usepackage[bidi=default]{babel}      % Porque usamos español
+\usepackage{float}                     % Para que las figuras aparezcan en el lugar donde las ponemos 
+% \usepackage{hyperref}                  % Para que funcionen los enlaces?
+  \usepackage{enumitem}                  % Poner los numeros de los enumarate en negrita
+\usepackage[normalem]{ulem}            % Para que funcione el tachado de texto en titulos con hyperref
+\usepackage{soul}                      % Para el tachado de texto con \st{texto}
+\usepackage{bm}                        % El comando \bm
+
+% Enlaces, figuras y tablas subrayas y de color azul
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % para subrayado
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
+\renewcommand{\UrlFont}{\color{blue}\underline} % subraya links externos
+\makeatletter % Subraya también referencias internas (figuras, secciones, etc.)
+\AtBeginDocument{%
+  \hypersetup{
+    linkbordercolor = {0 0 1}, % borde azul si querés usar boxes
+    linkcolor = blue,
+  }%
+  \let\oldhyper@link\hyper@link
+  \def\hyper@link#1#2#3{%
+  \oldhyper@link{#1}{#2}{\textcolor{blue}{\underline{#3}}}%
+  }%
+}
+\makeatother
+
+%sangria
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@afterheading}{\@nobreaktrue}{}{}{}
+\makeatother
+
+% simbolos matematicos
+\usepackage{amsmath, amssymb, amsthm, mathrsfs, amsfonts, amsbsy}
+
+% Modifica el margen de la página. Mas granularmente seria [left=1in,right=1in,top=1in,bottom=1in] 
+\usepackage[margin=2cm]{geometry}     
+
+% encabezado
+\usepackage{lastpage}
+\usepackage{refcount} % Para obtener el valor de la pag sin q la pinte de azul
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{UNR - FCEyE}
+% \rhead{\nouppercase{\leftmark}} % nombre de la seccion actual en minuscula, ya lo puse en chunks en el .qmd
+\cfoot{Pág. \thepage\ - \getpagerefnumber{LastPage}}
+\renewcommand{\footrulewidth}{0.08pt} %para que me haga la linea del footer
+%\lfoot{}
+%\rfoot{}
+
+% para q enumere figuras segun seccion
+%\counterwithin{figure}{section}
+
+
+% colores portada
+\usepackage{xcolor}
+\usepackage{tikz}  %poner el coso de color
+\definecolor{celestepastel}{RGB}{221, 245, 255}
+\definecolor{rosabebe}{RGB}{255, 182, 193}
+\definecolor{lila}{RGB}{208, 171, 198}
+
+
+$title.tex()$                          % Carga el partial con el titulo y sus configuraciones
+$pandoc.tex()$                         % Cargar el partial llamado 'pandoc' (por defecto de Quarto)
+
+\floatplacement{figure}{H}             % Para que las figuras aparezcan en el lugar donde las ponemos 
+% \setcounter{secnumdepth}{-\maxdimen}   % Para que las secciones no vayan numeradas. SECCIONES NUMERDAS porq comente la linea q desactiva la enumeracion
+\setcounter{secnumdepth}{3}            % Para q enumere las sections(#) subsections(##) y subsubsections(###)
+  \setlist[enumerate]{font=\bfseries}    % Poner los numeros de los enumarate en negrita
+  \pdfstringdefDisableCommands{          % Para que funcione el tachado de texto en titulos con hyperref
+    \renewcommand{\sout}{}
+  }
+  
+  % graficos enumerados segun seccion en la q estoy
+  \usepackage{chngcntr}
+  \counterwithin{figure}{section}
+  
+  
+\begin{document}
+
+  $body$
+  
+
+\end{document}

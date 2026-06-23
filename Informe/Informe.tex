@@ -1,0 +1,390 @@
+\documentclass[12pt]{article}
+
+%paquete para poder cambiar interlineado
+\usepackage{setspace}
+\renewcommand{\baselinestretch}{1.1} %cambio interlineado
+\setlength{\parskip}{0.8em} % para q haya espacio entre parrafos
+
+\usepackage{graphicx}                  % Para tener 'includegraphics'
+%\usepackage[bidi=default]{babel}      % Porque usamos español
+\usepackage{float}                     % Para que las figuras aparezcan en el lugar donde las ponemos 
+% \usepackage{hyperref}                  % Para que funcionen los enlaces?
+  \usepackage{enumitem}                  % Poner los numeros de los enumarate en negrita
+\usepackage[normalem]{ulem}            % Para que funcione el tachado de texto en titulos con hyperref
+\usepackage{soul}                      % Para el tachado de texto con \st{texto}
+\usepackage{bm}                        % El comando \bm
+
+% Enlaces, figuras y tablas subrayas y de color azul
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} % para subrayado
+\usepackage[colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue]{hyperref}
+\renewcommand{\UrlFont}{\color{blue}\underline} % subraya links externos
+\makeatletter % Subraya también referencias internas (figuras, secciones, etc.)
+\AtBeginDocument{%
+  \hypersetup{
+    linkbordercolor = {0 0 1}, % borde azul si querés usar boxes
+    linkcolor = blue,
+  }%
+  \let\oldhyper@link\hyper@link
+  \def\hyper@link#1#2#3{%
+  \oldhyper@link{#1}{#2}{\textcolor{blue}{\underline{#3}}}%
+  }%
+}
+\makeatother
+
+%sangria
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@afterheading}{\@nobreaktrue}{}{}{}
+\makeatother
+
+% simbolos matematicos
+\usepackage{amsmath, amssymb, amsthm, mathrsfs, amsfonts, amsbsy}
+
+% Modifica el margen de la página. Mas granularmente seria [left=1in,right=1in,top=1in,bottom=1in] 
+\usepackage[margin=2cm]{geometry}     
+
+% encabezado
+\usepackage{lastpage}
+\usepackage{refcount} % Para obtener el valor de la pag sin q la pinte de azul
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{UNR - FCEyE}
+% \rhead{\nouppercase{\leftmark}} % nombre de la seccion actual en minuscula, ya lo puse en chunks en el .qmd
+\cfoot{Pág. \thepage\ - \getpagerefnumber{LastPage}}
+\renewcommand{\footrulewidth}{0.08pt} %para que me haga la linea del footer
+%\lfoot{}
+%\rfoot{}
+
+% para q enumere figuras segun seccion
+%\counterwithin{figure}{section}
+
+
+% colores portada
+\usepackage{xcolor}
+\usepackage{tikz}  %poner el coso de color
+\definecolor{celestepastel}{RGB}{221, 245, 255}
+\definecolor{rosabebe}{RGB}{255, 182, 193}
+\definecolor{lila}{RGB}{208, 171, 198}
+
+
+\author{}
+\date{}
+                          % Carga el partial con el titulo y sus configuraciones
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Tabla de contenidos}
+\else
+  \newcommand\contentsname{Tabla de contenidos}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{Listado de Figuras}
+\else
+  \newcommand\listfigurename{Listado de Figuras}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{Listado de Tablas}
+\else
+  \newcommand\listtablename{Listado de Tablas}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figura}
+\else
+  \newcommand\figurename{Figura}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Tabla}
+\else
+  \newcommand\tablename{Tabla}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listado}
+\newcommand*\listoflistings{\listof{codelisting}{Listado de Listados}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+                         % Cargar el partial llamado 'pandoc' (por defecto de Quarto)
+
+\floatplacement{figure}{H}             % Para que las figuras aparezcan en el lugar donde las ponemos 
+% \setcounter{secnumdepth}{-\maxdimen}   % Para que las secciones no vayan numeradas. SECCIONES NUMERDAS porq comente la linea q desactiva la enumeracion
+\setcounter{secnumdepth}{3}            % Para q enumere las sections(#) subsections(##) y subsubsections(###)
+  \setlist[enumerate]{font=\bfseries}    % Poner los numeros de los enumarate en negrita
+  \pdfstringdefDisableCommands{          % Para que funcione el tachado de texto en titulos con hyperref
+    \renewcommand{\sout}{}
+  }
+  
+  % graficos enumerados segun seccion en la q estoy
+  \usepackage{chngcntr}
+  \counterwithin{figure}{section}
+  
+  
+\begin{document}
+
+  \pagestyle{fancy}
+  \rhead{}
+
+  \tableofcontents
+
+  \newpage
+  \rhead{\nouppercase{\leftmark}}
+
+  \section{Introducción}\label{introducciuxf3n}
+
+  Este informe es un resumen de lo realizado en la Práctica
+  Profesional\ldots{}
+
+  El Centro de Agronegocios y Alimentos de la Sede Rosario de la
+  Universidad Austral es una entidad especializada y de alto nivel
+  académico cuya misión es impulsar, desde la región, el fortalecimiento
+  de las cadenas de valor agroalimentarias e instituciones relacionadas,
+  como un motor de desarrollo humano, económico y social de largo plazo
+  para la Argentina, a través de la formación y de la investigación
+  aplicada. La iniciativa promueve, desde un ámbito universitario, la
+  capacidad de los sectores agroindustriales de crear y liderar las
+  oportunidades y tendencias relacionadas con los agronegocios y
+  alimentos, desde nuestro país, para la región y el mundo.
+
+  En este centro se elabora, desde octubre de 2018, un índice llamado
+  ``Ag Barometer''. El mismo proporciona bimensualmente medidas
+  nacionales sobre las percepciones del sector agropecuario en la
+  Argentina que muestran la evolución de su confianza a lo largo del
+  tiempo. También se construye este índice en la Universidad de Purdue
+  de Estados Unidos proporcionando un valor por mes desde 2015. Ambas
+  universidades, con la misma metodología y de forma paralela, también
+  construyen los índices ``Condiciones presentes'' y ``Expectativas
+  futuras''.
+
+  El Ag Barometer se construye a partir de una encuesta que se hace en
+  cada edición a productores agropecuarios argentinos cuyo valor bruto
+  de producción supera los USD 200.000 anuales. La muestra, de 406
+  productores, se estratifica por escala productiva y garantiza
+  representación mínima de las principales actividades del sector: soja,
+  maíz, ganadería bovina, trigo, tambo y girasol.
+
+  Se calcula a partir de cinco preguntas fijas, cada una de las cuales
+  se puntúa según la diferencia entre respuestas favorables y
+  desfavorables, escalada en un rango de 0 a 200, donde 100 representa
+  el punto neutro. El valor final del índice corresponde al promedio
+  simple de las cinco puntuaciones individuales, de modo que valores
+  superiores a 100 reflejan percepciones positivas netas y valores
+  inferiores a 100, percepciones negativas netas. Con la misma
+  metodología y solo considerando algunas de las cinco preguntas, se
+  calculan los índices Condiciones presentes y Expectativas futuras.
+
+  El objetivo general de este trabajo es comparar con qué variables está
+  relacionado el Ag Barometer de Argentina vs.~el de Estados Unidos.
+
+  \newpage
+
+  \section{Objetivos}\label{objetivos}
+
+  \subsection{Objetivo general}\label{objetivo-general}
+
+  El objetivo principal de esta Práctica Profesional es estudiar con qué
+  variables está relacionado el Ag Barometer tanto en Argentina como en
+  Estados Unidos y comparar qué ocurre en cada país.
+
+  \subsection{Tareas específicas de la Práctica
+  Profesional}\label{tareas-especuxedficas-de-la-pruxe1ctica-profesional}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Realizar un análisis descriptivo de los índices con el fin de
+    conocer sus características.
+  \item
+    Imputación de valores donde es necesario.
+  \item
+    Buscar otras series que podrían estar correlacionadas con el Ag
+    Barometer tanto en Argentina como en Estados Unidos.
+  \item
+  \end{itemize}
+
+  \vdots
+
+  \newpage
+
+  \section{Materiales}\label{materiales}
+
+  \subsection{Características del
+  relevamiento}\label{caracteruxedsticas-del-relevamiento}
+
+  La definición del universo a relevar tuvo como criterio la importancia
+  de cada actividad en el producto bruto agropecuario. El mínimo de
+  representación para cada actividad es el siguiente:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Soja 45 \%
+  \item
+    Maíz 21\%
+  \item
+    Ganadería de carne 16\%
+  \item
+    Trigo 7 \%
+  \item
+    Tambo 7\%
+  \item
+    Girasol 4 \%
+  \end{itemize}
+
+  Se realizó un muestreo estratificado de productores teniendo en cuenta
+  datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
+  productores en cuanto a su producción:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    50\% de los encuestados con un valor bruto de producción entre USD
+    200.000 y USD 399.000 al año
+  \item
+    30\% de los encuestados con valor bruto de producción entre USD
+    414.000 y USD 999.999 al año
+  \item
+    20\% de los encuestados con un valor bruto de producción mayor o
+    igual a USD 1.000.000 al año.
+  \end{itemize}
+
+  La encuesta a productores toma respuestas de 406 productores cuyo
+  valor bruto de producción es igual o mayor a USD 200.000.
+
+  \subsection{Conjunto de datos}\label{conjunto-de-datos}
+
+  Los tres índices de Estados Unidos brindados por la Universidad de
+  Purdue tienen periodicidad mensual y están completos. Comenzaron a
+  construirlos en octubre de 2015 y la observación más reciente que se
+  dispone es de marzo 2026.
+
+  En cambio, los tres índices de Argentina provistos por el Centro de
+  Agronegocios y Alimentos de la Sede Rosario de la Universidad Austral
+  son medidos en los meses de enero, marzo, mayo, julio, septiembre y
+  noviembre (impares); en 2020 en vez de haber observaciones para los
+  meses de marzo y mayo, hay una para abril y se tienen datos desde
+  octubre de 2018 hasta enero de 2026.
+
+  A pesar de los meses en los que los índices locales son medidos, la
+  primera observación de cada uno de ellos es en octubre de 2018 porque
+  en este fecha se ha decidido comenzar el relevamiento y a partir del
+  siguiente mes comenzaron a reportar los valores bimensualmente.
+
+  Teniendo estas características en cuenta, los índices de Argentina
+  tienen periodicidad irregular. Hay observaciones separadas por un mes
+  (octubre de 2018 y noviembre de 2018), observaciones separadas por
+  tres meses (enero 2020 y abril 2020, abril 2020 y julio 2020) y el
+  resto de los datos están separados por dos meses.
+
+  \newpage
+
+  \section{Metodología}\label{metodologuxeda}
+
+  Este trabajo tiene dos aspectos metodológicos.
+
+  \subsection{Cálculo de los
+  índices}\label{cuxe1lculo-de-los-uxedndices}
+
+  \href{https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/}{Cálculo}
+
+  \subsection{Definiciones básicas de una serie de
+  tiempo}\label{definiciones-buxe1sicas-de-una-serie-de-tiempo}
+
+  \vdots
+
+  \newpage
+
+  \section{Análisis descriptivo}\label{anuxe1lisis-descriptivo}
+
+  En primer lugar, se realizó un análisis que permite explorar las
+  características de los índices en los dos países.
+
+  \subsection{Argentina}\label{argentina}
+
+  Estas series tienen periodicidad irregular y valores faltantes. Voy a
+  imputar porque\ldots{}
+
+  Muestro características antes de imputar, dadas esas características y
+  según las conclusiones de la tesina de Lucía Tamplín\ldots, imputo las
+  series con interpolación lineal.
+
+  Descriptivos de cada una de las 3 series imputadas
+
+  CCFs
+
+  \subsection{Estados Unidos}\label{estados-unidos}
+
+  Descriptivo de cada uno de los 3 índices
+
+  CCFs
+
+  \newpage
+
+  \section{Relación del Ag Barometer con otras
+  variables}\label{relaciuxf3n-del-ag-barometer-con-otras-variables}
+
+  \subsection{Variables numéricas}\label{variables-numuxe9ricas}
+
+  Presentación de las variables (commodities, dow jones, fed, ICC\ldots)
+  que cruzamos con el Ag Barometer
+
+  Explicar por qué t vs.~t-1
+
+  Muestro gráficos de correlaciones de Argentina y de EEUU
+
+  \subsection{Variables categóricas}\label{variables-categuxf3ricas}
+
+  Como no se observa relación entre el Ag Barometer y todas las
+  variables propuestas, se sospecha que sí está relacionado con hitos
+  políticos o bélicos.
+
+  Para analizar esto se propone construir variables indicadoras que
+  representan \ldots{}
+
+  graficos
+
+  \newpage
+
+  \section{Comparación}\label{comparaciuxf3n}
+
+  Comparar los países teniendo en cuenta las tres secciones anteriores.
+  
+
+\end{document}

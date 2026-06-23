@@ -237,7 +237,7 @@ d |>
   geom_point(alpha = 1, color = "black", size = 1.5) +
   geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
   facet_wrap(~label, scales = "free_x", ncol = 4) +
-  labs(title = "Ag Barometer (t) vs covariables (t)",
+  labs(title = "Ag Barometer (t) vs covariables (t-1)",
        x = NULL, 
        y = "Ag Barometer",
        caption = "r: coeficiente de correlación de Pearson") +

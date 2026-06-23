@@ -1,0 +1,212 @@
+---
+lang: es
+format: 
+    pdf:
+      keep-tex: true
+      template: template.tex
+      pdf-engine: xelatex
+execute: 
+  echo: false
+  warning: false
+  message: false
+engine: knitr
+editor: source
+---
+
+<!-- 
+para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, tabla de contenidos, etc) -->
+
+
+```{=latex}
+\pagestyle{fancy}
+\rhead{}
+```
+
+
+
+<!-- aca van las secciones q van antes de Introduccion, se ponen SIN header -->
+
+
+\tableofcontents
+
+
+<!-- Desde la seccion introduccion, quiero que me ponga los headers -->
+
+
+
+```{=latex}
+\newpage
+\rhead{\nouppercase{\leftmark}}
+```
+
+
+# Introducción
+
+Este informe es un resumen de lo realizado en la Práctica Profesional...
+
+
+El Centro de Agronegocios y Alimentos de la Sede Rosario de la Universidad Austral es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo.
+
+En este centro se elabora, desde octubre de 2018, un índice llamado "Ag Barometer". El mismo proporciona bimensualmente medidas nacionales sobre las percepciones del sector agropecuario en la Argentina que muestran la evolución de su confianza a lo largo del tiempo. También se construye este índice en la Universidad de Purdue de Estados Unidos proporcionando un valor por mes desde 2015. Ambas universidades, con la misma metodología y de forma paralela, también construyen los índices "Condiciones presentes" y "Expectativas futuras".
+
+El Ag Barometer se construye a partir de una encuesta que se hace en cada edición a productores agropecuarios argentinos cuyo valor bruto de producción supera los USD 200.000 anuales. La muestra, de 406 productores, se estratifica por escala productiva y garantiza representación mínima de las principales actividades del sector: soja, maíz, ganadería bovina, trigo, tambo y girasol.
+
+
+Se calcula a partir de cinco preguntas fijas, cada una de las cuales se puntúa según la diferencia entre respuestas favorables y desfavorables, escalada en un rango de 0 a 200, donde 100 representa el punto neutro. El valor final del índice corresponde al promedio simple de las cinco puntuaciones individuales, de modo que valores superiores a 100 reflejan percepciones positivas netas y valores inferiores a 100, percepciones negativas netas. Con la misma metodología y solo considerando algunas de las cinco preguntas, se calculan los índices Condiciones presentes y Expectativas futuras.
+
+
+El objetivo general de este trabajo es comparar con qué variables está relacionado el Ag Barometer de Argentina vs. el de Estados Unidos.
+
+\newpage
+
+# Objetivos
+
+## Objetivo general
+
+El objetivo principal de esta Práctica Profesional es estudiar con qué variables está relacionado el Ag Barometer tanto en Argentina como en Estados Unidos y comparar qué ocurre en cada país.
+
+## Tareas específicas de la Práctica Profesional
+
+-   Realizar un análisis descriptivo de los índices con el fin de conocer sus características.
+-   Imputación de valores donde es necesario.
+-   Buscar otras series que podrían estar correlacionadas con el Ag Barometer tanto en Argentina como en Estados Unidos.
+-   
+
+\vdots
+
+
+\newpage
+
+# Materiales
+
+
+## Características del relevamiento
+
+La definición del universo a relevar tuvo como criterio la importancia de cada actividad en el producto bruto agropecuario. El mínimo de representación para cada actividad es el siguiente:
+
+-   Soja 45 %
+-   Maíz 21%
+-   Ganadería de carne 16% 
+-   Trigo 7 %
+-   Tambo 7%
+-   Girasol 4 %
+
+
+Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
+
+-   50% de los encuestados con un valor bruto de producción entre USD 200.000 y USD 399.000 al año
+-   30% de los encuestados con valor bruto de producción entre USD 414.000 y USD 999.999 al año
+-   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1.000.000 al año.
+
+La encuesta a productores toma respuestas de 406 productores cuyo valor bruto de producción es igual o mayor a USD 200.000.
+
+
+## Conjunto de datos
+
+Los tres índices de Estados Unidos brindados por la Universidad de Purdue tienen periodicidad mensual y están completos. Comenzaron a construirlos en octubre de 2015 y la observación más reciente que se dispone es de marzo 2026.
+
+
+En cambio, los tres índices de Argentina provistos por el Centro de Agronegocios y Alimentos de la Sede Rosario de la Universidad Austral son medidos en los meses de enero, marzo, mayo, julio, septiembre y noviembre (impares); en 2020 en vez de haber observaciones para los meses de marzo y mayo, hay una para abril y se tienen datos desde octubre de 2018 hasta enero de 2026.
+
+A pesar de los meses en los que los índices locales son medidos, la primera observación de cada uno de ellos es en octubre de 2018 porque en este fecha se ha decidido comenzar el relevamiento y a partir del siguiente mes comenzaron a reportar los valores bimensualmente.
+
+Teniendo estas características en cuenta, los índices de Argentina tienen periodicidad irregular. Hay observaciones separadas por un mes (octubre de 2018 y noviembre de 2018), observaciones separadas por tres meses (enero 2020 y abril 2020, abril 2020 y julio 2020) y el resto de los datos están separados por dos meses.
+
+\newpage
+
+
+# Metodología
+
+Este trabajo tiene dos aspectos metodológicos. 
+
+## Cálculo de los índices
+
+[Cálculo](https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/)
+
+
+
+## Definiciones básicas de una serie de tiempo
+
+\vdots
+
+
+\newpage
+
+
+
+# Análisis descriptivo
+
+En primer lugar, se realizó un análisis que permite explorar las características de los índices en los dos países.
+
+## Argentina
+
+Estas series tienen periodicidad irregular y valores faltantes. Voy a imputar porque...
+
+Muestro características antes de imputar, dadas esas características y según las conclusiones de la tesina de Lucía Tamplín..., imputo las series con interpolación lineal.
+
+Descriptivos de cada una de las 3 series imputadas
+
+CCFs
+
+
+## Estados Unidos
+
+Descriptivo de cada uno de los 3 índices
+
+CCFs
+
+\newpage
+
+# Relación del Ag Barometer con otras variables
+
+## Variables numéricas
+
+Presentación de las variables (commodities, dow jones, fed, ICC...) que cruzamos con el Ag Barometer
+
+Explicar por qué t vs. t-1
+
+Muestro gráficos de correlaciones de Argentina y de EEUU
+
+
+
+## Variables categóricas
+
+Como no se observa relación entre el Ag Barometer y todas las variables propuestas, se sospecha que sí está relacionado con hitos políticos o bélicos. 
+
+
+Para analizar esto se propone construir variables indicadoras que representan ...
+
+graficos
+
+
+\newpage
+
+# Comparación
+
+Comparar los países teniendo en cuenta las tres secciones anteriores.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
