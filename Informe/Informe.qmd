@@ -42,20 +42,23 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 
 # Introducción
 
-Este informe es un resumen de lo realizado en la Práctica Profesional...
 
 
-El Centro de Agronegocios y Alimentos de la Sede Rosario de la Universidad Austral es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo.
-
-En este centro se elabora, desde octubre de 2018, un índice llamado "Ag Barometer". El mismo proporciona bimensualmente medidas nacionales sobre las percepciones del sector agropecuario en la Argentina que muestran la evolución de su confianza a lo largo del tiempo. También se construye este índice en la Universidad de Purdue de Estados Unidos proporcionando un valor por mes desde 2015. Ambas universidades, con la misma metodología y de forma paralela, también construyen los índices "Condiciones presentes" y "Expectativas futuras".
-
-El Ag Barometer se construye a partir de una encuesta que se hace en cada edición a productores agropecuarios argentinos cuyo valor bruto de producción supera los USD 200.000 anuales. La muestra, de 406 productores, se estratifica por escala productiva y garantiza representación mínima de las principales actividades del sector: soja, maíz, ganadería bovina, trigo, tambo y girasol.
+En el presente informe se resume el trabajo realizado en el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario entre los meses Agosto y Octubre de 2026, bajo el concepto del desarrollo de una Práctica Profesional para terminar la carrera de Licenciatura en Estadística de la Facultad de Ciencias Económicas y Estadística de la Universidad Nacional de Rosario.
 
 
-Se calcula a partir de cinco preguntas fijas, cada una de las cuales se puntúa según la diferencia entre respuestas favorables y desfavorables, escalada en un rango de 0 a 200, donde 100 representa el punto neutro. El valor final del índice corresponde al promedio simple de las cinco puntuaciones individuales, de modo que valores superiores a 100 reflejan percepciones positivas netas y valores inferiores a 100, percepciones negativas netas. Con la misma metodología y solo considerando algunas de las cinco preguntas, se calculan los índices Condiciones presentes y Expectativas futuras.
+El CEAg de la sede Rosario de la Universidad Austral es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo.
 
 
-El objetivo general de este trabajo es comparar con qué variables está relacionado el Ag Barometer de Argentina vs. el de Estados Unidos.
+Este Centro desarrolla el **Ag Barometer Austral** desde 2018 en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos).
+
+El **Ag Barometer Austral** es un índice que mide de manera periódica la confianza de los productores agropecuarios argentinos, a partir de encuestas estructuradas a aproximadamente 400 productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión. Este indicador se construye en base a cinco preguntas fijas que capturan distintas dimensiones del clima económico agropecuario y constituye una herramienta clave para comprender la dinámica del sector en el tiempo.
+
+A nivel internacional, el **Ag** ***Economy*** **Barometer**, desarrollado por la Universidad de *Purdue* desde 2015, representa un referente global en la medición del *sentiment* agropecuario, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
+
+
+En este contexto, este trabajo tiene como propósito realizar un análisis comparativo de las series temporales de los índices de confianza agropecuaria de Argentina y Estados Unidos.
+
 
 \newpage
 
@@ -63,16 +66,27 @@ El objetivo general de este trabajo es comparar con qué variables está relacio
 
 ## Objetivo general
 
-El objetivo principal de esta Práctica Profesional es estudiar con qué variables está relacionado el Ag Barometer tanto en Argentina como en Estados Unidos y comparar qué ocurre en cada país.
+En línea con lo expuesto, la finalidad de esta investigación es comparar  los índices estudiando su dinámica, identificando patrones comunes y diferencias estructurales, y analizando la respuesta de los productores frente a distintos contextos económicos, políticos y productivos.
+
 
 ## Tareas específicas de la Práctica Profesional
 
--   Realizar un análisis descriptivo de los índices con el fin de conocer sus características.
--   Imputación de valores donde es necesario.
--   Buscar otras series que podrían estar correlacionadas con el Ag Barometer tanto en Argentina como en Estados Unidos.
--   
 
-\vdots
+Se determinan las siguientes tareas:
+
+-   Realizar la recolección, integración y depuración de las bases de datos correspondientes al Ag Barometer Austral y al Ag *Economy* Barometer (*Purdue University*), generando series temporales comparables. 
+-   Confeccionar una base de datos que contenga información de series económicas para analizar su relación con los índices bajo estudio.
+-   Desarrollar un análisis exploratorio de las series de tiempo, incluyendo el estudio de tendencia, estacionalidad, volatilidad y comportamiento general de los índices. 
+-   Analizar la dinámica temporal de los indicadores, identificando patrones, tendencias, estacionalidad y posibles cambios estructurales.
+-   Analizar la relación entre ambas series temporales, mediante técnicas como correlación cruzada y análisis de rezagos, con el fin de identificar posibles vínculos, sincronización o divergencias entre ambos contextos, promoviendo una mirada comparativa a nivel internacional. 
+-   Identificar y analizar el impacto de eventos relevantes (*shocks*) —tales como cambios en políticas económicas, variaciones en tasas de interés, precios internacionales de *commodities*, crisis sanitarias o eventos climáticos— sobre la evolución de los índices, comprendiendo el efecto de factores macroeconómicos, políticos y productivos sobre las expectativas y decisiones de los productores agropecuarios. 
+-   Ajustar y evaluar modelos de series de tiempo (ARIMA, ETS u otros modelos adecuados) que permitan describir y eventualmente predecir la evolución de los indicadores. 
+-   Participar en la elaboración de un informe final detallado, que documente la metodología utilizada, los resultados obtenidos y las principales conclusiones del análisis. 
+-   Integrar el trabajo en un enfoque interdisciplinario, articulando herramientas de la estadística con conceptos de economía y agronegocios.
+
+
+
+
 
 
 \newpage
@@ -106,7 +120,7 @@ La encuesta a productores toma respuestas de 406 productores cuyo valor bruto de
 Los tres índices de Estados Unidos brindados por la Universidad de Purdue tienen periodicidad mensual y están completos. Comenzaron a construirlos en octubre de 2015 y la observación más reciente que se dispone es de marzo 2026.
 
 
-En cambio, los tres índices de Argentina provistos por el Centro de Agronegocios y Alimentos de la Sede Rosario de la Universidad Austral son medidos en los meses de enero, marzo, mayo, julio, septiembre y noviembre (impares); en 2020 en vez de haber observaciones para los meses de marzo y mayo, hay una para abril y se tienen datos desde octubre de 2018 hasta enero de 2026.
+En cambio, los tres índices de Argentina provistos por el Centro de Agronegocios y Alimentos de la sede Rosario de la Universidad Austral son medidos en los meses de enero, marzo, mayo, julio, septiembre y noviembre (impares); en 2020 en vez de haber observaciones para los meses de marzo y mayo, hay una para abril y se tienen datos desde octubre de 2018 hasta enero de 2026.
 
 A pesar de los meses en los que los índices locales son medidos, la primera observación de cada uno de ellos es en octubre de 2018 porque en este fecha se ha decidido comenzar el relevamiento y a partir del siguiente mes comenzaron a reportar los valores bimensualmente.
 
