@@ -91,7 +91,73 @@ Se determinan las siguientes tareas:
 
 \newpage
 
+
+
 # Materiales
+
+
+
+## Características del relevamiento de datos
+
+(
+brevemente de q se trata la encuesta agb: hacer preguntas periodicamente..., 
+carcs como cuanto dura en cada pais, 
+pob y muestra en ambos paises, que preguntas especificamente se hacen
+)
+
+Los valores del Ag Barometer surgen a partir de la metodología propuesta por la Universidad de *Purdue* junto a la Universidad Austral. Se efectúan preguntas periódicamente por teléfono a aproximadamente 400 productores. En Argentina este proceso toma alrededor de tres semanas realizándose bimensualmente y en Estados Unidos se ejecuta mensulamente demorando cerca de una semana.
+
+
+Se entiende por productores agropecuarios a personas personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades). La definición de la población objetivo tuvo como criterio la importancia de cada actividad en el producto bruto agropecuario. Since a single farm can engage in multiple enterprises, and the categories are not mutually exclusive, the proportions represent a minimum.
+
+En Argentina el mínimo de representación para cada actividad es el siguiente: Soja 45%,  Maíz 21%, Ganadería vacuna 16%, Trigo 7%, Tambo 7% y Girasol 4%. En Estados Unidos: Soja 53%, Maíz 14%, Algodón 3%, Ganadería vacuna 19%, Tambo 5% y Ganadería porcina 6%.
+
+
+Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
+
+-   50% de los encuestados con un valor bruto de producción entre USD 200.000 y USD 399.000 al año
+-   30% de los encuestados con valor bruto de producción entre USD 414.000 y USD 999.999 al año
+-   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1.000.000 al año.
+
+La encuesta a productores toma respuestas de 406 productores cuyo valor bruto de producción es igual o mayor a USD 200.000.
+
+
+
+
+En cada edición se formulan las siguientes cinco preguntas dicotómicas (de respuesta "Sí" / "No") fijas: 
+
+-    Q1: ¿Ud. diría que su operación actualmente está mejor, peor o igual financieramente con respecto a un año atrás?
+-    Q2: Mirando hacia adelante: de acá a un año ¿considera que su explotación estará mejor, peor o igual financieramente?
+-    Q3: Pensando ahora en la economía agropecuaria en general ¿considera que los próximos meses serán: buenos tiempos hablando financieramente o malos tiempos?
+-    Q4: Mirando hacia adelante ¿qué situación diría que es más probable, el sector agropecuario argentino en los próximos 5 años, tendrá mayormente buenos tiempos o mayormente malos tiempos?
+-    Q5: Pensando en inversiones importantes – como maquinaria, compra de tierras, cabezas de ganado, capacidad de almacenamiento, bioenergía- en general ¿Ud. considera que hoy es un buen momento o mal momento para realizar inversiones?
+
+En todas las ediciones del Ag Barometer Austral se añaden alrededor de seis preguntas que reflejan percepciones referidas a temas coyunturales / estacionales que impactan al sector agropecuario argentino. Éstas varían según los temas de interés del momento.
+
+
+En Estados Unidos el mínimo de representación para cada actividad es el siguiente: Soja 53%, Maíz 14%, Algodón 3%, Ganadería vacuna 19%, Tambo 5% y Ganadería porcina 6%.
+
+
+## Cálculo e interpretación de los índices
+
+El primer paso es común a ambos países, obtener una medida para cada una de las cinco preguntas fijas. Se calcula en base al porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada pregunta un rango potencial de puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
+
+El valor final del Ag Barometer Austral es el promedio simple de las medidas de las cinco preguntas individuales. Generando el 100 indica un punto neutro. Valores por encima de 100 expresan percepciones positivas y valores por debajo de 100 expresan percepciones negativas.
+
+En cambio el valor final del Ag Economy Barometer se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
+
+Ambas universidades hacen uso de las respuestas recolectadas para construir otros dos índices: "Condiciones presentes" y "Expectativas futuras" a fines de capturar cómo cambia la percepción netamente actual y la puramente futura de los productores a través del tiempo.
+Se calculan sólo teniendo en cuenta las preguntas Q1, Q5 y Q2, Q3, Q4 respectivamente para cada uno y utilizando el mismo método de cada institución.
+
+
+
+
+
+## Los datos
+
+tengo una base para arg otra para usa, las dos tienen las mismas columnas?
+
+
 
 
 ## Características del relevamiento
@@ -115,7 +181,9 @@ Se realizó un muestreo estratificado de productores teniendo en cuenta datos de
 La encuesta a productores toma respuestas de 406 productores cuyo valor bruto de producción es igual o mayor a USD 200.000.
 
 
-## Conjunto de datos
+## ! Conjunto de datos
+
+(prob lo ponga use esto para otra seccion, porq estos cometnarios surgen del descriptivo en realidad)
 
 Los tres índices de Estados Unidos brindados por la Universidad de Purdue tienen periodicidad mensual y están completos. Comenzaron a construirlos en octubre de 2015 y la observación más reciente que se dispone es de marzo 2026.
 
@@ -129,19 +197,330 @@ Teniendo estas características en cuenta, los índices de Argentina tienen peri
 \newpage
 
 
+
+
 # Metodología
-
-Este trabajo tiene dos aspectos metodológicos. 
-
-## Cálculo de los índices
-
-[Cálculo](https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/)
-
 
 
 ## Definiciones básicas de una serie de tiempo
 
-\vdots
+\newpage
+
+
+
+# Armado de la base de datos
+
+En una primer instancia se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc. Seguidamente se contruyó una base de datos que reuniera las variables de Argentina y Estados Unidos provistas para el trabajo junto con otras sugeridas por los especialistas.
+
+
+## Tratamiento sobre las series provistas
+
+
+Se observan los datos de la Austral. 
+
+
+```{r}
+# Librerias
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+library(patchwork)      # acomodar graficos
+library(purrr)          # extraer p-values de los test Ljunj-Box
+```
+
+
+```{r}
+# Carga de datos de Arg con faltantes
+
+d_conNA <- readxl::read_excel("../Datos/Crudos/agbarometerARG_enero2026_conNA.xlsx") |>
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre,
+             regular = F)
+```
+
+
+```{r}
+#| label: tbl-1
+#| tbl-cap: "Ag Barometer Austral en el período octubre 2018 - enero 2026"
+
+# Tabla para visualizar en que meses y en que año hay obs
+d_conNA |> 
+  as_tibble() |> 
+  mutate(
+    Año = year(Bimestre),
+    Mes = month(Bimestre, label = TRUE, abbr = TRUE)
+  ) |> 
+  select(Año, Mes, `Ag Barometer Austral`) |> 
+  pivot_wider(
+    names_from = Mes, 
+    values_from = `Ag Barometer Austral`,
+    names_sort = TRUE
+  ) |> 
+  mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
+  kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
+  kable_styling()
+```
+
+
+
+```{r}
+#| label: fig-1
+#| fig-cap: "Series locales provistas por la Austral en el período octubre 2018 - enero 2026"
+
+
+# Grafico de las 3 series Arg con los faltantes
+d_conNA |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer Austral`, `Condiciones presentes`, `Expectativas futuras`), 
+               names_to = "Índice", 
+               values_to = "valor") |> 
+  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer Austral" = "black",          
+    "Condiciones presentes" = "#417B5A", 
+    "Expectativas futuras" = "#FF88DC"  
+  )) +
+  labs(x = "Tiempo",
+       y = "Índice") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") 
+```
+
+Se aprecian dos características en estos datos:
+
+-   Los valores correspondientes a marzo 2020 y mayo 2020 son faltantes como se puede ver en la @tbl-1 y en la @fig-1. 
+-   Si bien los investigaron planificaron generar observaciones en los meses enero, marzo, mayo, julio, septiembre y noviembre (impares), se observaron algunas excepciones. 
+
+En todo el período hay dos meses, marzo y mayo, en el 2020 en los que no se realizó el relevamiento. Por esto se visualizan dos valores faltantes en las tres series en la @fig-1. Sin embargo, el 2020 es el único año en el que hay una observación en el mes de abril (@tbl-1) porque con esta última se intentó compensar los faltantes de marzo y mayo.
+
+Hay una observación en el mes de abril sólo en el año 2020 (@tbl-1) relevada para compensar los faltantes de marzo y mayo. 
+
+La otra excepción ocurrió en 2018 por ser el único año que tiene una observación en octubre (@tbl-1). Esto se debe a que los investigadores quisieron hacer una llamada "observación piloto" pero luego continuaron con su plan de proporcionar datos sólo en los meses impares.
+
+
+Estas características de los datos locales producen observaciones separadas por un mes (como octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos meses (acorde a lo planificado) y que otras estén separadas por tres meses (como enero 2020 y abril 2020).
+
+
+Se propuso para las tres series imputar los valores que faltan para las fechas de marzo 2020, mayo 2020.
+
+<!-- Es decir, se buscó lograr que las series locales tengan periodicidad regular para poder realizar análisis posteriores. -->
+
+Para poder elegir un método de imputación apropiado para el caso se analizaron los atributos principales de las series.
+
+```{r}
+#| label: fig-2
+#| fig-cap: "Función de Autocorrelación Muestral (FACM) de la primer diferencia de cada serie local"
+#| fig-width: 10
+
+acf1 <- d_conNA |> 
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  ACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM del Ag Barometer Austral',
+       x = 'Retardo') +
+  theme_bw()
+
+acf2 <- d_conNA |> 
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  ACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM de las Condiciones presentes',
+       x = 'Retardo') +
+  theme_bw()
+
+acf3 <- d_conNA |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  ACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM de las Expectativas futuras',
+       x = 'Retardo') +
+  theme_bw()
+
+acf1 + acf2 + acf3
+
+```
+
+
+```{r}
+#| label: fig-3
+#| fig-cap: "Función de Autocorrelación Parcial Muestral (FACPM) de la primer diferencia de cada serie local"
+#| fig-width: 10
+
+pacf1 <- d_conNA |> 
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  PACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM del Ag Barometer Austral',
+       x = 'Retardo') +
+  theme_bw()
+
+pacf2 <- d_conNA |> 
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  PACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM de las Condiciones presentes',
+       x = 'Retardo') +
+  theme_bw()
+
+pacf3 <- d_conNA |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  PACF(dif1 , lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM de las Expectativas futuras',
+       x = 'Retardo') +
+  theme_bw()
+
+pacf1 + pacf2 + pacf3
+```
+
+
+```{r}
+#| include: false
+
+# Test Ljung-Box Ho) p_1 = .... = p_30 = 0
+
+# AgB
+pv_agb_arg <- d_conNA |> 
+  fill_gaps() |> 
+  tidyr::fill(`Ag Barometer Austral`, .direction = "down") |> 
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  drop_na(dif1) |> 
+  pull(dif1) |> 
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") # solo guardo el p-value
+
+# Condiciones
+pv_cond_arg <- d_conNA |> 
+  fill_gaps() |> 
+  tidyr::fill(`Condiciones presentes`, .direction = "down") |> 
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  drop_na(dif1) |> 
+  pull(dif1) |> 
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") 
+
+# Expectativas
+pv_expec_arg <- d_conNA |> 
+  fill_gaps() |> 
+  tidyr::fill(`Expectativas futuras`, .direction = "down") |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  drop_na(dif1) |> 
+  pull(dif1) |> 
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value")
+
+pv_agb_arg <- round(pv_agb_arg, digits = 4) 
+pv_cond_arg <- round(pv_cond_arg, digits = 4)
+pv_expec_arg <- round(pv_expec_arg, digits = 4)
+
+
+```
+
+
+Es común que las series económicas sigan el patrón de un paseo aleatorio. Por esta razón se analizó si la primera diferencia de cada serie es un ruido blanco.
+
+
+La mayoría de los bastones de las FACM de la @fig-2 parecen ser no significativos. De todas formas hay algunos que superan el valor crítico representado con la línea punteada azul pero como toman valores de aproximadamente 0.4, en valor absoluto, o menores; éstos tampoco parecen ser significativos. Se realiza el test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros treinta coeficientes de la FAC de las diferencias de las series Ag Barometer Austral, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg`, $p-value=$ `r pv_cond_arg` y $p-value=$ `r pv_expec_arg` respectivamente, $k=20$)
+
+Se imputaron las dos fechas con *interpolación lineal* por ser uno uno de los métodos que más conviene dadas las características vistas de estas tres series según las conclusiones de la tesina de Lucía Tamplín.
+
+
+```{r}
+#| label: tbl-2
+#| tbl-cap: "Ag Barometer Austral en el período noviembre 2018 - enero 2026"
+
+# datos locales imputados
+d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre)
+
+# Tabla para visualizar la serie de periodicidad regular
+d_arg |> 
+  as_tibble() |> 
+  mutate(
+    Año = year(Bimestre),
+    Mes = month(Bimestre, label = TRUE, abbr = TRUE)
+  ) |> 
+  select(Año, Mes, `Ag Barometer Austral`) |> 
+  pivot_wider(
+    names_from = Mes, 
+    values_from = `Ag Barometer Austral`,
+    names_sort = TRUE
+  ) |> 
+  mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
+  kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
+  kable_styling()
+```
+
+
+```{r}
+#| label: fig-4
+#| fig-cap: "Series locales provistas por la Austral en el período noviembre 2018 - enero 2026"
+
+# grafico de las series de arg imputadas
+
+fechas_imputadas <- yearmonth(c("2020 Mar", "2020 May"))
+
+d_arg |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer Austral`, `Condiciones presentes`, `Expectativas futuras`), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  # capa extra: puntos azules sobre las fechas imputadas
+  geom_point(
+    data = ~ filter(.x, Bimestre %in% fechas_imputadas),
+    color = "blue", size = 1.2
+  ) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer Austral"  = "black",
+    "Condiciones presentes" = "#417B5A",
+    "Expectativas futuras"  = "#FF88DC"
+  )) +
+  labs(x = "Tiempo", y = "Índice") +
+  theme_bw() +
+  theme(legend.title    = element_blank(),
+        legend.position = "bottom")
+```
+
+
+Las observaciones de octubre 2018 y abril 2020, las cuales sólo representan un 4.54% de la totalidad de los datos, fueron consideradas a la hora de imputar pero no se las tuvo en cuenta en el resto del trabajo para lograr que las tres series tengan periodicidad regular. 
+
+Luego de todo este tratamiento se logran tres series de periodicidad bimensual, de cuarenta y cuatro observaciones cada una para el período noviembre 2018 - enero 2026. Se puede apreciar, tomando como ejemplo al Ag Barometer Austral, que luego de este proceso sólo hay observaciones para los meses impares (@tbl-2) y que los valores de marzo 2020 y mayo 2020 fueron imputados (@fig-4).
+
+Se observan los datos proporcionados por la Universidad de Purdue.
+
+
+
+
+
+
 
 
 \newpage
@@ -198,6 +577,12 @@ graficos
 # Comparación
 
 Comparar los países teniendo en cuenta las tres secciones anteriores.
+
+# Referencias
+
+https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
+
+https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
 
 
 

@@ -80,9 +80,11 @@ $pandoc.tex()$                         % Cargar el partial llamado 'pandoc' (por
     \renewcommand{\sout}{}
   }
   
-  % graficos enumerados segun seccion en la q estoy
+  % graficos y tablas enumerados segun seccion en la q estoy
   \usepackage{chngcntr}
-  \counterwithin{figure}{section}
+  \counterwithin{figure}{subsection}
+  \counterwithin{table}{subsection}
+  
   
   
 \begin{document}

@@ -101,6 +101,20 @@
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -152,9 +166,11 @@
     \renewcommand{\sout}{}
   }
   
-  % graficos enumerados segun seccion en la q estoy
+  % graficos y tablas enumerados segun seccion en la q estoy
   \usepackage{chngcntr}
-  \counterwithin{figure}{section}
+  \counterwithin{figure}{subsection}
+  \counterwithin{table}{subsection}
+  
   
   
 \begin{document}
@@ -208,9 +224,9 @@
   entre economías con diferentes niveles de estabilidad macroeconómica e
   institucional.
 
-  En este contexto, la presente Práctica Profesional tiene como
-  propósito realizar un análisis comparativo de las series temporales de
-  los índices de confianza agropecuaria de Argentina y Estados Unidos.
+  En este contexto, este trabajo tiene como propósito realizar un
+  análisis comparativo de las series temporales de los índices de
+  confianza agropecuaria de Argentina y Estados Unidos.
 
   \newpage
 
@@ -220,12 +236,14 @@
 
   En línea con lo expuesto, la finalidad de esta investigación es
   comparar los índices estudiando su dinámica, identificando patrones
-  comunes y diferencias estructurales, y analizarndo la respuesta de los
+  comunes y diferencias estructurales, y analizando la respuesta de los
   productores frente a distintos contextos económicos, políticos y
   productivos.
 
   \subsection{Tareas específicas de la Práctica
   Profesional}\label{tareas-especuxedficas-de-la-pruxe1ctica-profesional}
+
+  Se determinan las siguientes tareas:
 
   \begin{itemize}
   \tightlist
@@ -273,11 +291,125 @@
     agronegocios.
   \end{itemize}
 
-  \vdots
-
   \newpage
 
   \section{Materiales}\label{materiales}
+
+  \subsection{Características del relevamiento de
+  datos}\label{caracteruxedsticas-del-relevamiento-de-datos}
+
+  ( brevemente de q se trata la encuesta agb: hacer preguntas
+  periodicamente\ldots, carcs como cuanto dura en cada pais, pob y
+  muestra en ambos paises, que preguntas especificamente se hacen )
+
+  Los valores del Ag Barometer surgen a partir de la metodología
+  propuesta por la Universidad de \emph{Purdue} junto a la Universidad
+  Austral. Se efectúan preguntas periódicamente por teléfono a
+  aproximadamente 400 productores. En Argentina este proceso toma
+  alrededor de tres semanas realizándose bimensualmente y en Estados
+  Unidos se ejecuta mensulamente demorando cerca de una semana.
+
+  Se entiende por productores agropecuarios a personas personas físicas
+  o jurídicas cuya actividad principal sea la producción de soja, trigo,
+  maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen
+  otras actividades). La definición de la población objetivo tuvo como
+  criterio la importancia de cada actividad en el producto bruto
+  agropecuario. Since a single farm can engage in multiple enterprises,
+  and the categories are not mutually exclusive, the proportions
+  represent a minimum.
+
+  En Argentina el mínimo de representación para cada actividad es el
+  siguiente: Soja 45\%, Maíz 21\%, Ganadería vacuna 16\%, Trigo 7\%,
+  Tambo 7\% y Girasol 4\%. En Estados Unidos: Soja 53\%, Maíz 14\%,
+  Algodón 3\%, Ganadería vacuna 19\%, Tambo 5\% y Ganadería porcina 6\%.
+
+  Se realizó un muestreo estratificado de productores teniendo en cuenta
+  datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
+  productores en cuanto a su producción:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    50\% de los encuestados con un valor bruto de producción entre USD
+    200.000 y USD 399.000 al año
+  \item
+    30\% de los encuestados con valor bruto de producción entre USD
+    414.000 y USD 999.999 al año
+  \item
+    20\% de los encuestados con un valor bruto de producción mayor o
+    igual a USD 1.000.000 al año.
+  \end{itemize}
+
+  La encuesta a productores toma respuestas de 406 productores cuyo
+  valor bruto de producción es igual o mayor a USD 200.000.
+
+  En cada edición se formulan las siguientes cinco preguntas dicotómicas
+  (de respuesta ``Sí'' / ``No'') fijas:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Q1: ¿Ud. diría que su operación actualmente está mejor, peor o igual
+    financieramente con respecto a un año atrás?
+  \item
+    Q2: Mirando hacia adelante: de acá a un año ¿considera que su
+    explotación estará mejor, peor o igual financieramente?
+  \item
+    Q3: Pensando ahora en la economía agropecuaria en general ¿considera
+    que los próximos meses serán: buenos tiempos hablando
+    financieramente o malos tiempos?
+  \item
+    Q4: Mirando hacia adelante ¿qué situación diría que es más probable,
+    el sector agropecuario argentino en los próximos 5 años, tendrá
+    mayormente buenos tiempos o mayormente malos tiempos?
+  \item
+    Q5: Pensando en inversiones importantes -- como maquinaria, compra
+    de tierras, cabezas de ganado, capacidad de almacenamiento,
+    bioenergía- en general ¿Ud. considera que hoy es un buen momento o
+    mal momento para realizar inversiones?
+  \end{itemize}
+
+  En todas las ediciones del Ag Barometer Austral se añaden alrededor de
+  seis preguntas que reflejan percepciones referidas a temas
+  coyunturales / estacionales que impactan al sector agropecuario
+  argentino. Éstas varían según los temas de interés del momento.
+
+  En Estados Unidos el mínimo de representación para cada actividad es
+  el siguiente: Soja 53\%, Maíz 14\%, Algodón 3\%, Ganadería vacuna
+  19\%, Tambo 5\% y Ganadería porcina 6\%.
+
+  \subsection{Cálculo e interpretación de los
+  índices}\label{cuxe1lculo-e-interpretaciuxf3n-de-los-uxedndices}
+
+  El primer paso es común a ambos países, obtener una medida para cada
+  una de las cinco preguntas fijas. Se calcula en base al porcentaje de
+  respuestas favorables (``Sí''), menos el porcentaje de respuestas
+  desfavorables (``No''), más 100. Esto da a cada pregunta un rango
+  potencial de puntajes de 0 a 200. Cuando todas las respuestas son
+  ``Sí'', el índice es 200. Cuando todas las respuestas son ``No'', el
+  índice es 0.
+
+  El valor final del Ag Barometer Austral es el promedio simple de las
+  medidas de las cinco preguntas individuales. Generando el 100 indica
+  un punto neutro. Valores por encima de 100 expresan percepciones
+  positivas y valores por debajo de 100 expresan percepciones negativas.
+
+  En cambio el valor final del Ag Economy Barometer se obtiene sumando
+  las cinco medidas de cada una de las cinco preguntas fijas y se divide
+  esa suma por el promedio del período base (octubre 2015 a marzo 2016).
+
+  Ambas universidades hacen uso de las respuestas recolectadas para
+  construir otros dos índices: ``Condiciones presentes'' y
+  ``Expectativas futuras'' a fines de capturar cómo cambia la percepción
+  netamente actual y la puramente futura de los productores a través del
+  tiempo. Se calculan sólo teniendo en cuenta las preguntas Q1, Q5 y Q2,
+  Q3, Q4 respectivamente para cada uno y utilizando el mismo método de
+  cada institución.
+
+  \subsection{Los datos}\label{los-datos}
+
+  tengo una base para arg otra para usa, las dos tienen las mismas
+  columnas?
 
   \subsection{Características del
   relevamiento}\label{caracteruxedsticas-del-relevamiento}
@@ -322,7 +454,10 @@
   La encuesta a productores toma respuestas de 406 productores cuyo
   valor bruto de producción es igual o mayor a USD 200.000.
 
-  \subsection{Conjunto de datos}\label{conjunto-de-datos}
+  \subsection{! Conjunto de datos}\label{conjunto-de-datos}
+
+  (prob lo ponga use esto para otra seccion, porq estos cometnarios
+  surgen del descriptivo en realidad)
 
   Los tres índices de Estados Unidos brindados por la Universidad de
   Purdue tienen periodicidad mensual y están completos. Comenzaron a
@@ -351,17 +486,203 @@
 
   \section{Metodología}\label{metodologuxeda}
 
-  Este trabajo tiene dos aspectos metodológicos.
-
-  \subsection{Cálculo de los
-  índices}\label{cuxe1lculo-de-los-uxedndices}
-
-  \href{https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/}{Cálculo}
-
   \subsection{Definiciones básicas de una serie de
   tiempo}\label{definiciones-buxe1sicas-de-una-serie-de-tiempo}
 
-  \vdots
+  \newpage
+
+  \section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
+
+  En una primer instancia se aplicaron procesamientos sobre algunas de
+  las series provistas como imputación de valores faltantes, eliminación
+  de valores, homogeneización de nombres de variables, etc. Seguidamente
+  se contruyó una base de datos que reuniera las variables de Argentina
+  y Estados Unidos provistas para el trabajo junto con otras sugeridas
+  por los especialistas.
+
+  \subsection{Tratamiento sobre las series
+  provistas}\label{tratamiento-sobre-las-series-provistas}
+
+  Se observan los datos de la Austral.
+
+  \begin{longtable}[t]{ccccccccc}
+
+  \caption{\label{tbl-1}Ag Barometer Austral en el período octubre 2018
+  - enero 2026}
+
+  \tabularnewline
+
+  \toprule
+  Año & ene & mar & abr & may & jul & sep & oct & nov\\
+  \midrule
+  2018 &  &  &  &  &  &  & 100 & 95\\
+  2019 & 106 & 103 &  & 117 & 137 & 74 &  & 64\\
+  2020 & 52 &  & 53 &  & 48 & 69 &  & 78\\
+  2021 & 79 & 90 &  & 79 & 69 & 79 &  & 79\\
+  2022 & 90 & 90 &  & 98 & 76 & 83 &  & 67\\
+  \addlinespace
+  2023 & 68 & 69 &  & 84 & 89 & 100 &  & 117\\
+  2024 & 119 & 129 &  & 139 & 139 & 132 &  & 149\\
+  2025 & 117 & 137 &  & 130 & 127 & 124 &  & 159\\
+  2026 & 158 &  &  &  &  &  &  & \\
+  \bottomrule
+
+  \end{longtable}
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-1-1.pdf}}
+
+  }
+
+  \caption{\label{fig-1}Series locales provistas por la Austral en el
+  período octubre 2018 - enero 2026}
+
+  \end{figure}%
+
+  Se aprecian dos características en estos datos:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Los valores correspondientes a marzo 2020 y mayo 2020 son faltantes
+    como se puede ver en la Tabla~\ref{tbl-1} y en la
+    Figura~\ref{fig-1}.
+  \item
+    Si bien los investigaron planificaron generar observaciones en los
+    meses enero, marzo, mayo, julio, septiembre y noviembre (impares),
+    se observaron algunas excepciones.
+  \end{itemize}
+
+  En todo el período hay dos meses, marzo y mayo, en el 2020 en los que
+  no se realizó el relevamiento. Por esto se visualizan dos valores
+  faltantes en las tres series en la Figura~\ref{fig-1}. Sin embargo, el
+  2020 es el único año en el que hay una observación en el mes de abril
+  (Tabla~\ref{tbl-1}) porque con esta última se intentó compensar los
+  faltantes de marzo y mayo.
+
+  Hay una observación en el mes de abril sólo en el año 2020
+  (Tabla~\ref{tbl-1}) relevada para compensar los faltantes de marzo y
+  mayo.
+
+  La otra excepción ocurrió en 2018 por ser el único año que tiene una
+  observación en octubre (Tabla~\ref{tbl-1}). Esto se debe a que los
+  investigadores quisieron hacer una llamada ``observación piloto'' pero
+  luego continuaron con su plan de proporcionar datos sólo en los meses
+  impares.
+
+  Estas características de los datos locales producen observaciones
+  separadas por un mes (como octubre 2018 y noviembre 2018), que la
+  mayoría estén separadas por dos meses (acorde a lo planificado) y que
+  otras estén separadas por tres meses (como enero 2020 y abril 2020).
+
+  Se propuso para las tres series imputar los valores que faltan para
+  las fechas de marzo 2020, mayo 2020.
+
+  Para poder elegir un método de imputación apropiado para el caso se
+  analizaron los atributos principales de las series.
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-2-1.pdf}}
+
+  }
+
+  \caption{\label{fig-2}Función de Autocorrelación Muestral (FACM) de la
+  primer diferencia de cada serie local}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-3-1.pdf}}
+
+  }
+
+  \caption{\label{fig-3}Función de Autocorrelación Parcial Muestral
+  (FACPM) de la primer diferencia de cada serie local}
+
+  \end{figure}%
+
+  Es común que las series económicas sigan el patrón de un paseo
+  aleatorio. Por esta razón se analizó si la primera diferencia de cada
+  serie es un ruido blanco.
+
+  La mayoría de los bastones de las FACM de la Figura~\ref{fig-2}
+  parecen ser no significativos. De todas formas hay algunos que superan
+  el valor crítico representado con la línea punteada azul pero como
+  toman valores de aproximadamente 0.4, en valor absoluto, o menores;
+  éstos tampoco parecen ser significativos. Se realiza el test de
+  Ljung-Box y se concluye con un nivel de significación del 5\% y en
+  base a la evidencia muestral que los primeros treinta coeficientes de
+  la FAC de las diferencias de las series Ag Barometer Austral,
+  Condiciones presentes y Expectativas futuras son nulos, es decir, que
+  estas tres series son paseos aleatorios. (\(p-value=\) 0.9339,
+  \(p-value=\) 0.9443 y \(p-value=\) 0.8711 respectivamente, \(k=20\))
+
+  Se imputaron las dos fechas con \emph{interpolación lineal} por ser
+  uno uno de los métodos que más conviene dadas las características
+  vistas de estas tres series según las conclusiones de la tesina de
+  Lucía Tamplín.
+
+  \begin{longtable}[t]{ccccccc}
+
+  \caption{\label{tbl-2}Ag Barometer Austral en el período noviembre
+  2018 - enero 2026}
+
+  \tabularnewline
+
+  \toprule
+  Año & ene & mar & may & jul & sep & nov\\
+  \midrule
+  2018 &  &  &  &  &  & 95\\
+  2019 & 106 & 103 & 117 & 137 & 74 & 64\\
+  2020 & 52 & 52.5 & 50.5 & 48 & 69 & 78\\
+  2021 & 79 & 90 & 79 & 69 & 79 & 79\\
+  2022 & 90 & 90 & 98 & 76 & 83 & 67\\
+  \addlinespace
+  2023 & 68 & 69 & 84 & 89 & 100 & 117\\
+  2024 & 119 & 129 & 139 & 139 & 132 & 149\\
+  2025 & 117 & 137 & 130 & 127 & 124 & 159\\
+  2026 & 158 &  &  &  &  & \\
+  \bottomrule
+
+  \end{longtable}
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-4-1.pdf}}
+
+  }
+
+  \caption{\label{fig-4}Series locales provistas por la Austral en el
+  período noviembre 2018 - enero 2026}
+
+  \end{figure}%
+
+  Las observaciones de octubre 2018 y abril 2020, las cuales sólo
+  representan un 4.54\% de la totalidad de los datos, fueron
+  consideradas a la hora de imputar pero no se las tuvo en cuenta en el
+  resto del trabajo para lograr que las tres series tengan periodicidad
+  regular.
+
+  Luego de todo este tratamiento se logran tres series de periodicidad
+  bimensual, de cuarenta y cuatro observaciones cada una para el período
+  noviembre 2018 - enero 2026. Se puede apreciar, tomando como ejemplo
+  al Ag Barometer Austral, que luego de este proceso sólo hay
+  observaciones para los meses impares (Tabla~\ref{tbl-2}) y que los
+  valores de marzo 2020 y mayo 2020 fueron imputados
+  (Figura~\ref{fig-4}).
+
+  Se observan los datos proporcionados por la Universidad de Purdue.
 
   \newpage
 
@@ -419,6 +740,12 @@
   \section{Comparación}\label{comparaciuxf3n}
 
   Comparar los países teniendo en cuenta las tres secciones anteriores.
+
+  \section{Referencias}\label{referencias}
+
+  https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
+
+  https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
   
 
 \end{document}
