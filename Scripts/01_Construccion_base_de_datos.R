@@ -30,7 +30,7 @@ d_conNA <- readxl::read_excel("Datos/Crudos/agbarometerARG_enero2026_conNA.xlsx"
              regular = F) |> 
   # 2.
   mutate(
-    `Ag Barometer` = na_interpolation(`Ag Barometer`, option = 'linear'),
+    `Ag Barometer Austral` = na_interpolation(`Ag Barometer Austral`, option = 'linear'),
     `Condiciones presentes` = na_interpolation(`Condiciones presentes`, option = 'linear'),
     `Expectativas futuras` = na_interpolation(`Expectativas futuras`, option = 'linear')
   ) |> 
@@ -45,20 +45,55 @@ d_conNA <- readxl::read_excel("Datos/Crudos/agbarometerARG_enero2026_conNA.xlsx"
   )
 
 # exporto el data imputado a datos/prodecesados 
-
 d_conNA |>
-  as_tibble() |>               # 1. Lo volvemos a formato tabla simple
-  mutate(Bimestre = as.Date(Bimestre)) |> # 2. yearmonth a Date
-  writexl::write_xlsx("Datos/Procesados/agbarometer_ARG_imputado.xlsx") # 3. Guardamos
+  as_tibble() |>               
+  mutate(Bimestre = as.Date(Bimestre)) |> 
+  writexl::write_xlsx("Datos/Procesados/agbarometer_ARG_imputado.xlsx") 
 
 
+# importo los datos de Arg imputados
+d_arg <- readxl::read_excel("Datos/Procesados/agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre) |> 
+  rename(Fecha = Bimestre,               # Nombre nuevo = Nombre viejo
+         `Condiciones presentes Arg` = `Condiciones presentes`,
+         `Expectativas futuras Arg` = `Expectativas futuras`)
+
+# ------------------------------------------------------ #
+# EEUU
+# ------------------------------------------------------ #
+
+d_eeuu <- readxl::read_excel("Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |> 
+  rename(
+         `Ag Economy Barometer` = 3,
+         `Condiciones presentes EEUU` = 4,
+         `Expectativas futuras EEUU` = 5,
+         `Inversion de capital agricola` = 6
+         ) |> 
+  mutate(
+    Fecha = yearmonth(sprintf("%d-%02d", Year, match(Month, month.name)))) |> 
+  relocate(Fecha) |> 
+  as_tsibble(index = Fecha) |> 
+  select(-Month, -Year, -`Inversion de capital agricola`)
+  
+# ------------------------------------------------------ #
+# Covariables
+# ------------------------------------------------------ #
+
+covs <- readxl::read_excel("Datos/Crudos/covariables.xlsx",
+                           sheet = "Monthly Prices") |> 
+  mutate(Fecha = yearmonth(stringr::str_replace(Fecha, "M", "-"))) |> 
+  as_tsibble(index = Fecha) 
 
 
-
-
-
-
-
+# ------------------------------------------------------ #
+# Unificacion: d_arg + d_eeuu + covs
+# ------------------------------------------------------ #
+  
+datos <- d_arg |> 
+  full_join(d_eeuu, by = "Fecha") |> 
+  full_join(covs, by = "Fecha") |> 
+  writexl::write_xlsx("Datos/Procesados/base_construida.xlsx")
 
 
 
