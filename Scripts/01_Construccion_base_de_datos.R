@@ -93,6 +93,8 @@ covs <- readxl::read_excel("Datos/Crudos/covariables.xlsx",
 datos <- d_arg |> 
   full_join(d_eeuu, by = "Fecha") |> 
   full_join(covs, by = "Fecha") |> 
+  as.data.frame() |>                     # le saco el formato de tsibble
+  mutate(Fecha = as.Date(Fecha)) |>      # para q Excel no modifique el formato
   writexl::write_xlsx("Datos/Procesados/base_construida.xlsx")
 
 

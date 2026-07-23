@@ -630,26 +630,39 @@ Se presentan las características de la base contruida en la @tbl-4.
 
 
 
-# Análisis descriptivo
+# Aplicación
 
-En primer lugar, se realizó un análisis que permite explorar las características de los índices en los dos países.
+```{r}
+# Cargo la base creada
 
-## Argentina
-
-Estas series tienen periodicidad irregular y valores faltantes. Voy a imputar porque...
-
-Muestro características antes de imputar, dadas esas características y según las conclusiones de la tesina de Lucía Tamplín..., imputo las series con interpolación lineal.
-
-Descriptivos de cada una de las 3 series imputadas
-
-CCFs
+d <- readxl::read_excel("../Datos/Procesados/base_construida.xlsx") |> 
+  mutate(Fecha = yearmonth(Fecha)) |> 
+  as_tsibble(index = Fecha)
+  
+```
 
 
-## Estados Unidos
+```{r}
+d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  gg_season(`Ag Barometer Austral`, labels = 'left') +
+  geom_point(size = 1.5) +
+  scale_x_yearmonth(
+    date_breaks = "1 month",
+    date_labels = "%b",
+    expand = expansion(mult = c(0.11, 0.12))
+  ) +
+  labs(x = 'Tiempo') +
+  theme_bw() +
+  theme(
+    plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5)
+  )
+```
 
-Descriptivo de cada uno de los 3 índices
 
-CCFs
+
+
+
 
 \newpage
 
