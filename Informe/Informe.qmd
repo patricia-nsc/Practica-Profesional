@@ -1219,7 +1219,9 @@ ccf_arg_expec_cond + ccf_eeuu_expec_cond
 
 
 
-Si bien a primera vista la @fig-15 podría sugerir que el Ag Barometer Austral y el Ag Economy Barometer son simétricos, al observar la @fig-16 se ve que el bastón del cero es prácticamente nulo. Esto puede estar indicando que no hay relación entre estos índices.
+La @fig-15 y la @fig-9 parecen sugerir que el Ag Barometer Austral y el Ag Economy Barometer tienen compartamientos opuestos. Esto se condice con la presencia de rezagos significativos en la @fig-16 que toman valores negativos moderados.
+
+El bastón del cero de la @fig-16 es prácticamente nulo. Esto puede estar indicando que no hay relación entre estos índices. 
 
 
 En ambos países se observa que:
@@ -1229,8 +1231,327 @@ En ambos países se observa que:
 - Las Expectativas futuras anticipan moderadamente las Condiciones presentes de ediciones posteriores. Como el bastón del cero de la @fig-19 tiene una estimación alrededor de 0.5, existe una relación moderada entre las Expectativas futuras y las Condiciones presentes.
 
 
+## Relación del Ag Barometer con otras series económicas
+
+ 
+
+Terminado el análisis descriptivo, el objetivo de la presente sub-sección es analizar a qué fenómenos el Ag Barometer podría estar relacionado. Según economistas de la Austral, el primer conjunto de variables candidatas son los precios internacionales (*commodities*). 
 
 
+
+Se presentan gráficos que permitan analizar la posible existencia de relaciones. Éstos tienen una particularidad, cada punto representa el Ag Batometer de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación entre las variables porque el relevamiento del Ag Barometer se efectua a principios de mes y a principios de cada mes se publican los precios del mes anterior. Es decir, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de agosto para relevar el Ag Barometer de ese mes, la información de precios más reciente con la que cuentan es la de julio, ya que los datos de agosto todavía no fueron publicados.
+
+
+
+<!-- COMMODITIES VS AGB -->
+
+<!-- arg -->
+
+```{r}
+# 1. armo un data q me permita comparar agb(t) vs covs(t-1)
+# corro las covariables una celda para abajo
+
+d_completo_arg <- d |>
+  select( 
+    # saco los otros 5 indices, solo dejo el agb austral
+         -`Condiciones presentes Arg`, 
+         -`Expectativas futuras Arg`,
+         -`Ag Economy Barometer`, 
+         -`Condiciones presentes EEUU`,
+         -`Expectativas futuras EEUU`,
+    # saco las q no son commodities
+         -FEFundsRate, -`Bono 2`, -`Bono 10`, -`ICC Di Tella`,
+         -`ICC Michigan`, -NASDAQ, -`Dow Jones`, -IACA
+        ) 
+
+d_completo_arg <- d_completo_arg |> 
+  # muevo las X una fila abajo
+  mutate(across(3:ncol(d_completo_arg), \(x) lag(x, 1))) |>
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  mutate(across(2:ncol(d_completo_arg), as.numeric))
+
+
+cors_arg <- cor(d_completo_arg[, 3:ncol(d_completo_arg)], 
+            d_completo_arg[["Ag Barometer Austral"]], 
+            use = "pairwise.complete.obs",
+            method = "pearson")
+
+df_cor_arg <- tibble(
+  variable = rownames(cors_arg),
+  r        = cors_arg[, 1]
+) |> 
+  arrange(r) |>
+  mutate(
+    variable  = factor(variable, levels = variable)
+  )
+
+df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
+```
+
+
+
+
+
+```{r}
+#| label: fig-20
+#| fig-cap: "Correlaciones entre el Ag Barometer Austral y commodities"
+#| fig-width: 6
+#| fig-height: 6
+
+## Scatter AgB(t) vs covariables(t-1)
+
+d_completo_arg |>
+  select(Fecha, `Ag Barometer Austral`, 3:ncol(d_completo_arg)) |>
+  pivot_longer(cols = -c(Fecha, `Ag Barometer Austral`),
+               names_to = "variable", values_to = "valor") |>
+  left_join(df_cor_arg |> select(variable, r), 
+            by = "variable") |>
+  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
+         label = reorder(label, -r)) |>
+  ggplot(aes(x = valor, y = `Ag Barometer Austral`)) +
+  geom_point(alpha = 1, color = "black", size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
+  facet_wrap(~label, scales = "free_x", ncol = 4) +
+  labs(
+       x = NULL, 
+       y = "Ag Barometer Austral",
+       caption = "r: coeficiente de correlación de Pearson") +
+  theme_bw(base_size = 10)
+```
+
+
+<!-- eeuu -->
+
+```{r}
+d_completo_eeuu <- d |>
+  select( 
+    # saco los otros 5 indices, solo dejo el agb purdue
+         -`Ag Barometer Austral`,
+         -`Condiciones presentes Arg`, 
+         -`Expectativas futuras Arg`,
+         -`Condiciones presentes EEUU`,
+         -`Expectativas futuras EEUU`,
+    # saco las q no son commodities
+         -FEFundsRate, -`Bono 2`, -`Bono 10`, -`ICC Di Tella`,
+         -`ICC Michigan`, -NASDAQ, -`Dow Jones`, -IACA
+        ) 
+
+d_completo_eeuu <- d_completo_eeuu |> 
+  # muevo las X una fila abajo
+  mutate(across(3:ncol(d_completo_eeuu), \(x) lag(x, 1))) |>
+  filter(!is.na(`Ag Economy Barometer`)) |> 
+  mutate(across(2:ncol(d_completo_eeuu), as.numeric))
+
+
+cors_eeuu <- cor(d_completo_eeuu[, 3:ncol(d_completo_eeuu)], 
+            d_completo_eeuu[["Ag Economy Barometer"]], 
+            use = "pairwise.complete.obs",
+            method = "pearson")
+
+df_cor_eeuu <- tibble(
+  variable = rownames(cors_eeuu),
+  r        = cors_eeuu[, 1]
+) |> 
+  arrange(r) |>
+  mutate(
+    variable  = factor(variable, levels = variable)
+  )
+
+df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variable)
+```
+
+
+```{r}
+#| label: fig-21
+#| fig-cap: "Correlaciones entre el Ag Economy Barometer y los commodities"
+#| fig-width: 6
+#| fig-height: 6
+
+## Scatter AgB(t) vs covariables(t-1)
+
+d_completo_eeuu |>
+  select(Fecha, `Ag Economy Barometer`, 3:ncol(d_completo_eeuu)) |>
+  pivot_longer(cols = -c(Fecha, `Ag Economy Barometer`),
+               names_to = "variable", values_to = "valor") |>
+  left_join(df_cor_eeuu |> select(variable, r), 
+            by = "variable") |>
+  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
+         label = reorder(label, -r)) |>
+  ggplot(aes(x = valor, y = `Ag Economy Barometer`)) +
+  geom_point(alpha = 1, color = "black", size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
+  facet_wrap(~label, scales = "free_x", ncol = 4) +
+  labs(
+       x = NULL, 
+       y = "Ag Economy Barometer",
+       caption = "r: coeficiente de correlación de Pearson") +
+  theme_bw(base_size = 10)
+```
+
+
+
+Las correlaciones observadas en la @fig-20 y en la @fig-21 son bajas, se consideraron las asociaciones del Ag Barometer con los precios como débiles. Seguidamente los economistas propusieron otro conjunto de series económicas candidatas con la creencia de que, en caso de existir relación, sólo sería con el Ag Economy Barometer.
+
+Las figuras presentadas a continuación tienen la misma característica que la @fig-20 y la @fig-21.
+
+
+
+<!-- Otras variables VS AgB -->
+
+<!-- arg -->
+
+
+```{r}
+d_completo_arg <- d |>
+  select( 
+    # saco los otros 5 indices, solo dejo el agb austral
+         -`Condiciones presentes Arg`, 
+         -`Expectativas futuras Arg`,
+         -`Ag Economy Barometer`, 
+         -`Condiciones presentes EEUU`,
+         -`Expectativas futuras EEUU`,
+    # saco commodities y el icc michigan
+         -`ICC Michigan`,
+         -`Petroleo Brent`, -`Petroleo WTI`, 
+         -`Gas Natural EEUU`, -`Gas Natural Europa`, -Soja, -Maiz, -Sorgo,
+         -`Trigo SRW`, -`Trigo HRW`, -Carne, -Cerdo, -Pollo, -Urea
+        ) 
+
+d_completo_arg <- d_completo_arg |> 
+  # muevo las X una fila abajo
+  mutate(across(3:ncol(d_completo_arg), \(x) lag(x, 1))) |>
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  mutate(across(2:ncol(d_completo_arg), as.numeric))
+
+
+cors_arg <- cor(d_completo_arg[, 3:ncol(d_completo_arg)], 
+            d_completo_arg[["Ag Barometer Austral"]], 
+            use = "pairwise.complete.obs",
+            method = "pearson")
+
+df_cor_arg <- tibble(
+  variable = rownames(cors_arg),
+  r        = cors_arg[, 1]
+) |> 
+  arrange(r) |>
+  mutate(
+    variable  = factor(variable, levels = variable)
+  )
+
+df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
+```
+
+
+
+
+
+```{r}
+#| label: fig-22
+#| fig-cap: "Correlaciones entre el Ag Barometer Austral y commodities"
+
+## Scatter AgB(t) vs covariables(t-1)
+
+d_completo_arg |>
+  select(Fecha, `Ag Barometer Austral`, 3:ncol(d_completo_arg)) |>
+  pivot_longer(cols = -c(Fecha, `Ag Barometer Austral`),
+               names_to = "variable", values_to = "valor") |>
+  left_join(df_cor_arg |> select(variable, r), 
+            by = "variable") |>
+  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
+         label = reorder(label, -r)) |>
+  ggplot(aes(x = valor, y = `Ag Barometer Austral`)) +
+  geom_point(alpha = 1, color = "black", size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
+  facet_wrap(~label, scales = "free_x", ncol = 4) +
+  labs(
+       x = NULL, 
+       y = "Ag Barometer Austral",
+       caption = "r: coeficiente de correlación de Pearson") +
+  theme_bw(base_size = 10)
+```
+
+
+<!-- eeuu -->
+
+
+```{r}
+d_completo_eeuu <- d |>
+  select( 
+    # saco los otros 5 indices, solo dejo el agb purdue
+         -`Ag Barometer Austral`,
+         -`Condiciones presentes Arg`, 
+         -`Expectativas futuras Arg`,
+         -`Condiciones presentes EEUU`,
+         -`Expectativas futuras EEUU`,
+    # saco commodities y el icc di tella, iaca
+         -`ICC Di Tella`,
+         -IACA,
+         -`Petroleo Brent`, -`Petroleo WTI`, 
+         -`Gas Natural EEUU`, -`Gas Natural Europa`, -Soja, -Maiz, -Sorgo,
+         -`Trigo SRW`, -`Trigo HRW`, -Carne, -Cerdo, -Pollo, -Urea
+        ) 
+
+d_completo_eeuu <- d_completo_eeuu |> 
+  # muevo las X una fila abajo
+  mutate(across(3:ncol(d_completo_eeuu), \(x) lag(x, 1))) |>
+  filter(!is.na(`Ag Economy Barometer`)) |> 
+  mutate(across(2:ncol(d_completo_eeuu), as.numeric))
+
+
+cors_eeuu <- cor(d_completo_eeuu[, 3:ncol(d_completo_eeuu)], 
+            d_completo_eeuu[["Ag Economy Barometer"]], 
+            use = "pairwise.complete.obs",
+            method = "pearson")
+
+df_cor_eeuu <- tibble(
+  variable = rownames(cors_eeuu),
+  r        = cors_eeuu[, 1]
+) |> 
+  arrange(r) |>
+  mutate(
+    variable  = factor(variable, levels = variable)
+  )
+
+df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variable)
+```
+
+
+```{r}
+#| label: fig-23
+#| fig-cap: "Correlaciones entre el Ag Economy Barometer y otras variables"
+
+## Scatter AgB(t) vs covariables(t-1)
+
+d_completo_eeuu |>
+  select(Fecha, `Ag Economy Barometer`, 3:ncol(d_completo_eeuu)) |>
+  pivot_longer(cols = -c(Fecha, `Ag Economy Barometer`),
+               names_to = "variable", values_to = "valor") |>
+  left_join(df_cor_eeuu |> select(variable, r), 
+            by = "variable") |>
+  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
+         label = reorder(label, -r)) |>
+  ggplot(aes(x = valor, y = `Ag Economy Barometer`)) +
+  geom_point(alpha = 1, color = "black", size = 1.5) +
+  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
+  facet_wrap(~label, scales = "free_x", ncol = 4) +
+  labs(
+       x = NULL, 
+       y = "Ag Economy Barometer",
+       caption = "r: coeficiente de correlación de Pearson") +
+  theme_bw(base_size = 10)
+```
+
+
+Las relaciones entre estas variables y el Ag Economy Barometer también son débiles como se puede ver en la @fig-23. Si bien algunas correlaciones entre el Ag Barometer Austral y este nuevo conjunto de series parecen ser moderadas-altas (@fig-22), también se las considera como débiles por carecer de sentido práctico según los especialistas.
+
+
+Al no haber encontrado con qué está relacionado el Ag Barometer aún, la búsqueda no podía darse por finalizada. Nuevamente se consulta con los especialistas. Ellos, debido a su vasto conocimiento en el tema, dicen que el índice bajo estudio probablemente esté asociado a hechos políticos y/o bélicos.
+
+
+
+ GRAFICO LINEAAAAAAAAAS
+ 
+ grafico de lineas de hitos politicos y belicos !! y conclusion (relacionar q estos hechos son los q me producen los aumentos de variancia, ents veo q los hechos politicos y belicos hacen q las respuestas de los productores cambien/salten/se alteren.
 
 \newpage
 
