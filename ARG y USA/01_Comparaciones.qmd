@@ -235,6 +235,8 @@ d_bimensuales <- d |>
 modelo_ardl <- ARDL::auto_ardl(agb_arg ~ agb_usa, data = d_bimensuales, max_order = c(3,3))
 
 ```
+
+
 ```{r}
 # checkeo sups, residuos RB y normales, a_t son RB
 forecast::checkresiduals(ts(modelo_ardl$best_model$residuals))

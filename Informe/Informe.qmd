@@ -209,7 +209,8 @@ Teniendo estas características en cuenta, los índices de Argentina tienen peri
 
 # Armado de la base de datos
 
-En una primer instancia se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc. Seguidamente se contruyó una base de datos que reuniera las variables de Argentina y Estados Unidos provistas para el trabajo junto con otras sugeridas por los especialistas.
+El fin de esta sección es plasmar el camino que se siguió para armar una base de datos que facilitó realizar ciertos análisis. Ésta reune las series de Argentina y Estados Unidos provistas para el trabajo junto con otras sugeridas por los especialistas. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
+
 
 
 ## Tratamiento sobre las variables provistas
@@ -273,7 +274,8 @@ d_conNA |>
 ```{r}
 #| label: fig-1
 #| fig-cap: "Series locales provistas por la Austral en el período octubre 2018 - enero 2026"
-
+#| fig-height: 4
+#| fig-width: 6
 
 # Grafico de las 3 series Arg con los faltantes
 d_conNA |> 
@@ -302,7 +304,7 @@ d_conNA |>
 Se aprecian dos características en estos datos:
 
 -   Los valores correspondientes a marzo 2020 y mayo 2020 son faltantes como se puede ver en la @tbl-1 y en la @fig-1. 
--   Si bien los investigaron planificaron generar observaciones en los meses enero, marzo, mayo, julio, septiembre y noviembre (impares), se observaron algunas excepciones. 
+-   Si bien los investigaron planificaron generar observaciones en los meses impares, se observaron algunas excepciones. 
 
 
 Hay una observación en el mes de abril sólo en el año 2020 (@tbl-1) relevada para compensar los faltantes de marzo y mayo. 
@@ -321,7 +323,7 @@ Para poder elegir un método de imputación apropiado para el caso se analizaron
 
 ```{r}
 #| label: fig-2
-#| fig-cap: "Función de Autocorrelación Muestral (FACM) de la primer diferencia de cada serie local"
+#| fig-cap: "FACM de la primer diferencia de cada serie local"
 #| fig-width: 10
 
 acf1 <- d_conNA |> 
@@ -358,7 +360,7 @@ acf1 + acf2 + acf3
 
 ```{r}
 #| label: fig-3
-#| fig-cap: "Función de Autocorrelación Parcial Muestral (FACPM) de la primer diferencia de cada serie local"
+#| fig-cap: "FACPM de la primer diferencia de cada serie local"
 #| fig-width: 10
 
 pacf1 <- d_conNA |> 
@@ -398,7 +400,7 @@ pacf1 + pacf2 + pacf3
 # Test Ljung-Box Ho) p_1 = .... = p_30 = 0
 
 # AgB
-pv_agb_arg <- d_conNA |> 
+pv_agb_arg_dif1 <- d_conNA |> 
   fill_gaps() |> 
   tidyr::fill(`Ag Barometer Austral`, .direction = "down") |> 
   mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
@@ -408,7 +410,7 @@ pv_agb_arg <- d_conNA |>
   pluck("p.value") # solo guardo el p-value
 
 # Condiciones
-pv_cond_arg <- d_conNA |> 
+pv_cond_arg_dif1 <- d_conNA |> 
   fill_gaps() |> 
   tidyr::fill(`Condiciones presentes`, .direction = "down") |> 
   mutate(dif1 = difference(`Condiciones presentes`)) |> 
@@ -418,7 +420,7 @@ pv_cond_arg <- d_conNA |>
   pluck("p.value") 
 
 # Expectativas
-pv_expec_arg <- d_conNA |> 
+pv_expec_arg_dif1 <- d_conNA |> 
   fill_gaps() |> 
   tidyr::fill(`Expectativas futuras`, .direction = "down") |> 
   mutate(dif1 = difference(`Expectativas futuras`)) |> 
@@ -427,9 +429,9 @@ pv_expec_arg <- d_conNA |>
   Box.test(lag = 20, type = "Ljung-Box") |> 
   pluck("p.value")
 
-pv_agb_arg <- round(pv_agb_arg, digits = 4) 
-pv_cond_arg <- round(pv_cond_arg, digits = 4)
-pv_expec_arg <- round(pv_expec_arg, digits = 4)
+pv_agb_arg_dif1 <- round(pv_agb_arg_dif1, digits = 4) 
+pv_cond_arg_dif1 <- round(pv_cond_arg_dif1, digits = 4)
+pv_expec_arg_dif1 <- round(pv_expec_arg_dif1, digits = 4)
 
 
 ```
@@ -438,7 +440,7 @@ pv_expec_arg <- round(pv_expec_arg, digits = 4)
 Es común que las series económicas sigan el patrón de un paseo aleatorio. Por esta razón se analizó si la primera diferencia de cada serie es un ruido blanco.
 
 
-La mayoría de los bastones de las FACM de la @fig-2 parecen ser no significativos. De todas formas hay algunos que superan el valor crítico representado con la línea punteada azul pero como toman valores de aproximadamente 0.4, en valor absoluto, o menores; éstos tampoco parecen ser significativos. Se realiza el test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros treinta coeficientes de la FAC de las diferencias de las series Ag Barometer Austral, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg`, $p-value=$ `r pv_cond_arg` y $p-value=$ `r pv_expec_arg` respectivamente, $k=20$)
+La mayoría de los bastones de las FACM de la @fig-2 parecen ser no significativos. De todas formas hay algunos que superan el valor crítico representado con la línea punteada azul pero como toman valores de aproximadamente 0.4, en valor absoluto, o menores; éstos tampoco parecen ser significativos. Se realiza el test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros treinta coeficientes de la FAC de las diferencias de las series Ag Barometer Austral, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg_dif1`, $p-value=$ `r pv_cond_arg_dif1` y $p-value=$ `r pv_expec_arg_dif1` respectivamente, $k=20$)
 
 Se imputaron las dos fechas con *interpolación lineal* por ser uno uno de los métodos que más conviene dadas las características vistas de estas tres series según las conclusiones de la tesina de Lucía Tamplín.
 
@@ -476,7 +478,9 @@ d_arg |>
 
 ```{r}
 #| label: fig-4
-#| fig-cap: "Series locales provistas por la Austral en el período noviembre 2018 - enero 2026"
+#| fig-cap: "Series locales en el período noviembre 2018 - enero 2026"
+#| fig-height: 4
+#| fig-width: 6
 
 # grafico de las series de arg imputadas
 fechas_imputadas <- yearmonth(c("2020 Mar", "2020 May"))
@@ -538,7 +542,9 @@ d_eeuu <- readxl::read_excel("../Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |>
 
 ```{r}
 #| label: fig-5
-#| fig-cap: "Series locales provistas por la Universidad de Purdue en el período octubre 2015 - marzo 2026"
+#| fig-cap: "Series provistas por la Universidad de Purdue en el período octubre 2015 - marzo 2026"
+#| fig-height: 4.5
+#| fig-width: 6.5
 
 d_eeuu |> 
   tidyr::pivot_longer(
@@ -604,7 +610,7 @@ readxl::read_excel("Tablas/tabla_covs.xlsx") |>
 
 ## Base de datos construida
 
-Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y trás algunas tareas propias del manejo de datos, se construyó la base de datos `base_contruida.xlsx`, con el software R, que permitió realizar distintos análisis del trabajo.
+Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y realizadas algunas tareas propias del manejo de datos, se construyó la base de datos `base_contruida.xlsx`, con el software R, que permitió realizar ciertos análisis del trabajo.
 
 
 
@@ -632,31 +638,241 @@ Se presentan las características de la base contruida en la @tbl-4.
 
 # Aplicación
 
+
+
+Una vez dispuestos los datos en una misma base de datos, con el fin de conocer las características de los índices se decidió comenzar esta práctica profesional presentando un análisis exploratorio de los datos suministrados por las universidades. Se realizó un análisis univariado del Ag Barometer y luego se llevó a cabo un análisis bivariado que constó de dos fases. En la primera se analizó la relación entre pares de series en estudio. En la segunda se estudió la relación del Ag Barometer con las series propuestas por economistas anteriormente presentadas.
+
+
+
+## Análisis descriptivo del Ag Barometer
+
+
+A continuación se ofrece una primera impresión del Ag Barometer Austral y del Ag Economy Barometer en la @fig-5. 
+
+```{r}
+#| label: fig-6
+#| fig-cap: "Series locales en el período noviembre 2018 - enero 2026"
+#| fig-height: 4
+#| fig-width: 6
+
+# graf series arg (imputadas)
+
+d_arg |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer Austral`, `Condiciones presentes`, `Expectativas futuras`), 
+               names_to = "Índice", 
+               values_to = "valor") |> 
+  ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer Austral" = "black",          
+    "Condiciones presentes" = "#417B5A", 
+    "Expectativas futuras" = "#FF88DC"  
+  )) +
+  labs(x = "Tiempo",
+       y = "Índice") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom") 
+```
+
+```{r}
+#| label: fig-7
+#| fig-cap: "FACM y FACPM del Ag Barometer Austral"
+#| fig-width: 8
+
+# acf y pacf arg
+
+
+acf_agb_arg <- d_arg |> 
+  ACF(`Ag Barometer Austral`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_agb_arg <- d_arg |> 
+  PACF(`Ag Barometer Austral`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_agb_arg + pacf_agb_arg 
+```
+
+
+```{r}
+#| label: fig-8
+#| fig-cap: "FACM y FACPM del Ag Economy Barometer"
+#| fig-width: 8
+
+# acf y pacf eeuu
+
+acf_agb_eeuu <- d_eeuu |> 
+  ACF(`Ag Economy Barometer`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_agb_eeuu <- d_eeuu |> 
+  PACF(`Ag Economy Barometer`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_agb_eeuu + pacf_agb_eeuu
+```
+
+Los bastones de la FACM parecen presentar un decaimiento exponencial donde la estimación del primer coeficiente es casi 0.8 en ambos países (@fig-7 y @fig-8) lo cual sugiere que ninguna de las series sería ruido blanco.
+
+
+```{r}
+#| include: false
+
+# H0) p1 =  ... = p20 = 0, p = bastones de la ACF agb
+
+# afb arg
+pv_agb_arg <- d_arg |> 
+  pull(`Ag Barometer Austral`) |> 
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") # solo guardo el p-value
+
+pv_agb_arg <- round(pv_agb_arg, 4)
+
+# agb eeu
+pv_agb_eeuu <- d_eeuu |> 
+  pull(`Ag Economy Barometer`) |> 
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") # solo guardo el p-value
+
+pv_agb_eeuu <- round(pv_agb_arg, 4)
+```
+
+
+
+Se realizan dos Test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que el Ag Barometer Austral y el Ag Economy Barometer no son ruido blanco. Tiene sentido sentido investigar estas series.
+($p-value < 0.001$ y $p-value < 0.001$ respectivamente, $k=20$).
+
+A continuación se muestran más gráficos para conocer con más detalle las características de estos índices.
+
+
 ```{r}
 # Cargo la base creada
 
 d <- readxl::read_excel("../Datos/Procesados/base_construida.xlsx") |> 
   mutate(Fecha = yearmonth(Fecha)) |> 
   as_tsibble(index = Fecha)
-  
 ```
 
 
 ```{r}
-d |> 
-  filter(!is.na(`Ag Barometer Austral`)) |> 
-  gg_season(`Ag Barometer Austral`, labels = 'left') +
+tabla_medidas <- d |> 
+  as_tibble() |> 
+  mutate(Año = factor(year(Fecha))) |> 
+  group_by(Año) |> 
+  dplyr::summarise(
+    N_Arg = sum(!is.na(`Ag Barometer Austral`)),
+    N_Usa = sum(!is.na(`Ag Economy Barometer`)),
+    Media_Arg = mean(`Ag Barometer Austral`, na.rm = T),
+    Media_Usa = mean(`Ag Economy Barometer`),
+    Variancia_Arg = var(`Ag Barometer Austral`, na.rm = T),
+    Variancia_Usa = var(`Ag Economy Barometer`)
+  )
+```
+
+
+```{r}
+#| label: fig-9
+#| fig-cap: "Evolución anual del Ag Barometer"
+#| fig-height: 4
+#| fig-width: 6
+
+# grafico q compara las medias de arg y usa
+tabla_medidas |> 
+  mutate(Año = as.numeric(as.character(Año))) |> 
+  tidyr::pivot_longer(
+    cols = c(Media_Arg, Media_Usa), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  
+  tidyr::drop_na(Año) |> 
+  
+  ggplot(aes(x = Año, y = valor, color = Índice, group = Índice)) +
+  geom_line() +
+  geom_point(size = 1.5) + 
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  scale_x_continuous(breaks = seq(min(as.numeric(as.character(tabla_medidas$Año))), 
+                                  max(as.numeric(as.character(tabla_medidas$Año))), 
+                                  by = 1)) +
+  
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Media_Arg" = "#6D9DC5",          
+    "Media_Usa" = "#BF211E" 
+  ), labels = c("Ag Barometer Austral medio", "Ag Economy Barometer medio")) + 
+  labs(x = "Año", 
+       y = "Ag Barometer medio") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom")
+
+```
+
+
+```{r}
+#| label: fig-10
+#| fig-cap: "Comportamiento anual del Ag Barometer Austral y del Ag Economy Barometer"
+#| fig-height: 6
+#| fig-width: 14
+
+
+# Comportamiento anual del Ag Barometer Austral
+estacionalidad_por_anio_arg <- d_arg |> 
+  as_tibble() |> 
+  mutate(
+    Año = year(Bimestre),
+    Mes = month(Bimestre, label = TRUE, abbr = TRUE)
+  ) |> 
+  ggplot(aes(x = Mes, y = `Ag Barometer Austral`, color = factor(Año), group = Año)) +
+  geom_line() +
   geom_point(size = 1.5) +
-  scale_x_yearmonth(
-    date_breaks = "1 month",
-    date_labels = "%b",
-    expand = expansion(mult = c(0.11, 0.12))
-  ) +
-  labs(x = 'Tiempo') +
+  labs(x = 'Mes', y = 'Ag Barometer Austral', color = 'Año') +
   theme_bw() +
   theme(
     plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5)
   )
+
+# Comportamiento anual del Ag Economy Barometer
+estacionalidad_por_anio_eeuu <- d_eeuu |> 
+  as_tibble() |> 
+  mutate(
+    Año = year(Fecha),
+    Mes = month(Fecha, label = TRUE, abbr = TRUE)
+  ) |> 
+  ggplot(aes(x = Mes, y = `Ag Economy Barometer`, color = factor(Año), group = Año)) +
+  geom_line() +
+  geom_point(size = 1.5) +
+  labs(x = 'Mes', y = 'Ag Economy Barometer', color = 'Año') +
+  theme_bw() +
+  theme(
+    plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5)
+  )
+
+estacionalidad_por_anio_arg + estacionalidad_por_anio_eeuu
 ```
 
 
@@ -664,35 +880,362 @@ d |>
 
 
 
+```{r}
+#| label: fig-11
+#| fig-cap: "Comportamiento mensual del Ag Barometer Austral y del Ag Economy Barometer"
+#| fig-height: 5
+#| fig-width: 13
+
+estacionalidad_por_mes_arg <- d_arg |> 
+  gg_subseries(`Ag Barometer Austral`) +  
+  labs(x = "Tiempo") +
+  scale_x_yearmonth(
+    date_breaks = "4 years",# Muestra una etiqueta cada 2 años 
+    date_labels = "%Y" ,    # %y: Muestra 22 en vez de 2022
+    expand = expansion(mult = c(0.13, 0.12))
+  ) +
+  theme_bw()
+
+estacionalidad_por_mes_eeuu <- d_eeuu |> 
+  gg_subseries(`Ag Economy Barometer`) +  
+  labs(x = "Tiempo") +
+  scale_x_yearmonth(
+    date_breaks = "7 years",# Muestra una etiqueta cada 2 años 
+    date_labels = "%Y" ,    # %y: Muestra 22 en vez de 2022
+    expand = expansion(mult = c(0.13, 0.12))
+  ) +
+  theme_bw()
+
+estacionalidad_por_mes_arg + estacionalidad_por_mes_eeuu
+```
+
+
+```{r}
+#| label: fig-12
+#| fig-cap: "Distribución del Ag Barometer Austral y del Ag Economy Barometer por año"
+#| fig-height: 5
+#| fig-width: 10
+
+boxplot_arg <- d_arg |> 
+  mutate(anio = factor(year(Bimestre))) |> 
+  ggplot(aes(x = anio,  y = `Ag Barometer Austral`)) +
+  geom_boxplot() +
+  labs(x = 'Año') +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  theme_bw()
+
+boxplot_eeuu <- d_eeuu |> 
+  mutate(anio = factor(year(Fecha))) |> 
+  ggplot(aes(x = anio,  y = `Ag Economy Barometer`)) +
+  geom_boxplot() +
+  labs(x = 'Año') +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  theme_bw()
+
+
+boxplot_arg + boxplot_eeuu
+```
+
+
+```{r}
+#| label: fig-13
+#| fig-cap: "FACM y FACPM de la primer diferencia del Ag Barometer Austral"
+#| fig-width: 8
+
+acf_agb_arg_dif1 <- d_arg |> 
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  ACF(dif1, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_agb_arg_dif1 <- d_arg |> 
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  PACF(dif1, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_agb_arg_dif1 + pacf_agb_arg_dif1
+```
+
+
+
+
+```{r}
+#| label: fig-14
+#| fig-cap: "FACM y FACPM de la primer diferencia del Ag Economy Barometer"
+#| fig-width: 8
+
+acf_agb_eeuu_dif1 <- d_eeuu |> 
+  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
+  ACF(dif1, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_agb_eeuu_dif1 <- d_eeuu |> 
+  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
+  PACF(dif1, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_agb_eeuu_dif1 + pacf_agb_eeuu_dif1
+
+```
+
+```{r}
+#| include: false
+
+# arg dif 1
+pv2_agb_arg_dif1 <- d_arg |>     # segunda vez q calculo esto en arg
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  drop_na(dif1) |>           
+  pull(dif1) |>             
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value")
+
+pv2_agb_arg_dif1 <- round(pv2_agb_arg_dif1, digits = 4)
+
+# eeuu dif1
+pv_agb_eeuu_dif1 <- d_eeuu |> 
+  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
+  drop_na(dif1) |>           
+  pull(dif1) |>             
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value")
+
+pv_agb_eeuu_dif1 <- round(pv_agb_eeuu_dif1, digits = 4)
+```
+
+
+
+
+Aproximadamente durante el período 2020-2023 en Argentina, la confianza fue pesimista, con valores similares de condiciones presentes y expectativas futuras. En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales (@fig-6). Este patrón no parece estar presente en las percepciones de los productores estadounidenses, donde las tres series toman valores similares en todo el período relevado (@fig-5).
+
+
+La confianza promedio de los productores estadounidenses varía a través del tiempo, manteniéndose siempre optimista durante todos los años analizados. En cambio, en Argentina la confianza media muestra una tendencia creciente a medida que pasa el tiempo, con excepción del período 2019-2020, donde se observó una disminución que generó en 2020 el promedio de confianza más pesimista histórico (@fig-9). 
+
+
+
+Las variabilidades de las percepciones parecen ser distintas entre año y año tanto para productores argentinos como estadounidenses donde el año de respuestas más variables en Argentina fue el 2019 y el 2020 seguido por el 2021 para Estados Unidos (@fig-12). 
+
+
+La confianza promedio parece ser similar en todos los meses y entre ambos países sugiriendo q ninguno de los índices posee pauta estacional (@fig-10 y  @fig-11). 
+
+
+Para obtener aún más características de estas series también se tuvo en cuenta sus primeras diferencias. Ninguno de los rezagos de la @fig-13 son significativos y en la @fig-14 son casi todos no significativos salvo tres coeficeintes cuyas estimaciones valen 0.2 o menos, en valor absoluto. Se realizó el Test de Ljung-Box sobre cada una de las series diferenciadas y se concluyó al 5% de significación y en base a la evidencia muestral que los primeros 20 coefiecientes de la FAC son nulos en ambas series diferenciadas ($p-value =$ `r pv2_agb_arg_dif1`, $p-value =$ `r pv_agb_eeuu_dif1`, $k=20$). Es decir que las dos diferencias son ruido blanco, en otras palabras, tanto el Ag Barometer Austral como el Ag Economy Barometer siguen un patrón de paseo aleatorio.
+
+
+
+
+## Análisis bivariado
+
+
+
+
+Para comparar el Ag Barometer Austral y el Ag Economy Barometer se presentan los siguientes gráficos.
+
+<!-- comparo los dos AgB!! -->
+
+```{r}
+#| label: fig-15
+#| fig-cap: "Ag Barometer Austral y Ag Economy Barometer"
+#| fig-height: 4
+#| fig-width: 6
+
+# grafico de AgB arg y eeuu superpuestos
+d |> 
+  as_tibble() |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer Austral`, `Ag Economy Barometer`), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  tidyr::drop_na(valor) |> 
+  ggplot(aes(x = Fecha, y = valor, color = Índice, group = Índice)) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer Austral" = "#6D9DC5",          
+    "Ag Economy Barometer" = "#BF211E" 
+  )) +
+  labs(x = "Tiempo", 
+       y = "Ag Barometer") +
+  theme_bw() +
+  theme(legend.title = element_blank(),
+        legend.position = "bottom"
+        )
+
+```
+
+
+```{r}
+#| label: fig-16
+#| fig-cap: "FCCM del Ag Barometer Austral y el Ag Economy Barometer"
+
+d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  as_tsibble(index = Fecha) |> 
+  feasts::CCF(`Ag Barometer Austral`, `Ag Economy Barometer`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM", # CCF crossed correl fc = FCC fc de correl cruzada
+    caption = "x = Ag Barometer Austral \n y = Ag Economy Barometer"
+  ) +
+  theme_bw()
+```
+
+
+<!-- ccf's de ARG vs EEUU-->
+
+
+A partir de los seis índices brindados por las universidades, se presentan figuras adicionales para analizar posibles relaciones entre pares de ellos de interés práctico, así como para estudiar si alguno anticipa a otro.
+
+
+
+```{r}
+#| label: fig-17
+#| fig-cap: "FCCM del Ag Barometer y las Condiciones presentes en Argentina y en Estados Unidos"
+#| fig-width: 8
+
+ccf_arg_agb_cond <- d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  as_tsibble(index = Fecha) |>  
+  feasts::CCF(`Ag Barometer Austral`, `Condiciones presentes Arg`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM",
+    caption = "x = Ag Barometer Austral \n y = Condiciones presentes Arg"
+  ) +
+  theme_bw()
+
+
+ccf_eeuu_agb_cond <- d |> 
+  feasts::CCF(`Ag Economy Barometer`, `Condiciones presentes EEUU`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM",
+    caption = "x = Ag Economy Barometer \n y = Condiciones presentes EEUU"
+  ) +
+  theme_bw()
+
+ccf_arg_agb_cond + ccf_eeuu_agb_cond
+```
+
+```{r}
+#| label: fig-18
+#| fig-cap: "FCCM del Ag Barometer y las Expectativas futuras en Argentina y en Estados Unidos"
+#| fig-width: 8
+
+ccf_arg_agb_expec <- d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  as_tsibble(index = Fecha) |>  
+  feasts::CCF(`Ag Barometer Austral`, `Expectativas futuras Arg`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM",
+    caption = "x = Ag Barometer Austral \n y = Expectativas futuras Arg"
+  ) +
+  theme_bw()
+
+
+ccf_eeuu_agb_expec <- d |> 
+  feasts::CCF(`Ag Economy Barometer`, `Expectativas futuras EEUU`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM",
+    caption = "x = Ag Economy Barometer \n y = Expectativas futuras EEUU"
+  ) +
+  theme_bw()
+
+ccf_arg_agb_expec + ccf_eeuu_agb_expec
+```
+
+```{r}
+#| label: fig-19
+#| fig-cap: "FCCM de Expectativas futuras y las Condiciones presentes en Argentina y en Estados Unidos"
+#| fig-width: 8
+
+ccf_arg_expec_cond <- d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  as_tsibble(index = Fecha) |>  
+  feasts::CCF(`Expectativas futuras Arg`, `Condiciones presentes Arg`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM",
+    caption = "x = Expectativas futuras Arg \n y = Condiciones presentes Arg"
+  ) +
+  theme_bw()
+
+
+ccf_eeuu_expec_cond <- d |> 
+  feasts::CCF(`Expectativas futuras EEUU`, `Condiciones presentes EEUU`, lag_max = 18) |> 
+  autoplot() +
+  ylim(-1, 1) +
+  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
+  labs(
+    x = "Retardo",
+    y = "FCCM",
+    caption = "x = Expectativas futuras EEUU \n y = Condiciones presentes EEUU"
+  ) +
+  theme_bw()
+
+ccf_arg_expec_cond + ccf_eeuu_expec_cond
+```
+
+
+
+
+Si bien a primera vista la @fig-15 podría sugerir que el Ag Barometer Austral y el Ag Economy Barometer son simétricos, al observar la @fig-16 se ve que el bastón del cero es prácticamente nulo. Esto puede estar indicando que no hay relación entre estos índices.
+
+
+En ambos países se observa que:
+
+- A medida que el Ag Barometer aumenta las condiciones presentes también. El Ag Barometer anticipa, de manera moderada, las condiciones presentes de relevamientos posteriores. Estas características se presentan con mayor fuerza en Estados Unidos (@fig-17). 
+- El Ag Barometer tiene una relación directa muy fuerte con las Expectativas futuras porque en la @fig-18 se ve que la estimación del rezago asociado al cero es cercana a uno.
+- Las Expectativas futuras anticipan moderadamente las Condiciones presentes de ediciones posteriores. Como el bastón del cero de la @fig-19 tiene una estimación alrededor de 0.5, existe una relación moderada entre las Expectativas futuras y las Condiciones presentes.
+
+
+
+
+
 \newpage
 
-# Relación del Ag Barometer con otras variables
-
-## Variables numéricas
-
-Presentación de las variables (commodities, dow jones, fed, ICC...) que cruzamos con el Ag Barometer
-
-Explicar por qué t vs. t-1
-
-Muestro gráficos de correlaciones de Argentina y de EEUU
 
 
-
-## Variables categóricas
-
-Como no se observa relación entre el Ag Barometer y todas las variables propuestas, se sospecha que sí está relacionado con hitos políticos o bélicos. 
-
-
-Para analizar esto se propone construir variables indicadoras que representan ...
-
-graficos
-
-
-\newpage
-
-# Comparación
-
-Comparar los países teniendo en cuenta las tres secciones anteriores.
 
 # Referencias
 

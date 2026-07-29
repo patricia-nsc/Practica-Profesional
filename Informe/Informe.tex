@@ -491,12 +491,13 @@
 
   \section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
 
-  En una primer instancia se aplicaron procesamientos sobre algunas de
-  las series provistas como imputación de valores faltantes, eliminación
-  de valores, homogeneización de nombres de variables, etc. Seguidamente
-  se contruyó una base de datos que reuniera las variables de Argentina
-  y Estados Unidos provistas para el trabajo junto con otras sugeridas
-  por los especialistas.
+  El fin de esta sección es plasmar el camino que se siguió para armar
+  una base de datos que facilitó realizar ciertos análisis. Ésta reune
+  las series de Argentina y Estados Unidos provistas para el trabajo
+  junto con otras sugeridas por los especialistas. Previamente a la
+  unificación se aplicaron procesamientos sobre algunas de las series
+  provistas como imputación de valores faltantes, eliminación de
+  valores, homogeneización de nombres de variables, etc.
 
   \subsection{Tratamiento sobre las variables
   provistas}\label{tratamiento-sobre-las-variables-provistas}
@@ -550,8 +551,7 @@
     Figura~\ref{fig-1}.
   \item
     Si bien los investigaron planificaron generar observaciones en los
-    meses enero, marzo, mayo, julio, septiembre y noviembre (impares),
-    se observaron algunas excepciones.
+    meses impares, se observaron algunas excepciones.
   \end{itemize}
 
   Hay una observación en el mes de abril sólo en el año 2020
@@ -583,8 +583,8 @@
 
   }
 
-  \caption{\label{fig-2}Función de Autocorrelación Muestral (FACM) de la
-  primer diferencia de cada serie local}
+  \caption{\label{fig-2}FACM de la primer diferencia de cada serie
+  local}
 
   \end{figure}%
 
@@ -596,8 +596,8 @@
 
   }
 
-  \caption{\label{fig-3}Función de Autocorrelación Parcial Muestral
-  (FACPM) de la primer diferencia de cada serie local}
+  \caption{\label{fig-3}FACPM de la primer diferencia de cada serie
+  local}
 
   \end{figure}%
 
@@ -654,8 +654,8 @@
 
   }
 
-  \caption{\label{fig-4}Series locales provistas por la Austral en el
-  período noviembre 2018 - enero 2026}
+  \caption{\label{fig-4}Series locales en el período noviembre 2018 -
+  enero 2026}
 
   \end{figure}%
 
@@ -683,8 +683,8 @@
 
   }
 
-  \caption{\label{fig-5}Series locales provistas por la Universidad de
-  Purdue en el período octubre 2015 - marzo 2026}
+  \caption{\label{fig-5}Series provistas por la Universidad de Purdue en
+  el período octubre 2015 - marzo 2026}
 
   \end{figure}%
 
@@ -766,10 +766,10 @@
   \subsection{Base de datos construida}\label{base-de-datos-construida}
 
   Una vez que se obtuvieron todas las series proporcionadas por las
-  universidades junto con las buscadas de forma independiente y trás
-  algunas tareas propias del manejo de datos, se construyó la base de
-  datos \texttt{base\_contruida.xlsx}, con el software R, que permitió
-  realizar distintos análisis del trabajo.
+  universidades junto con las buscadas de forma independiente y
+  realizadas algunas tareas propias del manejo de datos, se construyó la
+  base de datos \texttt{base\_contruida.xlsx}, con el software R, que
+  permitió realizar ciertos análisis del trabajo.
 
   \begin{longtable}[t]{>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{6.5cm}>{\raggedright\arraybackslash}p{5cm}}
 
@@ -822,60 +822,294 @@
 
   \newpage
 
-  \section{Análisis descriptivo}\label{anuxe1lisis-descriptivo}
+  \section{Aplicación}\label{aplicaciuxf3n}
 
-  En primer lugar, se realizó un análisis que permite explorar las
-  características de los índices en los dos países.
+  Una vez dispuestos los datos en una misma base de datos, con el fin de
+  conocer las características de los índices se decidió comenzar esta
+  práctica profesional presentando un análisis exploratorio de los datos
+  suministrados por las universidades. Se realizó un análisis univariado
+  del Ag Barometer y luego se llevó a cabo un análisis bivariado que
+  constó de dos fases. En la primera se analizó la relación entre pares
+  de series en estudio. En la segunda se estudió la relación del Ag
+  Barometer con las series propuestas por economistas anteriormente
+  presentadas.
 
-  \subsection{Argentina}\label{argentina}
+  \subsection{Análisis descriptivo del Ag
+  Barometer}\label{anuxe1lisis-descriptivo-del-ag-barometer}
 
-  Estas series tienen periodicidad irregular y valores faltantes. Voy a
-  imputar porque\ldots{}
+  A continuación se ofrece una primera impresión del Ag Barometer
+  Austral y del Ag Economy Barometer en la Figura~\ref{fig-5}.
 
-  Muestro características antes de imputar, dadas esas características y
-  según las conclusiones de la tesina de Lucía Tamplín\ldots, imputo las
-  series con interpolación lineal.
+  \begin{figure}
 
-  Descriptivos de cada una de las 3 series imputadas
+  \centering{
 
-  CCFs
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-6-1.pdf}}
 
-  \subsection{Estados Unidos}\label{estados-unidos}
+  }
 
-  Descriptivo de cada uno de los 3 índices
+  \caption{\label{fig-6}Series locales en el período noviembre 2018 -
+  enero 2026}
 
-  CCFs
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-7-1.pdf}}
+
+  }
+
+  \caption{\label{fig-7}FACM y FACPM del Ag Barometer Austral}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-8-1.pdf}}
+
+  }
+
+  \caption{\label{fig-8}FACM y FACPM del Ag Economy Barometer}
+
+  \end{figure}%
+
+  Los bastones de la FACM parecen presentar un decaimiento exponencial
+  donde la estimación del primer coeficiente es casi 0.8 en ambos países
+  (Figura~\ref{fig-7} y Figura~\ref{fig-8}) lo cual sugiere que ninguna
+  de las series sería ruido blanco.
+
+  Se realizan dos Test de Ljung-Box y se concluye con un nivel de
+  significación del 5\% y en base a la evidencia muestral que el Ag
+  Barometer Austral y el Ag Economy Barometer no son ruido blanco. Tiene
+  sentido sentido investigar estas series. (\(p-value < 0.001\) y
+  \(p-value < 0.001\) respectivamente, \(k=20\)).
+
+  A continuación se muestran más gráficos para conocer con más detalle
+  las características de estos índices.
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-9-1.pdf}}
+
+  }
+
+  \caption{\label{fig-9}Evolución anual del Ag Barometer}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-10-1.pdf}}
+
+  }
+
+  \caption{\label{fig-10}Comportamiento anual del Ag Barometer Austral y
+  del Ag Economy Barometer}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-11-1.pdf}}
+
+  }
+
+  \caption{\label{fig-11}Comportamiento mensual del Ag Barometer Austral
+  y del Ag Economy Barometer}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-12-1.pdf}}
+
+  }
+
+  \caption{\label{fig-12}Distribución del Ag Barometer Austral y del Ag
+  Economy Barometer por año}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-13-1.pdf}}
+
+  }
+
+  \caption{\label{fig-13}FACM y FACPM de la primer diferencia del Ag
+  Barometer Austral}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-14-1.pdf}}
+
+  }
+
+  \caption{\label{fig-14}FACM y FACPM de la primer diferencia del Ag
+  Economy Barometer}
+
+  \end{figure}%
+
+  Aproximadamente durante el período 2020-2023 en Argentina, la
+  confianza fue pesimista, con valores similares de condiciones
+  presentes y expectativas futuras. En cambio, en el resto del período,
+  cuando la confianza fue optimista, se observa que los productores
+  sostienen mayores expectativas a futuro respecto de sus condiciones
+  actuales (Figura~\ref{fig-6}). Este patrón no parece estar presente en
+  las percepciones de los productores estadounidenses, donde las tres
+  series toman valores similares en todo el período relevado
+  (Figura~\ref{fig-5}).
+
+  La confianza promedio de los productores estadounidenses varía a
+  través del tiempo, manteniéndose siempre optimista durante todos los
+  años analizados. En cambio, en Argentina la confianza media muestra
+  una tendencia creciente a medida que pasa el tiempo, con excepción del
+  período 2019-2020, donde se observó una disminución que generó en 2020
+  el promedio de confianza más pesimista histórico (Figura~\ref{fig-9}).
+
+  Las variabilidades de las percepciones parecen ser distintas entre año
+  y año tanto para productores argentinos como estadounidenses donde el
+  año de respuestas más variables en Argentina fue el 2019 y el 2020
+  seguido por el 2021 para Estados Unidos (Figura~\ref{fig-12}).
+
+  La confianza promedio parece ser similar en todos los meses y entre
+  ambos países sugiriendo q ninguno de los índices posee pauta
+  estacional (Figura~\ref{fig-10} y Figura~\ref{fig-11}).
+
+  Para obtener aún más características de estas series también se tuvo
+  en cuenta sus primeras diferencias. Ninguno de los rezagos de la
+  Figura~\ref{fig-13} son significativos y en la Figura~\ref{fig-14} son
+  casi todos no significativos salvo tres coeficeintes cuyas
+  estimaciones valen 0.2 o menos, en valor absoluto. Se realizó el Test
+  de Ljung-Box sobre cada una de las series diferenciadas y se concluyó
+  al 5\% de significación y en base a la evidencia muestral que los
+  primeros 20 coefiecientes de la FAC son nulos en ambas series
+  diferenciadas (\(p-value =\) 0.4647, \(p-value =\) 0.7044, \(k=20\)).
+  Es decir que las dos diferencias son ruido blanco, en otras palabras,
+  tanto el Ag Barometer Austral como el Ag Economy Barometer siguen un
+  patrón de paseo aleatorio.
+
+  \subsection{Análisis bivariado}\label{anuxe1lisis-bivariado}
+
+  Para comparar el Ag Barometer Austral y el Ag Economy Barometer se
+  presentan los siguientes gráficos.
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-15-1.pdf}}
+
+  }
+
+  \caption{\label{fig-15}Ag Barometer Austral y Ag Economy Barometer}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-16-1.pdf}}
+
+  }
+
+  \caption{\label{fig-16}FCCM del Ag Barometer Austral y el Ag Economy
+  Barometer}
+
+  \end{figure}%
+
+  A partir de los seis índices brindados por las universidades, se
+  presentan figuras adicionales para analizar posibles relaciones entre
+  pares de ellos de interés práctico, así como para estudiar si alguno
+  anticipa a otro.
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-17-1.pdf}}
+
+  }
+
+  \caption{\label{fig-17}FCCM del Ag Barometer y las Condiciones
+  presentes en Argentina y en Estados Unidos}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-18-1.pdf}}
+
+  }
+
+  \caption{\label{fig-18}FCCM del Ag Barometer y las Expectativas
+  futuras en Argentina y en Estados Unidos}
+
+  \end{figure}%
+
+  \begin{figure}
+
+  \centering{
+
+  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-19-1.pdf}}
+
+  }
+
+  \caption{\label{fig-19}FCCM de Expectativas futuras y las Condiciones
+  presentes en Argentina y en Estados Unidos}
+
+  \end{figure}%
+
+  Si bien a primera vista la Figura~\ref{fig-15} podría sugerir que el
+  Ag Barometer Austral y el Ag Economy Barometer son simétricos, al
+  observar la Figura~\ref{fig-16} se ve que el bastón del cero es
+  prácticamente nulo. Esto puede estar indicando que no hay relación
+  entre estos índices.
+
+  En ambos países ocurre que:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A medida que el Ag Barometer aumenta las condiciones presentes
+    también. El Ag Barometer anticipa, de manera moderada, las
+    condiciones presentes de relevamientos posteriores. Estas
+    características se presentan con mayor fuerza en Estados Unidos
+    (Figura~\ref{fig-17}).
+  \item
+    El Ag Barometer tiene una relación directa muy fuerte con las
+    Expectativas futuras porque en la Figura~\ref{fig-18} se ve que la
+    estimación del rezago asociado al cero es cercana a uno.
+  \item
+    Las Expectativas futuras anticipan moderadamente las Condiciones
+    presentes de ediciones posteriores. Como el bastón del cero de la
+    Figura~\ref{fig-19} tiene una estimación alrededor de 0.5, existe
+    una relación moderada entre las Expectativas futuras y las
+    Condiciones presentes.
+  \end{itemize}
 
   \newpage
-
-  \section{Relación del Ag Barometer con otras
-  variables}\label{relaciuxf3n-del-ag-barometer-con-otras-variables}
-
-  \subsection{Variables numéricas}\label{variables-numuxe9ricas}
-
-  Presentación de las variables (commodities, dow jones, fed, ICC\ldots)
-  que cruzamos con el Ag Barometer
-
-  Explicar por qué t vs.~t-1
-
-  Muestro gráficos de correlaciones de Argentina y de EEUU
-
-  \subsection{Variables categóricas}\label{variables-categuxf3ricas}
-
-  Como no se observa relación entre el Ag Barometer y todas las
-  variables propuestas, se sospecha que sí está relacionado con hitos
-  políticos o bélicos.
-
-  Para analizar esto se propone construir variables indicadoras que
-  representan \ldots{}
-
-  graficos
-
-  \newpage
-
-  \section{Comparación}\label{comparaciuxf3n}
-
-  Comparar los países teniendo en cuenta las tres secciones anteriores.
 
   \section{Referencias}\label{referencias}
 
