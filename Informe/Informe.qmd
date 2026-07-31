@@ -50,14 +50,14 @@ En el presente informe se resume el trabajo realizado en el Centro de Agronegoci
 El CEAg de la sede Rosario de la Universidad Austral es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo.
 
 
-Este Centro desarrolla el **Ag Barometer Austral** desde 2018 en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos).
+Este Centro desarrolla el *Ag Barometer Austral* desde 2018 en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos).
 
-El **Ag Barometer Austral** es un índice que mide de manera periódica la confianza de los productores agropecuarios argentinos, a partir de encuestas estructuradas a aproximadamente 400 productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión. Este indicador se construye en base a cinco preguntas fijas que capturan distintas dimensiones del clima económico agropecuario y constituye una herramienta clave para comprender la dinámica del sector en el tiempo.
+El *Ag Barometer Austral* es un índice que mide de manera periódica la confianza de los productores agropecuarios argentinos, a partir de encuestas estructuradas productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión. Este indicador se construye en base a cinco preguntas fijas que capturan distintas dimensiones del clima económico agropecuario y constituye una herramienta clave para comprender la dinámica del sector en el tiempo.
 
-A nivel internacional, el **Ag** ***Economy*** **Barometer**, desarrollado por la Universidad de *Purdue* desde 2015, representa un referente global en la medición del *sentiment* agropecuario, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
+A nivel internacional, el *Ag Economy Barometer*, desarrollado por la Universidad de *Purdue* desde 2015, es un índice reportado mensualmente que mide la confianza de los productores estadounidenses. Representa un referente global en la medición del *sentiment* agropecuario, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
 
 
-En este contexto, este trabajo tiene como propósito realizar un análisis comparativo de las series temporales de los índices de confianza agropecuaria de Argentina y Estados Unidos.
+En este contexto, este trabajo tiene como propósito realizar un análisis comparativo de las series temporales de los índices de confianza agropecuaria (*Ag Barometer*) de Argentina y Estados Unidos.
 
 
 \newpage
@@ -74,7 +74,7 @@ En línea con lo expuesto, la finalidad de esta investigación es comparar  los 
 
 Se determinan las siguientes tareas:
 
--   Realizar la recolección, integración y depuración de las bases de datos correspondientes al Ag Barometer Austral y al Ag *Economy* Barometer (*Purdue University*), generando series temporales comparables. 
+-   Realizar la recolección, integración y depuración de las bases de datos correspondientes al Ag Barometer Austral y al *Ag Economy Barometer* (*Purdue University*), generando series temporales comparables. 
 -   Confeccionar una base de datos que contenga información de series económicas para analizar su relación con los índices bajo estudio.
 -   Desarrollar un análisis exploratorio de las series de tiempo, incluyendo el estudio de tendencia, estacionalidad, volatilidad y comportamiento general de los índices. 
 -   Analizar la dinámica temporal de los indicadores, identificando patrones, tendencias, estacionalidad y posibles cambios estructurales.
@@ -94,6 +94,105 @@ Se determinan las siguientes tareas:
 
 
 # Materiales
+
+El objetivo de esta sección es mostrar las características de los índices de interés y presentar los datos que han sido proporcionados por las universidades.
+
+<!-- A lo largo de este informe se utilizará el término Ag Barometer para referirse al índice de forma general, sin especificar de que pais -->
+
+
+```{r}
+# Librerias
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+library(patchwork)      # acomodar graficos
+library(purrr)          # extraer p-values de los test Ljunj-Box
+```
+
+
+
+## Características del Ag Barometer Austral
+
+
+Cada valor del Ag Barometer Austral se elabora, en la Universidad Austral, a partir de preguntas que se les efectúan a una muestra de productores por teléfono.  Este proceso toma alrededor de tres semanas realizándose en los meses enero, marzo, mayo, julio, septiembre y noviembre los cuales serán llamados "meses impares" en el resto del presente informe. La recolección de información se realiza a productores agrícolas o agrícola ganaderos de la Pampa Húmeda abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa Fe.
+
+
+Se entiende por productores agropecuarios a personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades). 
+
+
+La población está conformada por productores cuyo valor bruto de producción es mayor o igual a USD 200,000 donde un 45% producen soja, un 21% maíz, un 16% ganadería vacuna, un 7% trigo, un 7% tambo y un 4% girasol. Estas últimas categorías no son mutuamente excluyentes porque cada productor podría dedicarse a más de una actividad, por lo que los porcentajes mencionados representan mínimos.
+
+
+Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
+
+-   50% de los encuestados con un valor bruto de producción entre USD 200,000 y USD 399.000 al año
+-   30% de los encuestados con valor bruto de producción entre USD 414,000 y USD 999,999 al año
+-   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1,000,000 al año.
+
+La muestra queda conformada por 406 productores en total.
+
+
+En cada edición se formulan las siguientes cinco preguntas dicotómicas (de respuesta "Sí" / "No") fijas: 
+
+-    $Q_1$: ¿Ud. diría que su operación actualmente está mejor, peor o igual financieramente con respecto a un año atrás?
+-    $Q_2$: Mirando hacia adelante: de acá a un año ¿considera que su explotación estará mejor, peor o igual financieramente?
+-    $Q_3$: Pensando ahora en la economía agropecuaria en general ¿considera que los próximos meses serán: buenos tiempos hablando financieramente o malos tiempos?
+-    $Q_4$: Mirando hacia adelante ¿qué situación diría que es más probable, el sector agropecuario argentino en los próximos 5 años, tendrá mayormente buenos tiempos o mayormente malos tiempos?
+-    $Q_5$: Pensando en inversiones importantes – como maquinaria, compra de tierras, cabezas de ganado, capacidad de almacenamiento, bioenergía- en general ¿Ud. considera que hoy es un buen momento o mal momento para realizar inversiones?
+
+En todas las ediciones del Ag Barometer Austral se añaden alrededor de seis preguntas que reflejan percepciones referidas a temas coyunturales / estacionales que impactan al sector agropecuario argentino. Éstas varían según los temas de interés del momento.
+
+
+El primer paso del cálculo del Ag Barometer Austral es obtener una medida para cada una de las cinco preguntas fijas. Se calcula como el porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada medida un rango de posibles puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
+
+El valor final del Ag Barometer Austral es el promedio simple de las medidas de las cinco preguntas individuales donde el 100 indica un punto neutro. Valores por encima de 100 expresan percepciones positivas y valores por debajo de 100 expresan percepciones negativas.
+
+
+Se hace uso de las respuestas recolectadas para construir otros dos índices: "Condiciones presentes" y "Expectativas futuras" a fines de capturar cómo cambia la percepción netamente actual y la puramente futura de los productores a través del tiempo.
+Se calculan igual que el Ag Barometer Austral sólo teniendo en cuenta algunas de las preguntas.
+
+
+```{r}
+#| label: tbl-0
+#| tbl-cap: "Preguntas utilizadas para el cálculo de cada índice"
+
+# tabla con las preguntas q se usan para cada indice
+
+tibble(
+  Índice = c("Ag Barometer", "Condiciones presentes", "Expectativas futuras"),
+  `Preguntas para su cálculo` = c(
+    "$Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$",
+    "$Q_1$, $Q_5$",
+    "$Q_2$, $Q_3$, $Q_4$"),
+    `Qué representa` = c(
+      "Percepciones actuales y futuras",
+      "Percepciones actuales",
+      "Percepciones futuras"
+    )
+  ) |> kable(booktabs = TRUE, align = "l", escape = FALSE) |>
+  kable_styling(latex_options = c("hold_position"))
+```
+
+
+## Características del Ag Economy Barometer
+
+
+
+
+
+
+
+
+
+# ===================================================================
 
 
 
@@ -219,22 +318,6 @@ El fin de esta sección es plasmar el camino que se siguió para armar una base 
 Se observan los datos de la Austral. 
 
 
-```{r}
-# Librerias
-
-library(tsibble)
-library(lubridate)      # ymd()
-library(dplyr)          # mutate()
-library(feasts)         # para plots
-library(fabletools)     # para test dickey 
-library(ggplot2)
-library(fable)          # para ajustar modelos
-library(knitr)
-library(kableExtra)
-library(tidyr)
-library(patchwork)      # acomodar graficos
-library(purrr)          # extraer p-values de los test Ljunj-Box
-```
 
 
 ```{r}
