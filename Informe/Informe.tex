@@ -203,30 +203,31 @@
   relacionadas con los agronegocios y alimentos, desde nuestro país,
   para la región y el mundo.
 
-  Este Centro desarrolla el \textbf{Ag Barometer Austral} desde 2018 en
+  Este Centro desarrolla el \emph{Ag Barometer Austral} desde 2018 en
   colaboración metodológica con la Universidad de \emph{Purdue} (Estados
   Unidos).
 
-  El \textbf{Ag Barometer Austral} es un índice que mide de manera
+  El \emph{Ag Barometer Austral} es un índice que mide de manera
   periódica la confianza de los productores agropecuarios argentinos, a
-  partir de encuestas estructuradas a aproximadamente 400 productores
-  representativos del sector, permitiendo analizar la evolución de sus
-  percepciones sobre la situación actual, expectativas futuras e
-  intenciones de inversión. Este indicador se construye en base a cinco
-  preguntas fijas que capturan distintas dimensiones del clima económico
-  agropecuario y constituye una herramienta clave para comprender la
-  dinámica del sector en el tiempo.
+  partir de encuestas estructuradas productores representativos del
+  sector, permitiendo analizar la evolución de sus percepciones sobre la
+  situación actual, expectativas futuras e intenciones de inversión.
+  Este indicador se construye en base a cinco preguntas fijas que
+  capturan distintas dimensiones del clima económico agropecuario y
+  constituye una herramienta clave para comprender la dinámica del
+  sector en el tiempo.
 
-  A nivel internacional, el \textbf{Ag} \textbf{\emph{Economy}}
-  \textbf{Barometer}, desarrollado por la Universidad de \emph{Purdue}
-  desde 2015, representa un referente global en la medición del
-  \emph{sentiment} agropecuario, lo que permite realizar comparaciones
-  entre economías con diferentes niveles de estabilidad macroeconómica e
-  institucional.
+  A nivel internacional, el \emph{Ag Economy Barometer}, desarrollado
+  por la Universidad de \emph{Purdue} desde 2015, es un índice reportado
+  mensualmente que mide la confianza de los productores estadounidenses.
+  Representa un referente global en la medición del \emph{sentiment}
+  agropecuario, lo que permite realizar comparaciones entre economías
+  con diferentes niveles de estabilidad macroeconómica e institucional.
 
   En este contexto, este trabajo tiene como propósito realizar un
   análisis comparativo de las series temporales de los índices de
-  confianza agropecuaria de Argentina y Estados Unidos.
+  confianza agropecuaria (\emph{Ag Barometer}) de Argentina y Estados
+  Unidos.
 
   \newpage
 
@@ -249,9 +250,9 @@
   \tightlist
   \item
     Realizar la recolección, integración y depuración de las bases de
-    datos correspondientes al Ag Barometer Austral y al Ag
-    \emph{Economy} Barometer (\emph{Purdue University}), generando
-    series temporales comparables.
+    datos correspondientes al Ag Barometer Austral y al \emph{Ag Economy
+    Barometer} (\emph{Purdue University}), generando series temporales
+    comparables.
   \item
     Confeccionar una base de datos que contenga información de series
     económicas para analizar su relación con los índices bajo estudio.
@@ -295,33 +296,33 @@
 
   \section{Materiales}\label{materiales}
 
-  \subsection{Características del relevamiento de
-  datos}\label{caracteruxedsticas-del-relevamiento-de-datos}
+  El objetivo de esta sección es mostrar las características de los
+  índices de interés y presentar los datos que han sido proporcionados
+  por las universidades.
 
-  ( brevemente de q se trata la encuesta agb: hacer preguntas
-  periodicamente\ldots, carcs como cuanto dura en cada pais, pob y
-  muestra en ambos paises, que preguntas especificamente se hacen )
+  \subsection{Características del Ag Barometer
+  Austral}\label{caracteruxedsticas-del-ag-barometer-austral}
 
-  Los valores del Ag Barometer surgen a partir de la metodología
-  propuesta por la Universidad de \emph{Purdue} junto a la Universidad
-  Austral. Se efectúan preguntas periódicamente por teléfono a
-  aproximadamente 400 productores. En Argentina este proceso toma
-  alrededor de tres semanas realizándose bimensualmente y en Estados
-  Unidos se ejecuta mensulamente demorando cerca de una semana.
+  Cada valor del Ag Barometer Austral se elabora, en la Universidad
+  Austral, a partir de preguntas que se les efectúan a una muestra de
+  productores, por teléfono. Este proceso toma alrededor de tres semanas
+  realizándose en los meses enero, marzo, mayo, julio, septiembre y
+  noviembre los cuales serán llamados ``meses impares'' en el resto del
+  presente informe.
 
-  Se entiende por productores agropecuarios a personas personas físicas
-  o jurídicas cuya actividad principal sea la producción de soja, trigo,
+  Se entiende por productores agropecuarios a personas físicas o
+  jurídicas cuya actividad principal sea la producción de soja, trigo,
   maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen
-  otras actividades). La definición de la población objetivo tuvo como
-  criterio la importancia de cada actividad en el producto bruto
-  agropecuario. Since a single farm can engage in multiple enterprises,
-  and the categories are not mutually exclusive, the proportions
-  represent a minimum.
+  otras actividades).
 
-  En Argentina el mínimo de representación para cada actividad es el
-  siguiente: Soja 45\%, Maíz 21\%, Ganadería vacuna 16\%, Trigo 7\%,
-  Tambo 7\% y Girasol 4\%. En Estados Unidos: Soja 53\%, Maíz 14\%,
-  Algodón 3\%, Ganadería vacuna 19\%, Tambo 5\% y Ganadería porcina 6\%.
+  La población está conformada por productores de la Pampa Húmeda
+  abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa
+  Fe; cuyo valor bruto de producción es mayor o igual a USD 200,000;
+  donde un 45\% producen soja, un 21\% maíz, un 16\% ganadería vacuna,
+  un 7\% trigo, un 7\% tambo y un 4\% girasol. Estas últimas categorías
+  no son mutuamente excluyentes porque cada productor podría dedicarse a
+  más de una actividad, por lo que los porcentajes mencionados
+  representan mínimos.
 
   Se realizó un muestreo estratificado de productores teniendo en cuenta
   datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
@@ -331,17 +332,16 @@
   \tightlist
   \item
     50\% de los encuestados con un valor bruto de producción entre USD
-    200.000 y USD 399.000 al año
+    200,000 y USD 399.000 al año
   \item
     30\% de los encuestados con valor bruto de producción entre USD
-    414.000 y USD 999.999 al año
+    414,000 y USD 999,999 al año
   \item
     20\% de los encuestados con un valor bruto de producción mayor o
-    igual a USD 1.000.000 al año.
+    igual a USD 1,000,000 al año.
   \end{itemize}
 
-  La encuesta a productores toma respuestas de 406 productores cuyo
-  valor bruto de producción es igual o mayor a USD 200.000.
+  La muestra queda conformada por 406 productores en total.
 
   En cada edición se formulan las siguientes cinco preguntas dicotómicas
   (de respuesta ``Sí'' / ``No'') fijas:
@@ -349,22 +349,22 @@
   \begin{itemize}
   \tightlist
   \item
-    Q1: ¿Ud. diría que su operación actualmente está mejor, peor o igual
-    financieramente con respecto a un año atrás?
+    \(Q_1\): ¿Ud. diría que su operación actualmente está mejor, peor o
+    igual financieramente con respecto a un año atrás?
   \item
-    Q2: Mirando hacia adelante: de acá a un año ¿considera que su
+    \(Q_2\): Mirando hacia adelante: de acá a un año ¿considera que su
     explotación estará mejor, peor o igual financieramente?
   \item
-    Q3: Pensando ahora en la economía agropecuaria en general ¿considera
-    que los próximos meses serán: buenos tiempos hablando
+    \(Q_3\): Pensando ahora en la economía agropecuaria en general
+    ¿considera que los próximos meses serán: buenos tiempos hablando
     financieramente o malos tiempos?
   \item
-    Q4: Mirando hacia adelante ¿qué situación diría que es más probable,
-    el sector agropecuario argentino en los próximos 5 años, tendrá
-    mayormente buenos tiempos o mayormente malos tiempos?
+    \(Q_4\): Mirando hacia adelante ¿qué situación diría que es más
+    probable, el sector agropecuario argentino en los próximos 5 años,
+    tendrá mayormente buenos tiempos o mayormente malos tiempos?
   \item
-    Q5: Pensando en inversiones importantes -- como maquinaria, compra
-    de tierras, cabezas de ganado, capacidad de almacenamiento,
+    \(Q_5\): Pensando en inversiones importantes -- como maquinaria,
+    compra de tierras, cabezas de ganado, capacidad de almacenamiento,
     bioenergía- en general ¿Ud. considera que hoy es un buen momento o
     mal momento para realizar inversiones?
   \end{itemize}
@@ -374,130 +374,160 @@
   coyunturales / estacionales que impactan al sector agropecuario
   argentino. Éstas varían según los temas de interés del momento.
 
-  En Estados Unidos el mínimo de representación para cada actividad es
-  el siguiente: Soja 53\%, Maíz 14\%, Algodón 3\%, Ganadería vacuna
-  19\%, Tambo 5\% y Ganadería porcina 6\%.
-
-  \subsection{Cálculo e interpretación de los
-  índices}\label{cuxe1lculo-e-interpretaciuxf3n-de-los-uxedndices}
-
-  El primer paso es común a ambos países, obtener una medida para cada
-  una de las cinco preguntas fijas. Se calcula en base al porcentaje de
-  respuestas favorables (``Sí''), menos el porcentaje de respuestas
-  desfavorables (``No''), más 100. Esto da a cada pregunta un rango
-  potencial de puntajes de 0 a 200. Cuando todas las respuestas son
+  El primer paso del cálculo del Ag Barometer Austral es obtener una
+  medida para cada una de las cinco preguntas fijas. Se calcula como el
+  porcentaje de respuestas favorables (``Sí''), menos el porcentaje de
+  respuestas desfavorables (``No''), más 100. Esto da a cada medida un
+  rango de posibles puntajes de 0 a 200. Cuando todas las respuestas son
   ``Sí'', el índice es 200. Cuando todas las respuestas son ``No'', el
   índice es 0.
 
   El valor final del Ag Barometer Austral es el promedio simple de las
-  medidas de las cinco preguntas individuales. Generando el 100 indica
-  un punto neutro. Valores por encima de 100 expresan percepciones
+  medidas de las cinco preguntas individuales donde el 100 indica un
+  punto neutro. Valores por encima de 100 expresan percepciones
   positivas y valores por debajo de 100 expresan percepciones negativas.
 
-  En cambio el valor final del Ag Economy Barometer se obtiene sumando
-  las cinco medidas de cada una de las cinco preguntas fijas y se divide
-  esa suma por el promedio del período base (octubre 2015 a marzo 2016).
+  Se hace uso de las respuestas recolectadas para construir otros dos
+  índices: ``Condiciones presentes'' y ``Expectativas futuras'' a fines
+  de capturar cómo cambia la percepción netamente actual y la puramente
+  futura de los productores a través del tiempo. Se calculan igual que
+  el Ag Barometer Austral sólo teniendo en cuenta algunas de las
+  preguntas.
 
-  Ambas universidades hacen uso de las respuestas recolectadas para
-  construir otros dos índices: ``Condiciones presentes'' y
-  ``Expectativas futuras'' a fines de capturar cómo cambia la percepción
-  netamente actual y la puramente futura de los productores a través del
-  tiempo. Se calculan sólo teniendo en cuenta las preguntas Q1, Q5 y Q2,
-  Q3, Q4 respectivamente para cada uno y utilizando el mismo método de
-  cada institución.
+  \begin{longtable}[t]{lll}
+
+  \caption{\label{tbl-0}Preguntas utilizadas para el cálculo de cada
+  índice}
+
+  \tabularnewline
+
+  \toprule
+  Índice & Preguntas para su cálculo & Qué representa\\
+  \midrule
+  Ag Barometer & \$Q\_1\$, \$Q\_2\$, \$Q\_3\$, \$Q\_4\$, \$Q\_5\$ & Percepciones actuales y futuras\\
+  Condiciones presentes & \$Q\_1\$, \$Q\_5\$ & Percepciones actuales\\
+  Expectativas futuras & \$Q\_2\$, \$Q\_3\$, \$Q\_4\$ & Percepciones futuras\\
+  \bottomrule
+
+  \end{longtable}
+
+  \subsection{Características del Ag Economy
+  Barometer}\label{caracteruxedsticas-del-ag-economy-barometer}
+
+  El Ag Economy Barometer se construye todos los meses en la Universidad
+  de Purdue mediante una encuesta telefónica realizada a una muestra de
+  productores, cuya recolección insume aproximadamente una semana.
+
+  La población está compuesta por productores cuyo valor bruto de
+  producción es mayor o igual a USD 500,000; donde un 53\% producen
+  soja, un 14\% maíz, un 3\% algodón, un 19\% ganadería vacuna, un 5\%
+  Tambo y un 6\% ganadería porcina. Al igual que en el caso del Ag
+  Barometer Austral estos porcentajes representan mínimos.
+
+  Para la selección de los productores se aplicó un muestreo
+  estratificado en base a los datos censales del \emph{United States
+  Department of Agriculture} (USDA). Se detallan los estratos definidos
+  según el volumen de producción anual:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    49\% de los encuestados con un valor bruto de producción entre USD
+    500,000 y USD 999.999
+  \item
+    36\% de los encuestados con valor bruto de producción entre USD
+    1,000,000 y USD 2,499,000
+  \item
+    15\% de los encuestados con un valor bruto de producción mayor o
+    igual a USD 2,500,000.
+  \end{itemize}
+
+  La muestra queda conformada por 400 productores en total.
+
+  Cada mes se entrevistan a los productores realizándoles las mismas
+  cinco preguntas fijas ya detalladas.
+
+  El primer paso del cálculo del Ag Economy Barometer es idéntico al del
+  Ag Barometer Austral, obtener la medida para cada una de las cinco
+  preguntas fijas. Sin embargo cambia la forma en que se obtiene el
+  valor final del índice estadounidense con respecto al local. El Ag
+  Economy Barometer se obtiene sumando las cinco medidas de cada una de
+  las cinco preguntas fijas y se divide esa suma por el promedio del
+  período base (octubre 2015 a marzo 2016).
+
+  Es decir que el valor del Ag Economy Barometer para un mes dado se
+  calcula siempre en relación con el período base. El valor 100 implica
+  que no hubo cambios respecto del período base. Un valor superior a 100
+  indica un aumento en el \emph{sentiment}, o la confianza, de los
+  productores en comparación con el período base; mientras que un valor
+  inferior a 100 indica que el \emph{sentiment} de los productores
+  disminuyó en relación con dicho período.
+
+  En Estados Unidos también se calculan los indicadores Condiciones
+  presentes y Expectativas futuras utilizando la misma forma de cálculo
+  que para el Ag Economy Barometer a partir de las preguntas de la
+  Tabla~\ref{tbl-0}.
+
+  En la Universidad de Purdue también contruyen, aparte de los tres
+  índices ya mencionados, el indicador ``Inversión del capital
+  agrícola'' en base a la quinta pregunta (\(Q_5\)). Sin embargo no fue
+  tenido en cuenta en el trabajo por no ser relevado a nivel local.
 
   \subsection{Los datos}\label{los-datos}
 
-  tengo una base para arg otra para usa, las dos tienen las mismas
-  columnas?
+  A continuación, se presentan las variables disponibles en las bases de
+  datos que han sido suministradas por las universidades para realizar
+  el análisis.
 
-  \subsection{Características del
-  relevamiento}\label{caracteruxedsticas-del-relevamiento}
+  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{2.5cm}}
 
-  La definición del universo a relevar tuvo como criterio la importancia
-  de cada actividad en el producto bruto agropecuario. El mínimo de
-  representación para cada actividad es el siguiente:
+  \caption{\label{tbl-0.1}Descripción de la base de datos de cada país}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    Soja 45 \%
-  \item
-    Maíz 21\%
-  \item
-    Ganadería de carne 16\%
-  \item
-    Trigo 7 \%
-  \item
-    Tambo 7\%
-  \item
-    Girasol 4 \%
-  \end{itemize}
+  \tabularnewline
 
-  Se realizó un muestreo estratificado de productores teniendo en cuenta
-  datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
-  productores en cuanto a su producción:
+  \toprule
+  País & Variable & Descripción & Tipo\\
+  \midrule
+  \endfirsthead
+  \multicolumn{4}{@{}l}{\textit{(continued)}}\\
+  \toprule
+  País & Variable & Descripción & Tipo\\
+  \midrule
+  \endhead
 
-  \begin{itemize}
-  \tightlist
-  \item
-    50\% de los encuestados con un valor bruto de producción entre USD
-    200.000 y USD 399.000 al año
-  \item
-    30\% de los encuestados con valor bruto de producción entre USD
-    414.000 y USD 999.999 al año
-  \item
-    20\% de los encuestados con un valor bruto de producción mayor o
-    igual a USD 1.000.000 al año.
-  \end{itemize}
+  \endfoot
+  \bottomrule
+  \endlastfoot
+   & Bimestre & Mes y año de la observación & Cualitativa Ordinal\\
+  \cmidrule{2-4}\nopagebreak
+   & Ag Barometer Austral & Ag Barometer en Argentina & Cuantitativa Continua\\
+  \cmidrule{2-4}\nopagebreak
+   & Condiciones presentes & Condiciones presentes en Argentina & Cuantitativa Continua\\
+  \cmidrule{2-4}\nopagebreak
+  \multirow{-4}{2.5cm}{\raggedright\arraybackslash Argentina} & Expectativas futuras & Expectativas futuras en Argentina & Cuantitativa Continua\\
+  \cmidrule{1-4}\pagebreak[0]
+   & Month & Mes de la observación & Cualitativa Ordinal\\
+  \cmidrule{2-4}\nopagebreak
+   & Year & Año de la observación & Cuantitativa Discreta\\
+  \cmidrule{2-4}\nopagebreak
+   & Ag Economy Barometer & Ag Barometer en Estados Unidos & Cuantitativa Continua\\
+  \cmidrule{2-4}\nopagebreak
+   & Current conditions & Condiciones presentes en Estados Unidos & Cuantitativa Continua\\
+  \cmidrule{2-4}\nopagebreak
+  \multirow{-5}{2.5cm}{\raggedright\arraybackslash Estados Unidos} & Future Expectations & Expectativas futuras en Estados Unidos & Cuantitativa Continua\\*
 
-  La encuesta a productores toma respuestas de 406 productores cuyo
-  valor bruto de producción es igual o mayor a USD 200.000.
-
-  \subsection{! Conjunto de datos}\label{conjunto-de-datos}
-
-  (prob lo ponga use esto para otra seccion, porq estos cometnarios
-  surgen del descriptivo en realidad)
-
-  Los tres índices de Estados Unidos brindados por la Universidad de
-  Purdue tienen periodicidad mensual y están completos. Comenzaron a
-  construirlos en octubre de 2015 y la observación más reciente que se
-  dispone es de marzo 2026.
-
-  En cambio, los tres índices de Argentina provistos por el Centro de
-  Agronegocios y Alimentos de la sede Rosario de la Universidad Austral
-  son medidos en los meses de enero, marzo, mayo, julio, septiembre y
-  noviembre (impares); en 2020 en vez de haber observaciones para los
-  meses de marzo y mayo, hay una para abril y se tienen datos desde
-  octubre de 2018 hasta enero de 2026.
-
-  A pesar de los meses en los que los índices locales son medidos, la
-  primera observación de cada uno de ellos es en octubre de 2018 porque
-  en este fecha se ha decidido comenzar el relevamiento y a partir del
-  siguiente mes comenzaron a reportar los valores bimensualmente.
-
-  Teniendo estas características en cuenta, los índices de Argentina
-  tienen periodicidad irregular. Hay observaciones separadas por un mes
-  (octubre de 2018 y noviembre de 2018), observaciones separadas por
-  tres meses (enero 2020 y abril 2020, abril 2020 y julio 2020) y el
-  resto de los datos están separados por dos meses.
-
-  \newpage
-
-  \section{Metodología (Definiciones básicas de una serie de
-  tiempo)}\label{metodologuxeda-definiciones-buxe1sicas-de-una-serie-de-tiempo}
+  \end{longtable}
 
   \newpage
 
   \section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
 
   El fin de esta sección es plasmar el camino que se siguió para armar
-  una base de datos que facilitó realizar ciertos análisis. Ésta reune
-  las series de Argentina y Estados Unidos provistas para el trabajo
-  junto con otras sugeridas por los especialistas. Previamente a la
-  unificación se aplicaron procesamientos sobre algunas de las series
-  provistas como imputación de valores faltantes, eliminación de
-  valores, homogeneización de nombres de variables, etc.
+  una base de datos que facilitó el análisis. Ésta reune las series de
+  Argentina, de Estados Unidos y otras sugeridas por los especialistas.
+  Previamente a la unificación se aplicaron procesamientos sobre algunas
+  de las series provistas como imputación de valores faltantes,
+  eliminación de valores, homogeneización de nombres de variables, etc.
 
   \subsection{Tratamiento sobre las variables
   provistas}\label{tratamiento-sobre-las-variables-provistas}
@@ -688,19 +718,19 @@
 
   \end{figure}%
 
-  Como las series de Estados Unidos fueron pensadas para ser mensuales,
-  todos los meses tienen observaciones no hay excepciones como se
-  presentaban en el caso local. Tampoco presentan datos faltantes tal
-  como puede verse en la Figura~\ref{fig-5}. Por este motivo, en este
-  caso no fue necesario realizar ni imputación ni eliminación de
-  valores.
+  No es posible que haya excepciones en las series de Estados Unidos,
+  como octubre 2018 o abril 2020 en el caso local, porque éstas son de
+  periodicidad mensual. Tampoco presentan datos faltantes tal como puede
+  verse en la Figura~\ref{fig-5}. Por este motivo, en este caso no fue
+  necesario realizar ni imputación ni eliminación de valores.
 
-  El trabajo realizado con estas series se limitó, entonces, a tareas
+  El trabajo realizado con estas series se redujo, entonces, a tareas
   propias del manejo de bases de datos: se creó una columna
   \texttt{Fecha} a partir de las columnas \texttt{Year} y
   \texttt{Month}, con el fin de contar con una columna equivalente a
-  \texttt{Bimestre} presente en los datos locales, y así poder unir
-  posteriormente ambos conjuntos de datos a partir de dicha columna.
+  \texttt{Bimestre} (Tabla~\ref{tbl-0.1}) presente en los datos locales,
+  y así poder unir posteriormente ambos conjuntos de datos a partir de
+  dicha columna.
 
   \subsection{Búsqueda de variables
   económicas}\label{buxfasqueda-de-variables-econuxf3micas}
@@ -716,12 +746,12 @@
   el archivo \texttt{Covariables.xlsx}.
 
   \begin{ThreePartTable}
-  \begin{TableNotes}[para]
-  \item \textit{Nota:} 
+  \begin{TableNotes}
+  \item \textit{Nota: } 
   \item ICC = Índice de Confianza del Consumidor; IACA = Índice de Actividad de la Cadena Agropecuaria; WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.
   \end{TableNotes}
 
-  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{6.5cm}>{\raggedright\arraybackslash}p{5cm}}
+  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{7.5cm}>{\raggedright\arraybackslash}p{5cm}}
 
   \caption{\label{tbl-3}Descripción de las variables sugeridas por los
   especialistas}
@@ -731,7 +761,18 @@
   \toprule
   Variable & Descripción & Fuente\\
   \midrule
-  \cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de las medidas} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+  \endfirsthead
+  \multicolumn{3}{@{}l}{(continuación)}\\
+  \toprule
+  Variable & Descripción & Fuente\\
+  \midrule
+  \endhead
+
+  \endfoot
+  \bottomrule
+  \insertTableNotes
+  \endlastfoot
+  \cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de la observación} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
   Petroleo Brent & Precio del petróleo Brent & Banco Mundial (Pink Sheet)\\
   \cellcolor{gray!10}{Petroleo WTI} & \cellcolor{gray!10}{Precio del petróleo WTI} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
   Gas Natural EEUU & Precio del Gas Natural EEUU & Banco Mundial (Pink Sheet)\\
@@ -755,9 +796,7 @@
   \cellcolor{gray!10}{NASDAQ} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{FRED}\\
   Dow Jones & NA & Yahoo Finance\\
   \addlinespace
-  \cellcolor{gray!10}{IACA} & \cellcolor{gray!10}{Índice de Actividad de la Cadena Agropecuaria} & \cellcolor{gray!10}{Bolsa de Comercio de Rosario}\\
-  \bottomrule
-  \insertTableNotes
+  \cellcolor{gray!10}{IACA} & \cellcolor{gray!10}{Índice de Actividad de la Cadena Agropecuaria} & \cellcolor{gray!10}{Bolsa de Comercio de Rosario}\\*
 
   \end{longtable}
 
@@ -767,7 +806,7 @@
 
   Una vez que se obtuvieron todas las series proporcionadas por las
   universidades junto con las buscadas de forma independiente y
-  realizadas algunas tareas propias del manejo de datos, se construyó la
+  realizadas algunas tareas propias de manejo de datos, se construyó la
   base de datos \texttt{base\_contruida.xlsx}, con el software R, que
   permitió realizar ciertos análisis del trabajo.
 
@@ -781,39 +820,48 @@
   \toprule
   Variable & Descripción & Tipo\\
   \midrule
-  \cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de las medidas} & \cellcolor{gray!10}{Cualitativa ordinal}\\
-  Condiciones presentes Arg & Condiciones presentes en Argentina & Cuantitativa continua\\
-  \cellcolor{gray!10}{Expectativas futuras Arg} & \cellcolor{gray!10}{Expectativas futuras en Argentina} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Ag Barometer Austral & Ag Barometer en Argentina & Cuantitativa continua\\
-  \cellcolor{gray!10}{Condiciones presentes EEUU} & \cellcolor{gray!10}{Condiciones presentes en E.E.U.U} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  \addlinespace
-  Expectativas futuras EEUU & Expectativas futuras en E.E.U.U & Cuantitativa continua\\
-  \cellcolor{gray!10}{Ag Economy Barometer} & \cellcolor{gray!10}{Ag Barometer en E.E.U.U} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Petroleo Brent & Precio del petróleo Brent & Cuantitativa continua\\
-  \cellcolor{gray!10}{Petroleo WTI} & \cellcolor{gray!10}{Precio del petróleo WTI} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Gas Natural EEUU & Precio del Gas Natural EEUU & Cuantitativa continua\\
-  \addlinespace
-  \cellcolor{gray!10}{Gas Natural Europa} & \cellcolor{gray!10}{Precio del Gas Natural Europa} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Soja & Precio de la Soja & Cuantitativa continua\\
-  \cellcolor{gray!10}{Maiz} & \cellcolor{gray!10}{Precio del Maiz} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Sorgo & Precio del Sorgo & Cuantitativa continua\\
-  \cellcolor{gray!10}{Trigo SRW} & \cellcolor{gray!10}{Precio del Trigo SRW} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  \addlinespace
-  Trigo HRW & Precio del Trigo HRW & Cuantitativa continua\\
-  \cellcolor{gray!10}{Carne} & \cellcolor{gray!10}{Precio de la carne vacuna} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Pollo & Precio del pollo & Cuantitativa continua\\
-  \cellcolor{gray!10}{Urea} & \cellcolor{gray!10}{Precio de la Urea} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  FEFundsRate & NA & Cuantitativa continua\\
-  \addlinespace
-  \cellcolor{gray!10}{Bono 2} & \cellcolor{gray!10}{Rendimiento (\%) del bono del Tesoro de EEUU a 2 años} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  Bono 10 & Rendimiento (\%) del bono del Tesoro de EEUU a 10 años & Cuantitativa continua\\
-  \cellcolor{gray!10}{ICC Di Tella} & \cellcolor{gray!10}{Índice de Confianza del Consumidor hecho en UTDT} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  ICC Michigan & Índice de Confianza del Consumidor en UM & Cuantitativa continua\\
-  \cellcolor{gray!10}{NASDAQ} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{Cuantitativa continua}\\
-  \addlinespace
-  Dow Jones & NA & Cuantitativa continua\\
-  \cellcolor{gray!10}{IACA} & \cellcolor{gray!10}{Índice de Actividad de la Cadena Agropecuaria} & \cellcolor{gray!10}{Cuantitativa continua}\\
+  \endfirsthead
+  \multicolumn{3}{@{}l}{(continuación)}\\
+  \toprule
+  Variable & Descripción & Tipo\\
+  \midrule
+  \endhead
+
+  \endfoot
   \bottomrule
+  \endlastfoot
+  \cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de la observación} & \cellcolor{gray!10}{Cualitativa Ordinal}\\
+  Condiciones presentes Arg & Condiciones presentes en Argentina & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Expectativas futuras Arg} & \cellcolor{gray!10}{Expectativas futuras en Argentina} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Ag Barometer Austral & Ag Barometer en Argentina & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Condiciones presentes EEUU} & \cellcolor{gray!10}{Condiciones presentes en E.E.U.U} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  \addlinespace
+  Expectativas futuras EEUU & Expectativas futuras en E.E.U.U & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Ag Economy Barometer} & \cellcolor{gray!10}{Ag Barometer en E.E.U.U} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Petroleo Brent & Precio del petróleo Brent & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Petroleo WTI} & \cellcolor{gray!10}{Precio del petróleo WTI} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Gas Natural EEUU & Precio del Gas Natural EEUU & Cuantitativa Continua\\
+  \addlinespace
+  \cellcolor{gray!10}{Gas Natural Europa} & \cellcolor{gray!10}{Precio del Gas Natural Europa} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Soja & Precio de la Soja & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Maiz} & \cellcolor{gray!10}{Precio del Maiz} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Sorgo & Precio del Sorgo & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Trigo SRW} & \cellcolor{gray!10}{Precio del Trigo SRW} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  \addlinespace
+  Trigo HRW & Precio del Trigo HRW & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Carne} & \cellcolor{gray!10}{Precio de la carne vacuna} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Pollo & Precio del pollo & Cuantitativa Continua\\
+  \cellcolor{gray!10}{Urea} & \cellcolor{gray!10}{Precio de la Urea} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  FEFundsRate & NA & Cuantitativa Continua\\
+  \addlinespace
+  \cellcolor{gray!10}{Bono 2} & \cellcolor{gray!10}{Rendimiento (\%) del bono del Tesoro de EEUU a 2 años} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  Bono 10 & Rendimiento (\%) del bono del Tesoro de EEUU a 10 años & Cuantitativa Continua\\
+  \cellcolor{gray!10}{ICC Di Tella} & \cellcolor{gray!10}{Índice de Confianza del Consumidor hecho en UTDT} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  ICC Michigan & Índice de Confianza del Consumidor en UM & Cuantitativa Continua\\
+  \cellcolor{gray!10}{NASDAQ} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{Cuantitativa Continua}\\
+  \addlinespace
+  Dow Jones & NA & Cuantitativa Continua\\
+  \cellcolor{gray!10}{IACA} & \cellcolor{gray!10}{Índice de Actividad de la Cadena Agropecuaria} & \cellcolor{gray!10}{Cuantitativa Continua}\\*
 
   \end{longtable}
 
@@ -1205,8 +1253,8 @@
   Al no haber encontrado con qué está relacionado el Ag Barometer aún,
   la búsqueda no podía darse por finalizada. Nuevamente se consulta con
   los especialistas. Ellos, debido a su vasto conocimiento en el tema,
-  dicen que el índice bajo estudio probablemente esté aociado a hechos
-  políticos y bélicos.
+  dicen que el índice bajo estudio probablemente esté asociado a hechos
+  políticos y/o bélicos.
 
   GRAFICO LINEAAAAAAAAAS
 

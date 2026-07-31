@@ -212,11 +212,62 @@ En la Universidad de Purdue también contruyen, aparte de los tres índices ya m
 
 
 
+## Los datos
+
+A continuación, se presentan las variables disponibles en las bases de datos que han sido suministradas por las universidades para realizar el análisis. 
 
 
+```{r}
+#| label: tbl-0.1
+#| tbl-cap: "Descripción de la base de datos de cada país"
 
-
-
+tibble(
+  País = c(
+    "Argentina", "Argentina", "Argentina", "Argentina",
+    "Estados Unidos", "Estados Unidos", "Estados Unidos", "Estados Unidos", "Estados Unidos"
+  ),
+  Variable = c(
+  "Bimestre",
+  "Ag Barometer Austral", 
+  "Condiciones presentes",
+  "Expectativas futuras",
+  "Month",
+  "Year",
+  "Ag Economy Barometer",
+  "Current conditions",
+  "Future Expectations"
+),
+  Descripción = c(
+    "Mes y año de la observación",
+    "Ag Barometer en Argentina",
+    "Condiciones presentes en Argentina",
+    "Expectativas futuras en Argentina", 
+    "Mes de la observación",
+    "Año de la observación",
+    "Ag Barometer en Estados Unidos",
+    "Condiciones presentes en Estados Unidos",
+    "Expectativas futuras en Estados Unidos"
+  ),
+  Tipo = c(
+    "Cualitativa Ordinal",
+    "Cuantitativa Continua",
+    "Cuantitativa Continua",
+    "Cuantitativa Continua",
+    "Cualitativa Ordinal", 
+    "Cuantitativa Discreta",
+    "Cuantitativa Continua",
+    "Cuantitativa Continua",
+    "Cuantitativa Continua"
+  )
+) |> 
+kable(booktabs = TRUE, align = "l", escape = FALSE, longtable = TRUE) |>
+  kable_styling(latex_options = c("repeat_header")) |>
+  column_spec(1, width = "2.5cm") |>
+  column_spec(2, width = "3.5cm") |>
+  column_spec(3, width = "4.5cm") |>
+  column_spec(4, width = "2.5cm") |>
+  collapse_rows(columns = 1, valign = "middle")
+```
 
 
 
@@ -225,17 +276,19 @@ En la Universidad de Purdue también contruyen, aparte de los tres índices ya m
 
 
 
-# Metodología (Definiciones básicas de una serie de tiempo)
+<!-- # Metodología  -->
+
+<!-- Definiciones básicas de una serie de tiempo -->
 
 
 
-\newpage
+<!-- \newpage -->
 
 
 
 # Armado de la base de datos
 
-El fin de esta sección es plasmar el camino que se siguió para armar una base de datos que facilitó realizar ciertos análisis. Ésta reune las series de Argentina y Estados Unidos provistas para el trabajo junto con otras sugeridas por los especialistas. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
+El fin de esta sección es plasmar el camino que se siguió para armar una base de datos que facilitó el análisis. Ésta reune las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
 
 
 
@@ -585,9 +638,9 @@ d_eeuu |>
 
 
 
-Como las series de Estados Unidos fueron pensadas para ser mensuales, todos los meses tienen observaciones no hay excepciones como se presentaban en el caso local. Tampoco presentan datos faltantes tal como puede verse en la @fig-5. Por este motivo, en este caso no fue necesario realizar ni imputación ni eliminación de valores.
+No es posible que haya excepciones en las series de Estados Unidos, como octubre 2018 o abril 2020 en el caso local, porque éstas son de periodicidad mensual. Tampoco presentan datos faltantes tal como puede verse en la @fig-5. Por este motivo, en este caso no fue necesario realizar ni imputación ni eliminación de valores.
 
-El trabajo realizado con estas series se limitó, entonces, a tareas propias del manejo de bases de datos: se creó una columna `Fecha` a partir de las columnas `Year` y `Month`, con el fin de contar con una columna equivalente a `Bimestre` presente en los datos locales, y así poder unir posteriormente ambos conjuntos de datos a partir de dicha columna.
+El trabajo realizado con estas series se redujo, entonces, a tareas propias del manejo de bases de datos: se creó una columna `Fecha` a partir de las columnas `Year` y `Month`, con el fin de contar con una columna equivalente a `Bimestre` (@tbl-0.1) presente en los datos locales, y así poder unir posteriormente ambos conjuntos de datos a partir de dicha columna.
 
 
 ## Búsqueda de variables económicas
@@ -603,24 +656,31 @@ A partir de estas indicaciones, se realizó una búsqueda en distintas fuentes y
 #| tbl-cap: "Descripción de las variables sugeridas por los especialistas"
 
 readxl::read_excel("Tablas/tabla_covs.xlsx") |> 
-  kable(align = "l") |> 
-  kable_styling(latex_options = c("hold_position", style = "striped"),
-                full_width = FALSE) |> 
-  column_spec(1, width = "3cm") |> 
-  column_spec(2, width = "6.5cm") |> 
+  kable( 
+    align = c("l", "l", "l"),
+    longtable = TRUE,
+    booktabs = TRUE # Estilo limpio y profesional para las líneas de LaTeX
+  ) |> 
+  kable_styling(
+    latex_options = c("repeat_header", "striped"),
+    position = "center", # Centra la tabla
+    repeat_header_text = "(continuación)" # Texto limpio en el salto de página
+  ) |> 
+  column_spec(1, width = "3.5cm") |> 
+  column_spec(2, width = "7.5cm") |> 
   column_spec(3, width = "5cm") |> 
   footnote(
     general = "ICC = Índice de Confianza del Consumidor; IACA = Índice de Actividad de la Cadena Agropecuaria; WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.",
-    general_title = "Nota:",
-    footnote_as_chunk = TRUE,
-    threeparttable = TRUE
+    general_title = "Nota: ",
+    footnote_as_chunk = FALSE, # Permite saltos de línea para que se vea completa
+    threeparttable = TRUE      # Ajusta el ancho de la nota al ancho exacto de la tabla
   )
 ```
 
 
 ## Base de datos construida
 
-Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y realizadas algunas tareas propias del manejo de datos, se construyó la base de datos `base_contruida.xlsx`, con el software R, que permitió realizar ciertos análisis del trabajo.
+Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y realizadas algunas tareas propias de manejo de datos, se construyó la base de datos `base_contruida.xlsx`, con el software R, que permitió realizar ciertos análisis del trabajo.
 
 
 
@@ -628,13 +688,20 @@ Una vez que se obtuvieron todas las series proporcionadas por las universidades 
 #| label: tbl-4
 #| tbl-cap: "Descripción de las variables disponibles en la base de datos construida"
 
-readxl::read_excel("Tablas/tabla_base_construida.xlsx") |> 
-  kable(align = "l") |> 
-  kable_styling(latex_options = c("hold_position", style = "striped"),
-                full_width = FALSE) |> 
-  column_spec(1, width = "3cm") |> 
-  column_spec(2, width = "6.5cm") |> 
-  column_spec(3, width = "5cm") 
+readxl::read_excel("Tablas/tabla_base_construida.xlsx") |>
+  kable(
+    booktabs = TRUE,
+    longtable = TRUE,
+    align = "l"
+  ) |>
+  kable_styling(
+    latex_options = c("striped", "repeat_header"),
+    repeat_header_text = "(continuación)",
+    full_width = FALSE
+  ) |>
+  column_spec(1, width = "3cm") |>
+  column_spec(2, width = "6.5cm") |>
+  column_spec(3, width = "5cm")
 ```
 
 
