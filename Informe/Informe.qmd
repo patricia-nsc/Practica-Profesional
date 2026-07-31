@@ -122,13 +122,13 @@ library(purrr)          # extraer p-values de los test Ljunj-Box
 ## Características del Ag Barometer Austral
 
 
-Cada valor del Ag Barometer Austral se elabora, en la Universidad Austral, a partir de preguntas que se les efectúan a una muestra de productores por teléfono.  Este proceso toma alrededor de tres semanas realizándose en los meses enero, marzo, mayo, julio, septiembre y noviembre los cuales serán llamados "meses impares" en el resto del presente informe. La recolección de información se realiza a productores agrícolas o agrícola ganaderos de la Pampa Húmeda abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa Fe.
+Cada valor del Ag Barometer Austral se elabora, en la Universidad Austral, a partir de preguntas que se les efectúan a una muestra de productores, por teléfono.  Este proceso toma alrededor de tres semanas realizándose en los meses enero, marzo, mayo, julio, septiembre y noviembre los cuales serán llamados "meses impares" en el resto del presente informe.
 
 
 Se entiende por productores agropecuarios a personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades). 
 
 
-La población está conformada por productores cuyo valor bruto de producción es mayor o igual a USD 200,000 donde un 45% producen soja, un 21% maíz, un 16% ganadería vacuna, un 7% trigo, un 7% tambo y un 4% girasol. Estas últimas categorías no son mutuamente excluyentes porque cada productor podría dedicarse a más de una actividad, por lo que los porcentajes mencionados representan mínimos.
+La población está conformada por productores de la Pampa Húmeda abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa Fe; cuyo valor bruto de producción es mayor o igual a USD 200,000; donde un 45% producen soja, un 21% maíz, un 16% ganadería vacuna, un 7% trigo, un 7% tambo y un 4% girasol. Estas últimas categorías no son mutuamente excluyentes porque cada productor podría dedicarse a más de una actividad, por lo que los porcentajes mencionados representan mínimos.
 
 
 Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
@@ -160,6 +160,7 @@ Se hace uso de las respuestas recolectadas para construir otros dos índices: "C
 Se calculan igual que el Ag Barometer Austral sólo teniendo en cuenta algunas de las preguntas.
 
 
+
 ```{r}
 #| label: tbl-0
 #| tbl-cap: "Preguntas utilizadas para el cálculo de cada índice"
@@ -184,6 +185,30 @@ tibble(
 
 ## Características del Ag Economy Barometer
 
+El Ag Economy Barometer se construye todos los meses en la Universidad de Purdue mediante una encuesta telefónica realizada a una muestra de productores, cuya recolección insume aproximadamente una semana.
+
+La población está compuesta por productores cuyo valor bruto de producción es mayor o igual a USD 500,000; donde un 53% producen soja, un 14% maíz, un 3% algodón, un 19% ganadería vacuna, un 5% Tambo y un 6% ganadería porcina. Al igual que en el caso del Ag Barometer Austral estos porcentajes representan mínimos.
+
+
+Para la selección de los productores se aplicó un muestreo estratificado en base a los datos censales del *United States Department of Agriculture* (USDA). Se detallan los estratos definidos según el volumen de producción anual:
+
+-   49% de los encuestados con un valor bruto de producción entre USD 500,000 y USD 999.999
+-   36% de los encuestados con valor bruto de producción entre USD 1,000,000 y USD 2,499,000
+-   15% de los encuestados con un valor bruto de producción mayor o igual a USD 2,500,000.
+
+La muestra queda conformada por 400 productores en total.
+
+
+Cada mes se entrevistan a los productores realizándoles las mismas cinco preguntas fijas ya detalladas.
+
+El primer paso del cálculo del Ag Economy Barometer es idéntico al del Ag Barometer Austral, obtener la medida para cada una de las cinco preguntas fijas. Sin embargo cambia la forma en que se obtiene el valor final del índice estadounidense con respecto al local. El Ag Economy Barometer se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
+
+Es decir que el valor del Ag Economy Barometer para un mes dado se calcula siempre en relación con el período base. El valor 100 implica que no hubo cambios respecto del período base. Un valor superior a 100 indica un aumento en el *sentiment*, o la confianza, de los productores en comparación con el período base; mientras que un valor inferior a 100 indica que el *sentiment* de los productores disminuyó en relación con dicho período.
+
+
+En Estados Unidos también se calculan los indicadores Condiciones presentes y Expectativas futuras utilizando la misma forma de cálculo que para el Ag Economy Barometer a partir de las preguntas de la @tbl-0. 
+
+En la Universidad de Purdue también contruyen, aparte de los tres índices ya mencionados, el indicador "Inversión del capital agrícola" en base a la quinta pregunta ($Q_5$). Sin embargo no fue tenido en cuenta en el trabajo por no ser relevado a nivel local.
 
 
 
@@ -192,106 +217,8 @@ tibble(
 
 
 
-# ===================================================================
 
 
-
-## Características del relevamiento de datos
-
-(
-brevemente de q se trata la encuesta agb: hacer preguntas periodicamente..., 
-carcs como cuanto dura en cada pais, 
-pob y muestra en ambos paises, que preguntas especificamente se hacen
-)
-
-Los valores del Ag Barometer surgen a partir de la metodología propuesta por la Universidad de *Purdue* junto a la Universidad Austral. Se efectúan preguntas periódicamente por teléfono a aproximadamente 400 productores. En Argentina este proceso toma alrededor de tres semanas realizándose bimensualmente y en Estados Unidos se ejecuta mensulamente demorando cerca de una semana.
-
-
-Se entiende por productores agropecuarios a personas personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades). La definición de la población objetivo tuvo como criterio la importancia de cada actividad en el producto bruto agropecuario. Since a single farm can engage in multiple enterprises, and the categories are not mutually exclusive, the proportions represent a minimum.
-
-En Argentina el mínimo de representación para cada actividad es el siguiente: Soja 45%,  Maíz 21%, Ganadería vacuna 16%, Trigo 7%, Tambo 7% y Girasol 4%. En Estados Unidos: Soja 53%, Maíz 14%, Algodón 3%, Ganadería vacuna 19%, Tambo 5% y Ganadería porcina 6%.
-
-
-Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
-
--   50% de los encuestados con un valor bruto de producción entre USD 200.000 y USD 399.000 al año
--   30% de los encuestados con valor bruto de producción entre USD 414.000 y USD 999.999 al año
--   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1.000.000 al año.
-
-La encuesta a productores toma respuestas de 406 productores cuyo valor bruto de producción es igual o mayor a USD 200.000.
-
-
-
-
-En cada edición se formulan las siguientes cinco preguntas dicotómicas (de respuesta "Sí" / "No") fijas: 
-
--    Q1: ¿Ud. diría que su operación actualmente está mejor, peor o igual financieramente con respecto a un año atrás?
--    Q2: Mirando hacia adelante: de acá a un año ¿considera que su explotación estará mejor, peor o igual financieramente?
--    Q3: Pensando ahora en la economía agropecuaria en general ¿considera que los próximos meses serán: buenos tiempos hablando financieramente o malos tiempos?
--    Q4: Mirando hacia adelante ¿qué situación diría que es más probable, el sector agropecuario argentino en los próximos 5 años, tendrá mayormente buenos tiempos o mayormente malos tiempos?
--    Q5: Pensando en inversiones importantes – como maquinaria, compra de tierras, cabezas de ganado, capacidad de almacenamiento, bioenergía- en general ¿Ud. considera que hoy es un buen momento o mal momento para realizar inversiones?
-
-En todas las ediciones del Ag Barometer Austral se añaden alrededor de seis preguntas que reflejan percepciones referidas a temas coyunturales / estacionales que impactan al sector agropecuario argentino. Éstas varían según los temas de interés del momento.
-
-
-En Estados Unidos el mínimo de representación para cada actividad es el siguiente: Soja 53%, Maíz 14%, Algodón 3%, Ganadería vacuna 19%, Tambo 5% y Ganadería porcina 6%.
-
-
-## Cálculo e interpretación de los índices
-
-El primer paso es común a ambos países, obtener una medida para cada una de las cinco preguntas fijas. Se calcula en base al porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada pregunta un rango potencial de puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
-
-El valor final del Ag Barometer Austral es el promedio simple de las medidas de las cinco preguntas individuales. Generando el 100 indica un punto neutro. Valores por encima de 100 expresan percepciones positivas y valores por debajo de 100 expresan percepciones negativas.
-
-En cambio el valor final del Ag Economy Barometer se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
-
-Ambas universidades hacen uso de las respuestas recolectadas para construir otros dos índices: "Condiciones presentes" y "Expectativas futuras" a fines de capturar cómo cambia la percepción netamente actual y la puramente futura de los productores a través del tiempo.
-Se calculan sólo teniendo en cuenta las preguntas Q1, Q5 y Q2, Q3, Q4 respectivamente para cada uno y utilizando el mismo método de cada institución.
-
-
-
-
-
-## Los datos
-
-tengo una base para arg otra para usa, las dos tienen las mismas columnas?
-
-
-
-
-## Características del relevamiento
-
-La definición del universo a relevar tuvo como criterio la importancia de cada actividad en el producto bruto agropecuario. El mínimo de representación para cada actividad es el siguiente:
-
--   Soja 45 %
--   Maíz 21%
--   Ganadería de carne 16% 
--   Trigo 7 %
--   Tambo 7%
--   Girasol 4 %
-
-
-Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
-
--   50% de los encuestados con un valor bruto de producción entre USD 200.000 y USD 399.000 al año
--   30% de los encuestados con valor bruto de producción entre USD 414.000 y USD 999.999 al año
--   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1.000.000 al año.
-
-La encuesta a productores toma respuestas de 406 productores cuyo valor bruto de producción es igual o mayor a USD 200.000.
-
-
-## ! Conjunto de datos
-
-(prob lo ponga use esto para otra seccion, porq estos cometnarios surgen del descriptivo en realidad)
-
-Los tres índices de Estados Unidos brindados por la Universidad de Purdue tienen periodicidad mensual y están completos. Comenzaron a construirlos en octubre de 2015 y la observación más reciente que se dispone es de marzo 2026.
-
-
-En cambio, los tres índices de Argentina provistos por el Centro de Agronegocios y Alimentos de la sede Rosario de la Universidad Austral son medidos en los meses de enero, marzo, mayo, julio, septiembre y noviembre (impares); en 2020 en vez de haber observaciones para los meses de marzo y mayo, hay una para abril y se tienen datos desde octubre de 2018 hasta enero de 2026.
-
-A pesar de los meses en los que los índices locales son medidos, la primera observación de cada uno de ellos es en octubre de 2018 porque en este fecha se ha decidido comenzar el relevamiento y a partir del siguiente mes comenzaron a reportar los valores bimensualmente.
-
-Teniendo estas características en cuenta, los índices de Argentina tienen periodicidad irregular. Hay observaciones separadas por un mes (octubre de 2018 y noviembre de 2018), observaciones separadas por tres meses (enero 2020 y abril 2020, abril 2020 y julio 2020) y el resto de los datos están separados por dos meses.
 
 \newpage
 
