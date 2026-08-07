@@ -44,7 +44,7 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 
 
 
-En el presente informe se resume el trabajo realizado en el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario entre los meses Agosto y Octubre de 2026, bajo el concepto del desarrollo de una Práctica Profesional para terminar la carrera de Licenciatura en Estadística de la Facultad de Ciencias Económicas y Estadística de la Universidad Nacional de Rosario.
+En el presente informe se resume el trabajo realizado en el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario entre los meses Agosto y Octubre de 2026, bajo el concepto del desarrollo de una práctica profesional para terminar la carrera de Licenciatura en Estadística de la Facultad de Ciencias Económicas y Estadística de la Universidad Nacional de Rosario.
 
 
 El CEAg de la sede Rosario de la Universidad Austral es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo.
@@ -52,12 +52,12 @@ El CEAg de la sede Rosario de la Universidad Austral es una entidad especializad
 
 Este Centro desarrolla el *Ag Barometer Austral* desde 2018 en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos).
 
-El *Ag Barometer Austral* es un índice que mide de manera periódica la confianza de los productores agropecuarios argentinos, a partir de encuestas estructuradas productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión. Este indicador se construye en base a cinco preguntas fijas que capturan distintas dimensiones del clima económico agropecuario y constituye una herramienta clave para comprender la dinámica del sector en el tiempo.
+El *Ag Barometer Austral* es un índice que mide de manera periódica la confianza de los productores agropecuarios argentinos, a partir de encuestas estructuradas a productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión. Este indicador se construye en base a cinco preguntas fijas que capturan distintas dimensiones del clima económico agropecuario y constituye una herramienta clave para comprender la dinámica del sector en el tiempo.
 
 A nivel internacional, el *Ag Economy Barometer*, desarrollado por la Universidad de *Purdue* desde 2015, es un índice reportado mensualmente que mide la confianza de los productores estadounidenses. Representa un referente global en la medición del *sentiment* agropecuario, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
 
 
-En este contexto, este trabajo tiene como propósito realizar un análisis comparativo de las series temporales de los índices de confianza agropecuaria (*Ag Barometer*) de Argentina y Estados Unidos.
+En este contexto, este trabajo tiene como propósito realizar un análisis comparativo de las series temporales de los índices de confianza agropecuaria de Argentina y Estados Unidos (*Ag Barometer*).
 
 
 \newpage
@@ -69,12 +69,12 @@ En este contexto, este trabajo tiene como propósito realizar un análisis compa
 En línea con lo expuesto, la finalidad de esta investigación es comparar  los índices estudiando su dinámica, identificando patrones comunes y diferencias estructurales, y analizando la respuesta de los productores frente a distintos contextos económicos, políticos y productivos.
 
 
-## Tareas específicas de la Práctica Profesional
+## Tareas específicas de la práctica profesional
 
 
 Se determinan las siguientes tareas:
 
--   Realizar la recolección, integración y depuración de las bases de datos correspondientes al Ag Barometer Austral y al *Ag Economy Barometer* (*Purdue University*), generando series temporales comparables. 
+-   Realizar la recolección, integración y depuración de las bases de datos correspondientes al *Ag Barometer Austral* y al *Ag Economy Barometer*, generando series temporales comparables. 
 -   Confeccionar una base de datos que contenga información de series económicas para analizar su relación con los índices bajo estudio.
 -   Desarrollar un análisis exploratorio de las series de tiempo, incluyendo el estudio de tendencia, estacionalidad, volatilidad y comportamiento general de los índices. 
 -   Analizar la dinámica temporal de los indicadores, identificando patrones, tendencias, estacionalidad y posibles cambios estructurales.
@@ -115,14 +115,15 @@ library(kableExtra)
 library(tidyr)
 library(patchwork)      # acomodar graficos
 library(purrr)          # extraer p-values de los test Ljunj-Box
+library(ggrepel)
 ```
 
 
 
-## Características del Ag Barometer Austral
+## Características del *Ag Barometer Austral*
 
 
-Cada valor del Ag Barometer Austral se elabora, en la Universidad Austral, a partir de preguntas que se les efectúan a una muestra de productores, por teléfono.  Este proceso toma alrededor de tres semanas realizándose en los meses enero, marzo, mayo, julio, septiembre y noviembre los cuales serán llamados "meses impares" en el resto del presente informe.
+Cada valor del *Ag Barometer Austral* se elabora, en la Universidad Austral, a partir de preguntas que se les efectúan a una muestra de productores, por teléfono.  Este proceso toma alrededor de tres semanas realizándose en los meses enero, marzo, mayo, julio, septiembre y noviembre los cuales serán llamados "meses impares" en el resto del presente informe.
 
 
 Se entiende por productores agropecuarios a personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades). 
@@ -133,7 +134,7 @@ La población está conformada por productores de la Pampa Húmeda abarcando las
 
 Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
 
--   50% de los encuestados con un valor bruto de producción entre USD 200,000 y USD 399.000 al año
+-   50% de los encuestados con un valor bruto de producción entre USD 200,000 y USD 399,000 al año
 -   30% de los encuestados con valor bruto de producción entre USD 414,000 y USD 999,999 al año
 -   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1,000,000 al año.
 
@@ -148,16 +149,16 @@ En cada edición se formulan las siguientes cinco preguntas dicotómicas (de res
 -    $Q_4$: Mirando hacia adelante ¿qué situación diría que es más probable, el sector agropecuario argentino en los próximos 5 años, tendrá mayormente buenos tiempos o mayormente malos tiempos?
 -    $Q_5$: Pensando en inversiones importantes – como maquinaria, compra de tierras, cabezas de ganado, capacidad de almacenamiento, bioenergía- en general ¿Ud. considera que hoy es un buen momento o mal momento para realizar inversiones?
 
-En todas las ediciones del Ag Barometer Austral se añaden alrededor de seis preguntas que reflejan percepciones referidas a temas coyunturales / estacionales que impactan al sector agropecuario argentino. Éstas varían según los temas de interés del momento.
+En todas las ediciones del *Ag Barometer Austral* se añaden alrededor de seis preguntas que reflejan percepciones referidas a temas coyunturales / estacionales que impactan al sector agropecuario argentino. Éstas varían según los temas de interés del momento.
 
 
-El primer paso del cálculo del Ag Barometer Austral es obtener una medida para cada una de las cinco preguntas fijas. Se calcula como el porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada medida un rango de posibles puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
+El primer paso del cálculo del *Ag Barometer Austral* es obtener una medida para cada una de las cinco preguntas fijas. Se calcula como el porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada medida un rango de posibles puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
 
-El valor final del Ag Barometer Austral es el promedio simple de las medidas de las cinco preguntas individuales donde el 100 indica un punto neutro. Valores por encima de 100 expresan percepciones positivas y valores por debajo de 100 expresan percepciones negativas.
+El valor final del *Ag Barometer Austral* es el promedio simple de las medidas de las cinco preguntas individuales donde el 100 indica un punto neutro. Valores por encima de 100 expresan percepciones positivas y valores por debajo de 100 expresan percepciones negativas.
 
 
 Se hace uso de las respuestas recolectadas para construir otros dos índices: "Condiciones presentes" y "Expectativas futuras" a fines de capturar cómo cambia la percepción netamente actual y la puramente futura de los productores a través del tiempo.
-Se calculan igual que el Ag Barometer Austral sólo teniendo en cuenta algunas de las preguntas.
+Se calculan igual que el *Ag Barometer Austral* sólo teniendo en cuenta algunas de las preguntas.
 
 
 
@@ -170,9 +171,9 @@ Se calculan igual que el Ag Barometer Austral sólo teniendo en cuenta algunas d
 tibble(
   Índice = c("Ag Barometer", "Condiciones presentes", "Expectativas futuras"),
   `Preguntas para su cálculo` = c(
-    "$Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$",
-    "$Q_1$, $Q_5$",
-    "$Q_2$, $Q_3$, $Q_4$"),
+    "Q1, Q2, Q3, Q4, Q5",
+    "Q1, Q5",
+    "Q2, Q3, Q4"),
     `Qué representa` = c(
       "Percepciones actuales y futuras",
       "Percepciones actuales",
@@ -183,32 +184,32 @@ tibble(
 ```
 
 
-## Características del Ag Economy Barometer
+## Características del *Ag Economy Barometer*
 
-El Ag Economy Barometer se construye todos los meses en la Universidad de Purdue mediante una encuesta telefónica realizada a una muestra de productores, cuya recolección insume aproximadamente una semana.
+El *Ag Economy Barometer* se construye todos los meses en la Universidad de *Purdue* mediante una encuesta telefónica realizada a una muestra de productores, cuya recolección insume aproximadamente una semana.
 
-La población está compuesta por productores cuyo valor bruto de producción es mayor o igual a USD 500,000; donde un 53% producen soja, un 14% maíz, un 3% algodón, un 19% ganadería vacuna, un 5% Tambo y un 6% ganadería porcina. Al igual que en el caso del Ag Barometer Austral estos porcentajes representan mínimos.
+La población está compuesta por productores cuyo valor bruto de producción es mayor o igual a USD 500,000; donde un 53% producen soja, un 14% maíz, un 3% algodón, un 19% ganadería vacuna, un 5% tambo y un 6% ganadería porcina. Al igual que en el caso del *Ag Barometer Austral* estos porcentajes representan mínimos.
 
 
 Para la selección de los productores se aplicó un muestreo estratificado en base a los datos censales del *United States Department of Agriculture* (USDA). Se detallan los estratos definidos según el volumen de producción anual:
 
--   49% de los encuestados con un valor bruto de producción entre USD 500,000 y USD 999.999
+-   49% de los encuestados con un valor bruto de producción entre USD 500,000 y USD 999,999
 -   36% de los encuestados con valor bruto de producción entre USD 1,000,000 y USD 2,499,000
 -   15% de los encuestados con un valor bruto de producción mayor o igual a USD 2,500,000.
 
 La muestra queda conformada por 400 productores en total.
 
 
-Cada mes se entrevistan a los productores realizándoles las mismas cinco preguntas fijas ya detalladas.
+Cada mes se entrevista a los productores realizándoles las mismas cinco preguntas fijas ya detalladas.
 
-El primer paso del cálculo del Ag Economy Barometer es idéntico al del Ag Barometer Austral, obtener la medida para cada una de las cinco preguntas fijas. Sin embargo cambia la forma en que se obtiene el valor final del índice estadounidense con respecto al local. El Ag Economy Barometer se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
+El primer paso del cálculo del *Ag Economy Barometer* es idéntico al del *Ag Barometer Austral*, obtener la medida para cada una de las cinco preguntas fijas. Sin embargo cambia la forma en que se obtiene el valor final del índice estadounidense con respecto al local. El *Ag Economy Barometer* se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
 
-Es decir que el valor del Ag Economy Barometer para un mes dado se calcula siempre en relación con el período base. El valor 100 implica que no hubo cambios respecto del período base. Un valor superior a 100 indica un aumento en el *sentiment*, o la confianza, de los productores en comparación con el período base; mientras que un valor inferior a 100 indica que el *sentiment* de los productores disminuyó en relación con dicho período.
+Es decir que el valor del *Ag Economy Barometer* para un mes dado se calcula siempre en relación con el período base. El valor 100 implica que no hubo cambios respecto del período base. Un valor superior a 100 indica un aumento en el *sentiment*, o la confianza, de los productores en comparación con el período base; mientras que un valor inferior a 100 indica que el *sentiment* de los productores disminuyó en relación con dicho período.
 
 
-En Estados Unidos también se calculan los indicadores Condiciones presentes y Expectativas futuras utilizando la misma forma de cálculo que para el Ag Economy Barometer a partir de las preguntas de la @tbl-0. 
+En Estados Unidos también se calculan los indicadores Condiciones presentes y Expectativas futuras utilizando la misma forma de cálculo que para el *Ag Economy Barometer* a partir de las preguntas de la @tbl-0. 
 
-En la Universidad de Purdue también contruyen, aparte de los tres índices ya mencionados, el indicador "Inversión del capital agrícola" en base a la quinta pregunta ($Q_5$). Sin embargo no fue tenido en cuenta en el trabajo por no ser relevado a nivel local.
+En la Universidad de *Purdue* también construyen, aparte de los tres índices ya mencionados, el indicador "Inversión del capital agrícola" en base a la quinta pregunta ($Q_5$). Sin embargo no fue tenido en cuenta en el trabajo por no ser relevado a nivel local.
 
 
 
@@ -282,20 +283,22 @@ kable(booktabs = TRUE, align = "l", escape = FALSE, longtable = TRUE) |>
 
 
 
+
+
 <!-- \newpage -->
 
 
 
 # Armado de la base de datos
 
-El fin de esta sección es plasmar el camino que se siguió para armar una base de datos que facilitó el análisis. Ésta reune las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
+El fin de esta sección es plasmar el camino que se siguió para armar una base de datos que facilitó el análisis. Ésta reúne las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas que fueron buscadas en diversas fuentes para poder responder a ciertos objetivos de esta práctica profesional. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
 
 
 
-## Tratamiento sobre las variables provistas
+## Tratamiento sobre las series provistas
 
 
-Se observan los datos de la Austral. 
+Se observan los datos argentinos. 
 
 
 
@@ -312,7 +315,7 @@ d_conNA <- readxl::read_excel("../Datos/Crudos/agbarometerARG_enero2026_conNA.xl
 
 ```{r}
 #| label: tbl-1
-#| tbl-cap: "Ag Barometer Austral en el período octubre 2018 - enero 2026"
+#| tbl-cap: "*Ag Barometer Austral* en el período octubre 2018 - enero 2026"
 
 # Tabla para visualizar en que meses y en que año hay obs
 d_conNA |> 
@@ -367,7 +370,7 @@ d_conNA |>
 Se aprecian dos características en estos datos:
 
 -   Los valores correspondientes a marzo 2020 y mayo 2020 son faltantes como se puede ver en la @tbl-1 y en la @fig-1. 
--   Si bien los investigaron planificaron generar observaciones en los meses impares, se observaron algunas excepciones. 
+-   Si bien los investigadores planificaron generar observaciones en los meses impares, se observaron algunas excepciones. 
 
 
 Hay una observación en el mes de abril sólo en el año 2020 (@tbl-1) relevada para compensar los faltantes de marzo y mayo. 
@@ -503,9 +506,9 @@ pv_expec_arg_dif1 <- round(pv_expec_arg_dif1, digits = 4)
 Es común que las series económicas sigan el patrón de un paseo aleatorio. Por esta razón se analizó si la primera diferencia de cada serie es un ruido blanco.
 
 
-La mayoría de los bastones de las FACM de la @fig-2 parecen ser no significativos. De todas formas hay algunos que superan el valor crítico representado con la línea punteada azul pero como toman valores de aproximadamente 0.4, en valor absoluto, o menores; éstos tampoco parecen ser significativos. Se realiza el test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros treinta coeficientes de la FAC de las diferencias de las series Ag Barometer Austral, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg_dif1`, $p-value=$ `r pv_cond_arg_dif1` y $p-value=$ `r pv_expec_arg_dif1` respectivamente, $k=20$)
+La mayoría de los bastones de las FACM de la @fig-2 parecen ser no significativos. De todas formas hay algunos que superan el valor crítico representado con la línea punteada azul pero como toman valores de aproximadamente 0.4, en valor absoluto, o menores; éstos tampoco parecen ser significativos. Se realiza el test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros veinte coeficientes de la FAC de las diferencias de las series *Ag Barometer Austral*, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg_dif1`, $p-value=$ `r pv_cond_arg_dif1` y $p-value=$ `r pv_expec_arg_dif1` respectivamente, $k=20$)
 
-Se imputaron las dos fechas con *interpolación lineal* por ser uno uno de los métodos que más conviene dadas las características vistas de estas tres series según las conclusiones de la tesina de Lucía Tamplín.
+Se imputaron las dos fechas con *interpolación lineal* por ser uno de los métodos que más conviene dadas las características vistas de estas tres series según las conclusiones de la tesina de Lucía Tamplín.
 
 
 ```{r}
@@ -518,7 +521,7 @@ d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx")
 
 ```{r}
 #| label: tbl-2
-#| tbl-cap: "Ag Barometer Austral en el período noviembre 2018 - enero 2026"
+#| tbl-cap: "*Ag Barometer Austral* en el período noviembre 2018 - enero 2026"
 
 # Tabla para visualizar la serie de periodicidad regular
 d_arg |> 
@@ -579,9 +582,9 @@ d_arg |>
 
 Las observaciones de octubre 2018 y abril 2020, las cuales sólo representan un 4.54% de la totalidad de los datos, fueron consideradas a la hora de imputar pero no se las tuvo en cuenta en el resto del trabajo para lograr que las tres series tengan periodicidad regular. 
 
-Luego de todo este tratamiento se logran tres series de periodicidad bimensual, de cuarenta y cuatro observaciones cada una para el período noviembre 2018 - enero 2026. Se puede apreciar, tomando como ejemplo al Ag Barometer Austral, que luego de este proceso sólo hay observaciones para los meses impares (@tbl-2) y que los valores de marzo 2020 y mayo 2020 fueron imputados (@fig-4).
+Luego de todo este tratamiento se logran tres series de periodicidad bimensual, de cuarenta y cuatro observaciones cada una para el período noviembre 2018 - enero 2026. Se puede apreciar, tomando como ejemplo al *Ag Barometer Austral*, que luego de este proceso sólo hay observaciones para los meses impares (@tbl-2) y que los valores de marzo 2020 y mayo 2020 fueron imputados (@fig-4).
 
-Se observan los datos proporcionados por la Universidad de Purdue.
+Se observan los datos estadounidenses.
 
 ```{r}
 # Carga de datos de eeuu
@@ -605,7 +608,7 @@ d_eeuu <- readxl::read_excel("../Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |>
 
 ```{r}
 #| label: fig-5
-#| fig-cap: "Series provistas por la Universidad de Purdue en el período octubre 2015 - marzo 2026"
+#| fig-cap: "Series provistas por la Universidad de *Purdue* en el período octubre 2015 - marzo 2026"
 #| fig-height: 4.5
 #| fig-width: 6.5
 
@@ -643,10 +646,10 @@ No es posible que haya excepciones en las series de Estados Unidos, como octubre
 El trabajo realizado con estas series se redujo, entonces, a tareas propias del manejo de bases de datos: se creó una columna `Fecha` a partir de las columnas `Year` y `Month`, con el fin de contar con una columna equivalente a `Bimestre` (@tbl-0.1) presente en los datos locales, y así poder unir posteriormente ambos conjuntos de datos a partir de dicha columna.
 
 
-## Búsqueda de variables económicas
+## Búsqueda de series económicas
 
 
-Además de las series de interés ya mencionadas también debieron agregarse al conjunto de datos otras variables a fines de poder responder a los objetivos de la investigación. Se consultó a los especialistas qué  variables podrían estar relacionadas con el Ag Barometer en ambos países.
+Además de las series de interés ya mencionadas también debieron agregarse al conjunto de datos otras variables a fines de poder responder a los objetivos de la investigación. Se consultó a los especialistas qué  variables podrían estar relacionadas con el *Ag Barometer* en ambos países.
 
 A partir de estas indicaciones, se realizó una búsqueda en distintas fuentes y las variables fueron organizadas, con el software Excel, en el archivo `Covariables.xlsx`. 
 
@@ -680,7 +683,7 @@ readxl::read_excel("Tablas/tabla_covs.xlsx") |>
 
 ## Base de datos construida
 
-Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y realizadas algunas tareas propias de manejo de datos, se construyó la base de datos `base_contruida.xlsx`, con el software R, que permitió realizar ciertos análisis del trabajo.
+Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y realizadas algunas tareas propias de manejo de datos, se construyó la base de datos `base_construida.xlsx`, con el software R, que permitió realizar ciertos análisis del trabajo.
 
 
 
@@ -705,7 +708,7 @@ readxl::read_excel("Tablas/tabla_base_construida.xlsx") |>
 ```
 
 
-Se presentan las características de la base contruida en la @tbl-4.
+Se presentan las características de la base construida en la @tbl-4.
 
 
 
@@ -717,14 +720,14 @@ Se presentan las características de la base contruida en la @tbl-4.
 
 
 
-Una vez dispuestos los datos en una misma base de datos, con el fin de conocer las características de los índices se decidió comenzar esta práctica profesional presentando un análisis exploratorio de los datos suministrados por las universidades. Se realizó un análisis univariado del Ag Barometer y luego se llevó a cabo un análisis bivariado que constó de dos fases. En la primera se analizó la relación entre pares de series en estudio. En la segunda se estudió la relación del Ag Barometer con las series propuestas por economistas anteriormente presentadas.
+Una vez dispuestos los datos en una misma base, con el fin de conocer las características de los índices se decidió comenzar esta práctica profesional presentando un análisis exploratorio de los datos suministrados por las universidades. Se realizó un análisis univariado del *Ag Barometer* y luego se llevó a cabo un análisis bivariado en el que se analizó la relación entre ciertos pares de las series bajo estudio. Finalmente se estudió la relación del *Ag Barometer* con las series propuestas por economistas anteriormente presentadas.
 
 
 
-## Análisis descriptivo del Ag Barometer
+## Análisis descriptivo del *Ag Barometer*
 
 
-A continuación se ofrece una primera impresión del Ag Barometer Austral y del Ag Economy Barometer en la @fig-5. 
+A continuación se ofrece una primera impresión del *Ag Barometer Austral* y del *Ag Economy Barometer* en la @fig-5. 
 
 ```{r}
 #| label: fig-6
@@ -759,7 +762,7 @@ d_arg |>
 
 ```{r}
 #| label: fig-7
-#| fig-cap: "FACM y FACPM del Ag Barometer Austral"
+#| fig-cap: "FACM y FACPM del *Ag Barometer Austral*"
 #| fig-width: 8
 
 # acf y pacf arg
@@ -788,7 +791,7 @@ acf_agb_arg + pacf_agb_arg
 
 ```{r}
 #| label: fig-8
-#| fig-cap: "FACM y FACPM del Ag Economy Barometer"
+#| fig-cap: "FACM y FACPM del *Ag Economy Barometer*"
 #| fig-width: 8
 
 # acf y pacf eeuu
@@ -840,7 +843,7 @@ pv_agb_eeuu <- round(pv_agb_arg, 4)
 
 
 
-Se realizan dos Test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que el Ag Barometer Austral y el Ag Economy Barometer no son ruido blanco. Tiene sentido sentido investigar estas series.
+Se realizan dos Test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que el *Ag Barometer Austral* y el *Ag Economy Barometer* no son ruido blanco. Tiene sentido investigar estas series.
 ($p-value < 0.001$ y $p-value < 0.001$ respectivamente, $k=20$).
 
 A continuación se muestran más gráficos para conocer con más detalle las características de estos índices.
@@ -873,7 +876,7 @@ tabla_medidas <- d |>
 
 ```{r}
 #| label: fig-9
-#| fig-cap: "Evolución anual del Ag Barometer"
+#| fig-cap: "Evolución anual del *Ag Barometer*"
 #| fig-height: 4
 #| fig-width: 6
 
@@ -912,7 +915,7 @@ tabla_medidas |>
 
 ```{r}
 #| label: fig-10
-#| fig-cap: "Comportamiento anual del Ag Barometer Austral y del Ag Economy Barometer"
+#| fig-cap: "Comportamiento anual del *Ag Barometer Austral* y del *Ag Economy Barometer*"
 #| fig-height: 6
 #| fig-width: 14
 
@@ -959,7 +962,7 @@ estacionalidad_por_anio_arg + estacionalidad_por_anio_eeuu
 
 ```{r}
 #| label: fig-11
-#| fig-cap: "Comportamiento mensual del Ag Barometer Austral y del Ag Economy Barometer"
+#| fig-cap: "Comportamiento mensual del *Ag Barometer Austral* y del *Ag Economy Barometer*"
 #| fig-height: 5
 #| fig-width: 13
 
@@ -989,7 +992,7 @@ estacionalidad_por_mes_arg + estacionalidad_por_mes_eeuu
 
 ```{r}
 #| label: fig-12
-#| fig-cap: "Distribución del Ag Barometer Austral y del Ag Economy Barometer por año"
+#| fig-cap: "Distribución del *Ag Barometer Austral* y del *Ag Economy Barometer* por año"
 #| fig-height: 5
 #| fig-width: 10
 
@@ -1016,7 +1019,7 @@ boxplot_arg + boxplot_eeuu
 
 ```{r}
 #| label: fig-13
-#| fig-cap: "FACM y FACPM de la primer diferencia del Ag Barometer Austral"
+#| fig-cap: "FACM y FACPM de la primer diferencia del *Ag Barometer Austral*"
 #| fig-width: 8
 
 acf_agb_arg_dif1 <- d_arg |> 
@@ -1046,7 +1049,7 @@ acf_agb_arg_dif1 + pacf_agb_arg_dif1
 
 ```{r}
 #| label: fig-14
-#| fig-cap: "FACM y FACPM de la primer diferencia del Ag Economy Barometer"
+#| fig-cap: "FACM y FACPM de la primer diferencia del *Ag Economy Barometer*"
 #| fig-width: 8
 
 acf_agb_eeuu_dif1 <- d_eeuu |> 
@@ -1106,13 +1109,13 @@ La confianza promedio de los productores estadounidenses varía a través del ti
 
 
 
-Las variabilidades de las percepciones parecen ser distintas entre año y año tanto para productores argentinos como estadounidenses donde el año de respuestas más variables en Argentina fue el 2019 y el 2020 seguido por el 2021 para Estados Unidos (@fig-12). 
+Las variabilidades de las percepciones parecen ser distintas entre año y año tanto para productores argentinos como  para estadounidenses donde el año de respuestas más variables en Argentina fue el 2019 y el 2020 seguido por el 2021 para Estados Unidos (@fig-12). 
 
 
-La confianza promedio parece ser similar en todos los meses y entre ambos países sugiriendo q ninguno de los índices posee pauta estacional (@fig-10 y  @fig-11). 
+La confianza promedio parece ser similar en todos los meses y entre ambos países sugiriendo que ninguno de los índices posee pauta estacional (@fig-10 y  @fig-11). 
 
 
-Para obtener aún más características de estas series también se tuvo en cuenta sus primeras diferencias. Ninguno de los rezagos de la @fig-13 son significativos y en la @fig-14 son casi todos no significativos salvo tres coeficeintes cuyas estimaciones valen 0.2 o menos, en valor absoluto. Se realizó el Test de Ljung-Box sobre cada una de las series diferenciadas y se concluyó al 5% de significación y en base a la evidencia muestral que los primeros 20 coefiecientes de la FAC son nulos en ambas series diferenciadas ($p-value =$ `r pv2_agb_arg_dif1`, $p-value =$ `r pv_agb_eeuu_dif1`, $k=20$). Es decir que las dos diferencias son ruido blanco, en otras palabras, tanto el Ag Barometer Austral como el Ag Economy Barometer siguen un patrón de paseo aleatorio.
+Para obtener aún más características de estas series también se tuvo en cuenta sus primeras diferencias. Ninguno de los rezagos de la @fig-13 son significativos y en la @fig-14 son casi todos no significativos salvo tres coeficientes cuyas estimaciones valen 0.2 o menos, en valor absoluto. Se realizó el Test de Ljung-Box sobre cada una de las series diferenciadas y se concluyó al 5% de significación y en base a la evidencia muestral que los primeros 20 coefiecientes de la FAC son nulos en ambas series diferenciadas ($p-value =$ `r pv2_agb_arg_dif1`, $p-value =$ `r pv_agb_eeuu_dif1`, $k=20$). Es decir que las dos diferencias son ruido blanco, en otras palabras, tanto el *Ag Barometer Austral* como el *Ag Economy Barometer* siguen un patrón de paseo aleatorio.
 
 
 
@@ -1122,13 +1125,13 @@ Para obtener aún más características de estas series también se tuvo en cuen
 
 
 
-Para comparar el Ag Barometer Austral y el Ag Economy Barometer se presentan los siguientes gráficos.
+Para comparar el *Ag Barometer Austral* y el *Ag Economy Barometer* se presentan los siguientes gráficos.
 
 <!-- comparo los dos AgB!! -->
 
 ```{r}
 #| label: fig-15
-#| fig-cap: "Ag Barometer Austral y Ag Economy Barometer"
+#| fig-cap: "*Ag Barometer Austral* y *Ag Economy Barometer*"
 #| fig-height: 4
 #| fig-width: 6
 
@@ -1163,7 +1166,7 @@ d |>
 
 ```{r}
 #| label: fig-16
-#| fig-cap: "FCCM del Ag Barometer Austral y el Ag Economy Barometer"
+#| fig-cap: "FCCM del *Ag Barometer Austral* y el *Ag Economy Barometer*"
 
 d |> 
   filter(!is.na(`Ag Barometer Austral`)) |> 
@@ -1190,7 +1193,7 @@ A partir de los seis índices brindados por las universidades, se presentan figu
 
 ```{r}
 #| label: fig-17
-#| fig-cap: "FCCM del Ag Barometer y las Condiciones presentes en Argentina y en Estados Unidos"
+#| fig-cap: "FCCM del *Ag Barometer* y las Condiciones presentes en Argentina y en Estados Unidos"
 #| fig-width: 8
 
 ccf_arg_agb_cond <- d |> 
@@ -1225,7 +1228,7 @@ ccf_arg_agb_cond + ccf_eeuu_agb_cond
 
 ```{r}
 #| label: fig-18
-#| fig-cap: "FCCM del Ag Barometer y las Expectativas futuras en Argentina y en Estados Unidos"
+#| fig-cap: "FCCM del *Ag Barometer* y las Expectativas futuras en Argentina y en Estados Unidos"
 #| fig-width: 8
 
 ccf_arg_agb_expec <- d |> 
@@ -1296,27 +1299,27 @@ ccf_arg_expec_cond + ccf_eeuu_expec_cond
 
 
 
-La @fig-15 y la @fig-9 parecen sugerir que el Ag Barometer Austral y el Ag Economy Barometer tienen compartamientos opuestos. Esto se condice con la presencia de rezagos significativos en la @fig-16 que toman valores negativos moderados.
+La @fig-15 y la @fig-9 parecen sugerir que el *Ag Barometer Austral* y el *Ag Economy Barometer* tienen comportamientos opuestos. Esto se condice con la presencia de bastones negativos significativos en la @fig-16 que toman valores negativos moderados.
 
-El bastón del cero de la @fig-16 es prácticamente nulo. Esto puede estar indicando que no hay relación entre estos índices. 
+El rezago del cero de la @fig-16 es prácticamente nulo. Esto puede estar indicando que no hay relación entre estos índices. 
 
 
 En ambos países se observa que:
 
-- A medida que el Ag Barometer aumenta las condiciones presentes también. El Ag Barometer anticipa, de manera moderada, las condiciones presentes de relevamientos posteriores. Estas características se presentan con mayor fuerza en Estados Unidos (@fig-17). 
-- El Ag Barometer tiene una relación directa muy fuerte con las Expectativas futuras porque en la @fig-18 se ve que la estimación del rezago asociado al cero es cercana a uno.
+- A medida que el *Ag Barometer* aumenta las condiciones presentes también. El *Ag Barometer* anticipa, de manera moderada, las condiciones presentes de relevamientos posteriores. Estas características se presentan con mayor fuerza en Estados Unidos (@fig-17). 
+- El *Ag Barometer* tiene una relación directa muy fuerte con las Expectativas futuras porque en la @fig-18 se ve que la estimación del rezago asociado al cero es cercana a uno.
 - Las Expectativas futuras anticipan moderadamente las Condiciones presentes de ediciones posteriores. Como el bastón del cero de la @fig-19 tiene una estimación alrededor de 0.5, existe una relación moderada entre las Expectativas futuras y las Condiciones presentes.
 
 
-## Relación del Ag Barometer con otras series económicas
+## Relación del *Ag Barometer* con otras series económicas
 
  
 
-Terminado el análisis descriptivo, el objetivo de la presente sub-sección es analizar a qué fenómenos el Ag Barometer podría estar relacionado. Según economistas de la Austral, el primer conjunto de variables candidatas son los precios internacionales (*commodities*). 
+Terminado el análisis descriptivo, el objetivo de la presente sub-sección es analizar a qué fenómenos el *Ag Barometer* podría estar relacionado. Según economistas de la Austral, el primer conjunto de variables candidatas son los precios internacionales (*commodities*). 
 
 
 
-Se presentan gráficos que permitan analizar la posible existencia de relaciones. Éstos tienen una particularidad, cada punto representa el Ag Batometer de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación entre las variables porque el relevamiento del Ag Barometer se efectua a principios de mes y a principios de cada mes se publican los precios del mes anterior. Es decir, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de agosto para relevar el Ag Barometer de ese mes, la información de precios más reciente con la que cuentan es la de julio, ya que los datos de agosto todavía no fueron publicados.
+Se presentan gráficos que permitan analizar la posible existencia de relaciones. Éstos tienen una particularidad, cada punto representa el *Ag Barometer* de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación entre las variables porque el relevamiento del *Ag Barometer* se efectúa a principios de mes y a principios de cada mes se publican los precios del mes anterior. Es decir, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de agosto para relevar el *Ag Barometer* de ese mes, la información de precios más reciente con la que cuentan es la de julio, ya que los datos de agosto todavía no fueron publicados.
 
 
 
@@ -1371,7 +1374,7 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 
 ```{r}
 #| label: fig-20
-#| fig-cap: "Correlaciones entre el Ag Barometer Austral y commodities"
+#| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y *commodities*"
 #| fig-width: 6
 #| fig-height: 6
 
@@ -1440,7 +1443,7 @@ df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variab
 
 ```{r}
 #| label: fig-21
-#| fig-cap: "Correlaciones entre el Ag Economy Barometer y los commodities"
+#| fig-cap: "Correlaciones entre el *Ag Economy Barometer* y los *commodities*"
 #| fig-width: 6
 #| fig-height: 6
 
@@ -1467,7 +1470,7 @@ d_completo_eeuu |>
 
 
 
-Las correlaciones observadas en la @fig-20 y en la @fig-21 son bajas, se consideraron las asociaciones del Ag Barometer con los precios como débiles. Seguidamente los economistas propusieron otro conjunto de series económicas candidatas con la creencia de que, en caso de existir relación, sólo sería con el Ag Economy Barometer.
+Las correlaciones observadas en la @fig-20 y en la @fig-21 son bajas, se consideraron las asociaciones del *Ag Barometer* con los precios como débiles. Seguidamente los economistas propusieron otro conjunto de series económicas candidatas con la creencia de que, en caso de existir relación, sólo sería con el *Ag Economy Barometer*.
 
 Las figuras presentadas a continuación tienen la misma característica que la @fig-20 y la @fig-21.
 
@@ -1524,7 +1527,7 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 
 ```{r}
 #| label: fig-22
-#| fig-cap: "Correlaciones entre el Ag Barometer Austral y commodities"
+#| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y *commodities*"
 
 ## Scatter AgB(t) vs covariables(t-1)
 
@@ -1595,7 +1598,7 @@ df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variab
 
 ```{r}
 #| label: fig-23
-#| fig-cap: "Correlaciones entre el Ag Economy Barometer y otras variables"
+#| fig-cap: "Correlaciones entre el *Ag Economy Barometer* y otras variables"
 
 ## Scatter AgB(t) vs covariables(t-1)
 
@@ -1619,21 +1622,293 @@ d_completo_eeuu |>
 ```
 
 
-Las relaciones entre estas variables y el Ag Economy Barometer también son débiles como se puede ver en la @fig-23. Si bien algunas correlaciones entre el Ag Barometer Austral y este nuevo conjunto de series parecen ser moderadas-altas (@fig-22), también se las considera como débiles por carecer de sentido práctico según los especialistas.
+Las relaciones entre estas variables y el *Ag Economy Barometer* también son débiles como se puede ver en la @fig-23. Si bien algunas correlaciones entre el *Ag Barometer Austral* y este nuevo conjunto de series parecen ser moderadas-altas (@fig-22), también se las considera como débiles por carecer de sentido práctico según los especialistas.
 
 
-Al no haber encontrado con qué está relacionado el Ag Barometer aún, la búsqueda no podía darse por finalizada. Nuevamente se consulta con los especialistas. Ellos, debido a su vasto conocimiento en el tema, dicen que el índice bajo estudio probablemente esté asociado a hechos políticos y/o bélicos.
+Al no haber encontrado con qué está relacionado el *Ag Barometer* aún, la búsqueda no podía darse por finalizada. Nuevamente se consulta con los especialistas. A partir de su experiencia en el tema, sostienen que el índice bajo estudio probablemente esté asociado a hechos políticos y/o bélicos. A continuación, se estudian esas posibles relaciones.
 
-
-
- GRAFICO LINEAAAAAAAAAS
  
- grafico de lineas de hitos politicos y belicos !! y conclusion (relacionar q estos hechos son los q me producen los aumentos de variancia, ents veo q los hechos politicos y belicos hacen q las respuestas de los productores cambien/salten/se alteren.
+
+
+
+```{r}
+#| label: fig-24
+#| fig-cap: "*Ag Barometer Austral* y resultados electivos en Argentina"
+#| fig-height: 5.5
+#| fig-width: 6
+
+# 1. Definimos los 8 hitos con un solo color para las líneas
+hitos <- data.frame(
+  Bimestre = yearmonth(c(
+    "2019 Aug", "2019 Oct", 
+    "2021 Sep", "2021 Nov", 
+    "2023 Aug", "2023 Oct", "2023 Nov", 
+    "2025 Oct"
+  )),
+  Tag = as.character(1:8),
+  # Escalamos posiciones verticales si quieres evitar solapamientos entre números cercanos
+  Y_pos = c(175, 168, 175, 168, 175, 168, 175, 170)
+)
+
+# 2. Texto explicativo para poner al pie del gráfico
+leyenda_hitos <- paste(
+  "Ganador de cada hito electoral:",
+  "1: Alberto Fernández (Frente de Todos) | PASO",
+  "2: Alberto Fernández (Frente de Todos) | Elecciones presidenciales generales",
+  "3: Juntos por el Cambio | PASO Legislativas",
+  "4: Juntos por el Cambio | Generales Legislativas",
+  "5: Javier Milei (La Libertad Avanza) | PASO",
+  "6: Sergio Massa (Unión por la Patria) | Elecciones presidenciales generales",
+  "7: Javier Milei (La Libertad Avanza) | Elecciones presidenciales Ballotage",
+  "8: La Libertad Avanza | Generales Legislativas",
+  sep = "\n"
+)
+
+# 3. Gráfico
+d_arg |> 
+  ggplot() +
+  aes(x = Bimestre, y = `Ag Barometer Austral`) +
+  
+  # Línea de referencia horizontal (100)
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  
+  # Líneas verticales del mismo color (un gris sobrio para no recargar)
+  geom_vline(data = hitos, aes(xintercept = Bimestre), 
+             color = "gray50", linetype = "dashed", linewidth = 0.6) +
+  
+  # Serie principal
+  geom_line(color = '#6D9DC5') +
+  geom_point(color = '#6D9DC5', size = 1) +
+  
+  # Números arriba de cada línea vertical
+  geom_text_repel(
+    data = hitos, 
+    aes(x = Bimestre, y = Y_pos, label = Tag),
+    fontface = "bold", 
+    color = "gray20",
+    size = 3.5,
+   # direction = "x", 
+    point.padding = 0.1,
+    box.padding = 0.2,
+    segment.color = NA
+  ) +
+  
+  # Escalas de ejes
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  
+  # Títulos y nota explicativa abajo
+  labs(
+    x = "Tiempo", 
+    y = "Ag Barometer Austral",
+    caption = leyenda_hitos
+  ) +
+  
+  theme_bw() +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.caption = element_text(hjust = 0, size = 8.5, color = "gray20", lineheight = 1.2),
+    plot.caption.position = "plot"
+  )
+```
+
+```{r}
+#| label: fig-25
+#| fig-cap: "*Ag Economy Barometer* y resultados electivos en Estados Unidos"
+#| fig-height: 5
+#| fig-width: 6
+
+
+# 1. Definición de los 5 hitos electorales en EE.UU. (2015 - 2026)
+hitos_eeuu <- data.frame(
+  Fecha = yearmonth(c(
+    "2016 Nov", 
+    "2018 Nov", 
+    "2020 Nov", 
+    "2022 Nov", 
+    "2024 Nov"
+  )),
+  Tag = as.character(1:5),
+  Y_pos = rep(175, 5) # Al estar separados por 2 años, entran todos a la misma altura
+)
+
+# 2. Explicación limpia de cada resultado electoral
+leyenda_hitos_eeuu <- paste(
+  "Resultados electorales en EE.UU.:",
+  "1: Donald Trump (Republicano) | Elecciones presidenciales",
+  "2: Partido Demócrata | Elecciones medio término",
+  "3: Joe Biden (Demócrata) | Elecciones presidenciales",
+  "4: Partido Republicano | Elecciones medio término",
+  "5: Donald Trump (Republicano) | Elecciones presidenciales",
+  sep = "\n"
+)
+
+# 3. Gráfico
+d_eeuu |>
+  ggplot() +
+  aes(x = Fecha, y = `Ag Economy Barometer`) +
+  
+  # Línea de referencia en 100
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  
+  # Líneas verticales neutras (gris)
+  geom_vline(data = hitos_eeuu, aes(xintercept = Fecha), 
+             color = "gray50", linetype = "dashed", linewidth = 0.6) +
+  
+  # Serie principal en rojo
+  geom_line(color = "#BF211E") +
+  geom_point(color = "#BF211E", size = 1) +
+  
+  # Números de hito (1 al 5)
+  geom_text_repel(
+    data = hitos_eeuu, 
+    aes(x = Fecha, y = Y_pos, label = Tag),
+    fontface = "bold", 
+    color = "gray20",
+    size = 3.8,
+    direction = "x", 
+    point.padding = 0.1,
+    box.padding = 0.2,
+    segment.color = NA
+  ) +
+  
+  # Configuración de ejes
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  
+  # Títulos y nota con resultados electorales
+  labs(
+    x = "Tiempo",
+    y = "Ag Economy Barometer",
+    caption = leyenda_hitos_eeuu
+  ) +
+  
+  theme_bw() +
+  theme(
+    panel.grid.minor = element_blank(),
+    plot.caption = element_text(hjust = 0, size = 8.5, color = "gray20", lineheight = 1.2),
+    plot.caption.position = "plot"
+  )
+```
+
+
+Tanto en Argentina como en Estados Unidos, parece que la confianza de los productores sí está relacionada con los resultados electorales.
+En la @fig-24 y en la @fig-25 se observan dos tipos de cambios en la confianza de los productores:
+
+-   Los que ocurren antes del resultado electoral definitivo, como en las elecciones presidenciales de 2023 y las de medio término de 2021 en Argentina, o las presidenciales de 2020 en Estados Unidos; que responden a encuestas o sospechas previas a la votación.
+-   Los que se dan inmediatamente después de conocerse el resultado, a causa de desenlaces inesperados. Tal es el caso del triunfo de Alberto Fernández en las PASO presidenciales 2019, del triunfo legislativo de La Libertad Avanza en 2025 o de la victoria presidencial de Donald Trump en 2016.
+
+Estos cambios de sentimiento también pueden observarse en la @fig-12. Dentro del período de estudio del *Ag Barometer Austral*, los valores de confianza resultan más variables en los años 2019 y 2023, coincidentes con elecciones presidenciales en Argentina. En 2020, año de elecciones presidenciales en Estados Unidos, la confianza del *Ag Economy Barometer* fue la más variable de todo el período analizado. Esto sugiere que las series en estudio se ven alteradas por efectos políticos.
+
+También puede observarse que las elecciones legislativas suelen asociarse a cambios menores en el sentimiento de los productores —por ejemplo, el triunfo de La Libertad Avanza en 2025 (@fig-24) o el de los republicanos en 2022 (@fig-25)— en comparación con los cambios vinculados a las elecciones presidenciales, como el triunfo de Alberto Fernández en 2019 (@fig-24) o el de Joe Biden en 2020 (@fig-25).
+
+Puede destacarse también una diferencia entre la confianza de ambos países. Los cambios en Argentina no siguen el mismo comportamiento que los de Estados Unidos. En este último se observa que, cuando hay elecciones presidenciales de por medio, la confianza siempre sube independientemente del partido que resulte ganador y que unos meses después baja. Esto podría deberse a que los partidos estadounidenses no son tan heterogéneos entre sí. En Argentina, en cambio, el sentimiento puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó Alberto Fernández en 2019, se produjo la baja más abrupta histórica de la serie, generando al año siguiente la confianza promedio más baja de todo el período, y el pesimismo se sostuvo durante todo su mandato (@fig-9). En cambio, al ganar Javier Milei en 2023, la confianza comenzó a crecer, pasando del pesimismo al optimismo. Esto podría explicarse por la heterogeneidad ideológica entre los partidos políticos argentinos. 
+
+
+
+
+
+
+
+
+```{r}
+#| label: fig-26
+#| fig-cap: "*Ag Barometer Austral*, *Ag Economy Barometer* y hechos bélicos"
+#| fig-height: 5.5
+#| fig-width: 6
+
+# 1. los 5 hitos bélicos
+hitos_belicos <- data.frame(
+  Fecha = yearmonth(c(
+    "2021 Aug",  
+    "2022 Feb",  
+    "2023 Oct",  
+    "2023 Nov",  
+    "2026 Feb"   
+  )),
+  Tag = as.character(1:5),
+  # Alturas para que 3 y 4 no se pisen 
+  Y_pos = c(175, 175, 175, 168, 175)
+)
+
+# 2. Leyenda explicativa al pie (reestructurada en renglones dobles para ahorrar espacio)
+leyenda_belica <- paste(
+  "Hitos bélicos y geopolíticos globales",
+  "1: Retiro de EE.UU. de Afganistán",
+  "2: Invasión rusa a Ucrania",
+  "3: Ataque de Hamas y guerra en Gaza",
+  "4: Ataques Hutíes en el Mar Rojo a buques",
+  "5: Ataques de EE.UU./Israel a Irán",
+  sep = "\n"
+)
+
+# 3. Gráfico comparativo Arg vs EE.UU.
+d |> 
+  as_tibble() |> 
+  tidyr::pivot_longer(
+    cols = c(`Ag Barometer Austral`, `Ag Economy Barometer`), 
+    names_to = "Índice", 
+    values_to = "valor"
+  ) |> 
+  tidyr::drop_na(valor) |> 
+  ggplot(aes(x = Fecha, y = valor, color = Índice, group = Índice)) +
+  
+  # Línea de referencia en 100
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  
+  # Líneas verticales neutras
+  geom_vline(data = hitos_belicos, aes(xintercept = Fecha), 
+             color = "gray40", linetype = "dashed", linewidth = 0.6, inherit.aes = FALSE) +
+  
+  # Series de tiempo principales
+  geom_line() +
+  geom_point(size = 1) +
+  
+  # Números indicadores (direction = "y" para que NO invierta los números en el eje X)
+  geom_text_repel(
+    data = hitos_belicos, 
+    aes(x = Fecha, y = Y_pos, label = Tag),
+    fontface = "bold", 
+    color = "gray10",
+    size = 3.8,
+#    direction = "y",
+    point.padding = 0.1,
+    box.padding = 0.2,
+    segment.color = NA,
+    inherit.aes = FALSE
+  ) +
+  
+  # Escalas y colores
+  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
+  scale_y_continuous(breaks = scales::breaks_width(20)) +
+  scale_color_manual(values = c(
+    "Ag Barometer Austral" = "#6D9DC5",        
+    "Ag Economy Barometer" = "#BF211E" 
+  )) +
+  
+  # Títulos y leyenda explicativa
+  labs(
+    x = "Tiempo", 
+    y = "Ag Barometer",
+    caption = leyenda_belica
+  ) +
+  
+  theme_bw() +
+  theme(
+    panel.grid.minor = element_blank(),
+    legend.title = element_blank(),
+    legend.position = "bottom",
+    plot.caption = element_text(hjust = 0, size = 8, color = "gray20", lineheight = 1.2),
+    plot.caption.position = "plot"
+  )
+```
+
+
+Según la @fig-26, el *Ag Barometer* no parece presentar cambios notorios cerca de fechas en las que ocurren hechos bélicos. No parece haber relación *Ag Barometer*-hechos bélicos.
+
+
 
 \newpage
-
-
-
 
 # Referencias
 
@@ -1641,6 +1916,11 @@ https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
 
 https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
 
+https://fred.stlouisfed.org/
+
+https://www.bcr.com.ar/es
+
+https://finance.yahoo.com/
 
 
 
