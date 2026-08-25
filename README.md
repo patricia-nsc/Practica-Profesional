@@ -39,25 +39,30 @@ Estados Unidos (*Ag Economy Barometer*).
 
 ### Instrucciones para clonar el repositorio
 
-1. Instalar `uv` (si no lo tenés)
 
-2. Clonar el repositorio
 
-```bash
-git clone https://github.com/Marianela773/tp_baseball.git
-cd tp_baseball
-```
-3. Crear el entorno e instalar dependencias
+1. En la terminal de RStudio escribir:
 
 ```bash
-uv sync
+git clone https://github.com/patricia-nsc/Practica-Profesional-Privado.git
+cd Practica-Profesional-Privado
 ```
-4. Solicitar datos
-Los archivos `temporada1.parquet` y `temporada2.parquet` no están incluidos en este repositorio. Es necesario solicitarlos y colocarlos manualmente en la carpeta:
 
-```text
-datos/01_crudos/
+2. En la consola de R instalar el siguiente paquete (en caso de no tenerlo):
+
+```r
+install.packages("renv")
 ```
+
+3. Para disponer de todos los paquetes que fueron utilizados para hacer el análisis
+correr en la consola de R:
+
+
+```r
+renv::restore()
+```
+
+
 
 
 
@@ -65,6 +70,20 @@ datos/01_crudos/
 
 
 ## Análisis
+
+
+El análisis completo se puede ver en `Informe/Informe.pdf` y puede 
+reproducirse desde el archivo `Informe/Informe.qmd`. 
+
+
+Los datos crudos están en la carpeta `Datos/Crudos/` y los procesados en la carpeta 
+`Datos/Procesados/`. 
+
+En 
+
+
+Puede reproducirse 
+
 
 Las *notebooks* que se encuentran en la carpeta `notebooks/` se ejecutan en orden secuencial:
 

@@ -52,4 +52,11 @@ rsconnect/
 Analisis anteriores/
 
 # toda la carpeta con dispos q hice al principio
-Presentaciones anteriores/
+Presentaciones Anteriores/
+
+# ignoro la carpeta renv/ q tiene cosas de las depencias
+renv/
+
+
+
+
