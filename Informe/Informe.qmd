@@ -45,36 +45,29 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 # Introducción
 
 
-?) medir la confianza del productor es importante porq...
-
-El sector agropecuario es fundamental para la economía nacional. Representa la base de la producción de alimentos, recaudación del estado nacional, volúmenes de exportaciones. A través de la innovación y el impulso tecnológico contribuye al desarrollo del país. 
 
 
-
-1) el agbA es .... se hace en el CEAG
-
-Dada la importancia del sector, el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario desarrolla el *Ag Barometer Austral*. Éste es un índice que mide de manera bimestral la confianza de los productores agropecuarios argentinos, a partir de encuestas estructuradas a productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión. Este indicador se construye en base a cinco preguntas fijas que capturan distintas dimensiones del clima económico agropecuario y constituye una herramienta clave para comprender la dinámica del sector en el tiempo.
+El sector agropecuario, que comprende actividades como la agricultura y la ganadería, se dedica a la obtención de materias primas. Genera un mayor nivel de producción, tanto para exportación como para consumo interno, además de empleo, con su consiguiente impacto positivo en la distribución del ingreso y la equidad social. Es decir, el sector agropecuario es de gran relevancia para el desarrollo económico y social de la República Argentina.
 
 
 
 
-2) el CEAG es...
 
-Este indicador es desarrollado desde 2018 por el CEAg en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos). El CEAg es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo. 
-
+Dada la importancia del sector, el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario desarrolla un índice denominado *Ag Barometer Austral* que mide la confianza de los productores agropecuarios argentinos. Éste se mide de manera periódica y se desarrolla a partir de encuestas estructuradas a productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión a través del tiempo. Este indicador es desarrollado en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos) desde 2018.
 
 
 
-3) el agEb es... ellos son el estudio original en realidad...
 
-A nivel internacional, el *Ag Economy Barometer*, desarrollado por la Universidad de *Purdue* desde 2015, es un índice reportado mensualmente que mide la confianza de los productores estadounidenses. Representa un referente global en la medición de las percepciones y expectativas de los productores agrupecuarios, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
-
+El mencionado CEAg es una entidad especializada y de alto nivel académico cuya misión es impulsar, desde la región, el fortalecimiento de las cadenas de valor agroalimentarias e instituciones relacionadas, como un motor de desarrollo humano, económico y social de largo plazo para la Argentina, a través de la formación y de la investigación aplicada. La iniciativa promueve, desde un ámbito universitario, la capacidad de los sectores agroindustriales de crear y liderar las oportunidades y tendencias relacionadas con los agronegocios y alimentos, desde nuestro país, para la región y el mundo. 
 
 
-4) en este contexto mi objetivo es... y este es el resumen de lo realizado en el CEAG en el marco de un pp... donde mi objeivo principal es ...
 
 
-En este contexto, este trabajo tiene como propósito realizar un análisis comparativo de las series temporales de los índices de confianza agropecuaria de Argentina y Estados Unidos (*Ag Barometer*). 
+A nivel internacional se reporta un índice similar conocido como *Ag Economy Barometer*. Es desarrollado por la Universidad de *Purdue* desde 2015 y mide mensualmente la confianza de los productores estadounidenses. Representa un referente global en la medición de las percepciones y expectativas de los productores agrupecuarios, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
+
+
+
+En este contexto, el propósito general de este informe es presentar un análisis comparativo de los índices de confianza agropecuaria de Argentina y Estados Unidos (*Ag Barometer*). 
 
 
 El presente documento representa un resumen del trabajo realizado en el CEAg entre los meses Agosto y Octubre de 2026, bajo el concepto del desarrollo de una práctica profesional para terminar la carrera de Licenciatura en Estadística de la Facultad de Ciencias Económicas y Estadística de la Universidad Nacional de Rosario.
@@ -1945,6 +1938,7 @@ https://www.bcr.com.ar/es
 
 https://finance.yahoo.com/
 
+https://www.argentina.gob.ar/economia/agricultura/agricultura
 
 
 
