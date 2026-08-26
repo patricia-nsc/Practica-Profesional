@@ -82,7 +82,7 @@ El presente documento representa un resumen del trabajo realizado en el CEAg ent
 
 ## Objetivo general
 
-En línea con lo expuesto, la finalidad de esta investigación es analizar y comparar la dinámica temporal del Ag Barometer Austral y del Ag Economy Barometer, identificando patrones comunes y diferencias entre ambos indicadores, y explorando su relación con variables económicas, productivas y acontecimientos relevantes de los contextos argentino y estadounidense.
+En línea con lo expuesto, la finalidad de esta investigación es analizar y comparar la dinámica temporal del *Ag Barometer Austral* y del *Ag Economy Barometer*, identificando patrones comunes y diferencias entre ambos indicadores, y explorando su relación con variables económicas, productivas y acontecimientos relevantes de los contextos argentino y estadounidense.
 
 
 ## Tareas específicas de la práctica profesional
@@ -95,8 +95,8 @@ Se determinan las siguientes tareas:
 -   Desarrollar un análisis exploratorio de las series de tiempo, incluyendo el estudio de tendencia, estacionalidad, volatilidad y comportamiento general de los índices. 
 -   Analizar la dinámica temporal de los indicadores, identificando patrones, tendencias, estacionalidad y posibles cambios estructurales.
 -   Analizar la relación entre ambas series temporales, mediante técnicas como correlación cruzada y análisis de rezagos, con el fin de identificar posibles vínculos, sincronización o divergencias entre ambos contextos, promoviendo una mirada comparativa a nivel internacional. 
--   Identificar y analizar el impacto de eventos relevantes (*shocks*) —tales como cambios en políticas económicas, variaciones en tasas de interés, precios internacionales de *commodities*, crisis sanitarias o eventos climáticos— sobre la evolución de los índices, comprendiendo el efecto de factores macroeconómicos, políticos y productivos sobre las expectativas y decisiones de los productores agropecuarios. 
--   Ajustar y evaluar modelos de series de tiempo (ARIMA, ETS u otros modelos adecuados) que permitan describir y eventualmente predecir la evolución de los indicadores. 
+-   Identificar y analizar el impacto de eventos relevantes —tales como cambios en políticas económicas, variaciones en tasas de interés, precios internacionales, crisis sanitarias o eventos climáticos— sobre la evolución de los índices, comprendiendo el efecto de factores macroeconómicos, políticos y productivos sobre las expectativas y decisiones de los productores agropecuarios. 
+-   Desarrollar una aplicación interactiva que permita visualizar y explorar los principales resultados obtenidos, facilitando el acceso a la información y su interpretación por parte de usuarios técnicos y no especializados.
 -   Participar en la elaboración de un informe final detallado, que documente la metodología utilizada, los resultados obtenidos y las principales conclusiones del análisis. 
 -   Integrar el trabajo en un enfoque interdisciplinario, articulando herramientas de la estadística con conceptos de economía y agronegocios.
 
