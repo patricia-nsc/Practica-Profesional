@@ -40,6 +40,23 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 ```
 
 
+```{r}
+# Librerias
+
+library(tsibble)
+library(lubridate)      # ymd()
+library(dplyr)          # mutate()
+library(feasts)         # para plots
+library(fabletools)     # para test dickey 
+library(ggplot2)
+library(fable)          # para ajustar modelos
+library(knitr)
+library(kableExtra)
+library(tidyr)
+library(patchwork)      # acomodar graficos
+library(purrr)          # extraer p-values de los test Ljunj-Box
+library(ggrepel)
+```
 
 
 # Introducción
@@ -47,13 +64,13 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 
 
 
-El sector agropecuario, que comprende actividades como la agricultura y la ganadería, se dedica a la obtención de materias primas. Genera un mayor nivel de producción, tanto para exportación como para consumo interno, además de empleo, con su consiguiente impacto positivo en la distribución del ingreso y la equidad social. Es decir, el sector agropecuario es de gran relevancia para el desarrollo económico y social de la República Argentina.
+El sector agropecuario, que comprende actividades como la agricultura y la ganadería, se dedica a la obtención de materias primas; utilizada tanto para exportación como para consumo interno, además de generar empleo, con su consiguiente impacto positivo en sociedad. Es decir, el sector agropecuario es de gran relevancia para el desarrollo económico y social de la República Argentina.
 
 
 
 
 
-Dada la importancia del sector, el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario desarrolla un índice denominado *Ag Barometer Austral* que mide la confianza de los productores agropecuarios argentinos. Se desarrolla de manera periódica a partir de encuestas estructuradas a productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión a través del tiempo. Este indicador es desarrollado en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos) desde 2018.
+Dada la importancia del sector, el Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral sede Rosario desarrolla un índice denominado *Ag Barometer Austral* que mide la confianza de los productores agropecuarios argentinos. Se desarrolla de manera bimestral a partir de encuestas estructuradas a productores representativos del sector, permitiendo analizar la evolución de sus percepciones sobre la situación actual, expectativas futuras e intenciones de inversión a través del tiempo. Este indicador es desarrollado en colaboración metodológica con la Universidad de *Purdue* (Estados Unidos) desde 2018.
 
 
 
@@ -63,7 +80,7 @@ El mencionado CEAg es una entidad especializada y de alto nivel académico cuya 
 
 
 
-A nivel internacional se reporta un índice similar conocido como *Ag Economy Barometer*. Es desarrollado por la Universidad de *Purdue* desde 2015 y mide mensualmente la confianza de los productores estadounidenses. Representa un referente global en la medición de las percepciones y expectativas de los productores agrupecuarios, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
+A nivel internacional se reporta un índice similar conocido como *Ag Economy Barometer*. Es elaborado por la Universidad de *Purdue* desde 2015 y mide mensualmente la confianza de los productores estadounidenses. Representa un referente global en la medición de las percepciones y expectativas de los productores agrupecuarios, lo que permite realizar comparaciones entre economías con diferentes niveles de estabilidad macroeconómica e institucional.
 
 
 
@@ -109,43 +126,34 @@ Se determinan las siguientes tareas:
 
 
 
+
+
+
+
+
+\newpage
+
+
 # Materiales
 
-El objetivo de esta sección es mostrar las características de los índices de interés y presentar los datos que han sido proporcionados por las universidades.
-
-<!-- A lo largo de este informe se utilizará el término Ag Barometer para referirse al índice de forma general, sin especificar de que pais -->
+El objetivo de esta sección es mostrar las características de los índices en estudio tales como la definición de población, qué método se utiliza para seleccionar la muestra, especificaciones sobre el trabajo de campo, qué preguntas se realizan en cada edición y cómo se utilizan estas últimas para construir los indicadores.
 
 
-```{r}
-# Librerias
+<!-- quiero mostrar las caracteristicas de los indices, presentar bien las diferencias entre los relevamientos -->
 
-library(tsibble)
-library(lubridate)      # ymd()
-library(dplyr)          # mutate()
-library(feasts)         # para plots
-library(fabletools)     # para test dickey 
-library(ggplot2)
-library(fable)          # para ajustar modelos
-library(knitr)
-library(kableExtra)
-library(tidyr)
-library(patchwork)      # acomodar graficos
-library(purrr)          # extraer p-values de los test Ljunj-Box
-library(ggrepel)
-```
+<!-- y presentar los datos que han sido publicados por las universidades. 
 
 
+no seria presentar, seria mostrar que variables tengo de cada pais (no se como decirlo) -->
 
 ## Características del *Ag Barometer Austral*
 
 
-Cada valor del *Ag Barometer Austral* se elabora, en la Universidad Austral, a partir de preguntas que se les efectúan a una muestra de productores, por teléfono.  Este proceso toma alrededor de tres semanas realizándose en los meses enero, marzo, mayo, julio, septiembre y noviembre los cuales serán llamados "meses impares" en el resto del presente informe.
+
+La población está conformada por productores de la Pampa Húmeda abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa Fe; cuyo valor bruto de producción es mayor o igual a USD 200,000; donde un 45% producen soja, un 21% maíz, un 16% ganadería vacuna, un 7% trigo, un 7% tambo y un 4% girasol. Estas últimas categorías no son mutuamente excluyentes porque cada productor podría dedicarse a más de una actividad, por lo que los porcentajes mencionados representan mínimos. Se entiende por productores agropecuarios a personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades).
 
 
-Se entiende por productores agropecuarios a personas físicas o jurídicas cuya actividad principal sea la producción de soja, trigo, maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen otras actividades). 
 
-
-La población está conformada por productores de la Pampa Húmeda abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa Fe; cuyo valor bruto de producción es mayor o igual a USD 200,000; donde un 45% producen soja, un 21% maíz, un 16% ganadería vacuna, un 7% trigo, un 7% tambo y un 4% girasol. Estas últimas categorías no son mutuamente excluyentes porque cada productor podría dedicarse a más de una actividad, por lo que los porcentajes mencionados representan mínimos.
 
 
 Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
@@ -154,10 +162,23 @@ Se realizó un muestreo estratificado de productores teniendo en cuenta datos de
 -   30% de los encuestados con valor bruto de producción entre USD 414,000 y USD 999,999 al año
 -   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1,000,000 al año.
 
-La muestra queda conformada por 406 productores en total.
 
 
-En cada edición se formulan las siguientes cinco preguntas dicotómicas (de respuesta "Sí" / "No") fijas: 
+
+
+
+
+En cuanto al trabajo de campo, la encuesta es realizada a 406 productores por teléfono insumiendo alrededor de tres semanas. El relevamiento se realiza en los meses de enero, marzo, mayo, julio, septiembre y noviembre. Éstos últimos se denominan "meses impares" en este documento.
+
+
+
+
+
+
+
+
+
+En dicho relevamiento se formulan las siguientes cinco preguntas dicotómicas (de respuesta "Sí" / "No") fijas: 
 
 -    $Q_1$: ¿Ud. diría que su operación actualmente está mejor, peor o igual financieramente con respecto a un año atrás?
 -    $Q_2$: Mirando hacia adelante: de acá a un año ¿considera que su explotación estará mejor, peor o igual financieramente?
@@ -165,46 +186,56 @@ En cada edición se formulan las siguientes cinco preguntas dicotómicas (de res
 -    $Q_4$: Mirando hacia adelante ¿qué situación diría que es más probable, el sector agropecuario argentino en los próximos 5 años, tendrá mayormente buenos tiempos o mayormente malos tiempos?
 -    $Q_5$: Pensando en inversiones importantes – como maquinaria, compra de tierras, cabezas de ganado, capacidad de almacenamiento, bioenergía- en general ¿Ud. considera que hoy es un buen momento o mal momento para realizar inversiones?
 
+
 En todas las ediciones del *Ag Barometer Austral* se añaden alrededor de seis preguntas que reflejan percepciones referidas a temas coyunturales / estacionales que impactan al sector agropecuario argentino. Éstas varían según los temas de interés del momento.
 
 
-El primer paso del cálculo del *Ag Barometer Austral* es obtener una medida para cada una de las cinco preguntas fijas. Se calcula como el porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada medida un rango de posibles puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
+
+
+Finalizada la etapa de recolección, se procede a la construcción de los índices. El primer paso del cálculo del *Ag Barometer Austral* es obtener una medida para cada una de las cinco preguntas fijas. Se calcula como el porcentaje de respuestas favorables ("Sí"), menos el porcentaje de respuestas desfavorables ("No"), más 100. Esto da a cada medida un rango de posibles puntajes de 0 a 200. Cuando todas las respuestas son "Sí", el índice es 200. Cuando todas las respuestas son "No", el índice es 0.
 
 El valor final del *Ag Barometer Austral* es el promedio simple de las medidas de las cinco preguntas individuales donde el 100 indica un punto neutro. Valores por encima de 100 expresan percepciones positivas y valores por debajo de 100 expresan percepciones negativas.
 
 
-Se hace uso de las respuestas recolectadas para construir otros dos índices: "Condiciones presentes" y "Expectativas futuras" a fines de capturar cómo cambia la percepción netamente actual y la puramente futura de los productores a través del tiempo.
-Se calculan igual que el *Ag Barometer Austral* sólo teniendo en cuenta algunas de las preguntas.
+Se hace uso de las respuestas recolectadas para construir otros dos índices: "Condiciones presentes" y "Expectativas futuras" a fines de capturar, también, cómo cambia la percepción netamente actual y la puramente futura de los productores a través del tiempo.
+Se calculan igual que el *Ag Barometer Austral* sólo teniendo en cuenta algunas de las preguntas. 
 
 
-
-```{r}
-#| label: tbl-0
-#| tbl-cap: "Preguntas utilizadas para el cálculo de cada índice"
-
-# tabla con las preguntas q se usan para cada indice
-
-tibble(
-  Índice = c("Ag Barometer", "Condiciones presentes", "Expectativas futuras"),
-  `Preguntas para su cálculo` = c(
-    "Q1, Q2, Q3, Q4, Q5",
-    "Q1, Q5",
-    "Q2, Q3, Q4"),
-    `Qué representa` = c(
-      "Percepciones actuales y futuras",
-      "Percepciones actuales",
-      "Percepciones futuras"
-    )
-  ) |> kable(booktabs = TRUE, align = "l", escape = FALSE) |>
-  kable_styling(latex_options = c("hold_position"))
+```{=latex}
+\begin{table}
+\centering
+\caption{Preguntas utilizadas para el cálculo de cada índice}
+\label{tbl-preguntas_agb}
+\begin{tabular}{lll}
+\toprule
+Índice & Preguntas para su cálculo & Qué representa \\
+\midrule
+$Ag$ $Barometer$ & $Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$ & Percepciones actuales y futuras \\
+Condiciones presentes & $Q_1$, $Q_5$ & Percepciones actuales \\
+Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
+\bottomrule
+\end{tabular}
+\end{table}
 ```
+
 
 
 ## Características del *Ag Economy Barometer*
 
-El *Ag Economy Barometer* se construye todos los meses en la Universidad de *Purdue* mediante una encuesta telefónica realizada a una muestra de productores, cuya recolección insume aproximadamente una semana.
 
-La población está compuesta por productores cuyo valor bruto de producción es mayor o igual a USD 500,000; donde un 53% producen soja, un 14% maíz, un 3% algodón, un 19% ganadería vacuna, un 5% tambo y un 6% ganadería porcina. Al igual que en el caso del *Ag Barometer Austral* estos porcentajes representan mínimos.
+
+Si bien los dos índices, *Ag Barometer Austral* y *Ag Economy Barometer*, comparten el objetivo de medir la confianza de los productores de cada país, presentan similitudes y diferencias. Por ejemplo, una diferencia entre ellos es la extensión de sus series temporales: la primera observación del *Ag Economy Barometer* corresponde a octubre de 2015, mientras que la del *Ag Barometer Austral* corresponde a octubre de 2018. Esto evidencia que el estudio de medir el sentimiento de los productores comenzó orginalmente en la Universidad de *Purdue*.
+
+
+
+
+
+
+En el caso del índice estadounidense, la población está compuesta por productores cuyo valor bruto de producción es mayor o igual a USD 500,000; donde un 53% producen soja, un 14% maíz, un 3% algodón, un 19% ganadería vacuna, un 5% tambo y un 6% ganadería porcina. Al igual que en el caso del *Ag Barometer Austral* estos porcentajes representan mínimos.
+
+
+
+
 
 
 Para la selección de los productores se aplicó un muestreo estratificado en base a los datos censales del *United States Department of Agriculture* (USDA). Se detallan los estratos definidos según el volumen de producción anual:
@@ -213,17 +244,35 @@ Para la selección de los productores se aplicó un muestreo estratificado en ba
 -   36% de los encuestados con valor bruto de producción entre USD 1,000,000 y USD 2,499,000
 -   15% de los encuestados con un valor bruto de producción mayor o igual a USD 2,500,000.
 
-La muestra queda conformada por 400 productores en total.
+
+
+
+
+
+
+
+Respecto al trabajo de campo, la encuesta se realiza por vía telefónica a una muestra de 400 productores y se demora aproximadamente una semana. El relevamiento se realiza de manera mensual, es decir, en los doce meses del año.
+
+
+
+
+
+
+
 
 
 Cada mes se entrevista a los productores realizándoles las mismas cinco preguntas fijas ya detalladas.
 
-El primer paso del cálculo del *Ag Economy Barometer* es idéntico al del *Ag Barometer Austral*, obtener la medida para cada una de las cinco preguntas fijas. Sin embargo cambia la forma en que se obtiene el valor final del índice estadounidense con respecto al local. El *Ag Economy Barometer* se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
-
-Es decir que el valor del *Ag Economy Barometer* para un mes dado se calcula siempre en relación con el período base. El valor 100 implica que no hubo cambios respecto del período base. Un valor superior a 100 indica un aumento en el *sentiment*, o la confianza, de los productores en comparación con el período base; mientras que un valor inferior a 100 indica que el *sentiment* de los productores disminuyó en relación con dicho período.
 
 
-En Estados Unidos también se calculan los indicadores Condiciones presentes y Expectativas futuras utilizando la misma forma de cálculo que para el *Ag Economy Barometer* a partir de las preguntas de la @tbl-0. 
+
+
+Recabadas las respuestas, el primer paso para calcular el *Ag Economy Barometer* es el mismo que para elaborar el *Ag Barometer Austral*: obtener la medida para cada una de las cinco preguntas fijas. Sin embargo, cambia la forma en que se obtiene el valor final del índice estadounidense. El *Ag Economy Barometer* se obtiene sumando las cinco medidas de cada una de las cinco preguntas fijas y se divide esa suma por el promedio del período base (octubre 2015 a marzo 2016).
+
+Es decir que el valor del *Ag Economy Barometer* para un mes dado, se calcula siempre en relación con el período base. El valor 100 implica que no hubo cambios respecto del período base. Un valor superior a 100 indica un aumento en el *sentiment*, o la confianza, de los productores en comparación con el período base; mientras que un valor inferior a 100 indica que el *sentiment* de los productores disminuyó en relación con dicho período.
+
+
+En Estados Unidos también se calculan los indicadores Condiciones presentes y Expectativas futuras, utilizando la misma forma de cálculo que para el *Ag Economy Barometer*, cada uno a partir de las preguntas de la @tbl-preguntas_agb. 
 
 En la Universidad de *Purdue* también construyen, aparte de los tres índices ya mencionados, el indicador "Inversión del capital agrícola" en base a la quinta pregunta ($Q_5$). Sin embargo no fue tenido en cuenta en el trabajo por no ser relevado a nivel local.
 
@@ -231,64 +280,27 @@ En la Universidad de *Purdue* también construyen, aparte de los tres índices y
 
 ## Los datos
 
-A continuación, se presentan las variables disponibles en las bases de datos que han sido suministradas por las universidades para realizar el análisis. 
+Para facilitar la visualización de las semejanzas y diferencias entre estos dos índices, se muestra un resumen que permite comparar sus características:
+
+\input{Tablas/tabla_materiales_comparacion.tex}
 
 
-```{r}
-#| label: tbl-0.1
-#| tbl-cap: "Descripción de la base de datos de cada país"
+A partir de lo presentado en la Tabla \ref{tbl-comparacion}, puede observarse que la cantidad de índices en estudio es seis, tres para cada país: *Ag Barometer*, Condiciones presentes y Expectativas futuras. Considerando la base de datos de cada universidad, en total se dispone de siete variables: los seis índices mencionados y una variable adicional que indica la fecha de cada observación.
 
-tibble(
-  País = c(
-    "Argentina", "Argentina", "Argentina", "Argentina",
-    "Estados Unidos", "Estados Unidos", "Estados Unidos", "Estados Unidos", "Estados Unidos"
-  ),
-  Variable = c(
-  "Bimestre",
-  "Ag Barometer Austral", 
-  "Condiciones presentes",
-  "Expectativas futuras",
-  "Month",
-  "Year",
-  "Ag Economy Barometer",
-  "Current conditions",
-  "Future Expectations"
-),
-  Descripción = c(
-    "Mes y año de la observación",
-    "Ag Barometer en Argentina",
-    "Condiciones presentes en Argentina",
-    "Expectativas futuras en Argentina", 
-    "Mes de la observación",
-    "Año de la observación",
-    "Ag Barometer en Estados Unidos",
-    "Condiciones presentes en Estados Unidos",
-    "Expectativas futuras en Estados Unidos"
-  ),
-  Tipo = c(
-    "Cualitativa Ordinal",
-    "Cuantitativa Continua",
-    "Cuantitativa Continua",
-    "Cuantitativa Continua",
-    "Cualitativa Ordinal", 
-    "Cuantitativa Discreta",
-    "Cuantitativa Continua",
-    "Cuantitativa Continua",
-    "Cuantitativa Continua"
-  )
-) |> 
-kable(booktabs = TRUE, align = "l", escape = FALSE, longtable = TRUE) |>
-  kable_styling(latex_options = c("repeat_header")) |>
-  column_spec(1, width = "2.5cm") |>
-  column_spec(2, width = "3.5cm") |>
-  column_spec(3, width = "4.5cm") |>
-  column_spec(4, width = "2.5cm") |>
-  collapse_rows(columns = 1, valign = "middle")
-```
+
+
+
+
+
+
 
 
 
 \newpage
+
+
+
+
 
 
 
@@ -307,7 +319,7 @@ kable(booktabs = TRUE, align = "l", escape = FALSE, longtable = TRUE) |>
 
 # Armado de la base de datos
 
-El fin de esta sección es plasmar el camino que se siguió para armar una base de datos que facilitó el análisis. Ésta reúne las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas que fueron buscadas en diversas fuentes para poder responder a ciertos objetivos de esta práctica profesional. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
+El fin de este apartado es plasmar el camino que se siguió para armar una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas que fueron buscadas en diversas fuentes para poder responder a ciertos objetivos de esta práctica profesional. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
 
 
 

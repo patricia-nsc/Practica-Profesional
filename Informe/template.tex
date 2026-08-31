@@ -5,6 +5,10 @@
 \renewcommand{\baselinestretch}{1.1}   % cambio interlineado
 \setlength{\parskip}{0.8em}            % para q haya espacio entre parrafos
 
+% Para que no me trunque las palabras (no separa bien en silabas), q salte de linea
+\usepackage[none]{hyphenat}
+\usepackage{microtype}
+
 \usepackage{graphicx}                  % Para tener 'includegraphics'
 %\usepackage[bidi=default]{babel}      % Porque usamos español
 \usepackage{float}                     % Para que las figuras aparezcan en el lugar donde las ponemos 
@@ -67,12 +71,20 @@
 \definecolor{celestepastel}{RGB}{221, 245, 255}
 \definecolor{rosabebe}{RGB}{255, 182, 193}
 \definecolor{lila}{RGB}{208, 171, 198}
+\definecolor{griscaption}{HTML}{2A3439}
 
 
 $title.tex()$                          % Carga el partial con el titulo y sus configuraciones
 $pandoc.tex()$                         % Cargar el partial llamado 'pandoc' (por defecto de Quarto)
 
-\floatplacement{figure}{H}             % Para que las figuras aparezcan en el lugar donde las ponemos 
+\floatplacement{figure}{H}             % Para que las figuras aparezcan en el lugar donde las ponemos
+\floatplacement{table}{H}              % Idem para las tablas
+
+% que los captions (si no especifico es para tablas y figuras) ocupe 75% del 
+% ancho del texto principal
+\usepackage{caption}
+\captionsetup{width=0.75\textwidth, font={color=griscaption}}
+
 % \setcounter{secnumdepth}{-\maxdimen}   % Para que las secciones no vayan numeradas. SECCIONES NUMERDAS porq comente la linea q desactiva la enumeracion
 \setcounter{secnumdepth}{3}            % Para q enumere las sections(#) subsections(##) y subsubsections(###)
   \setlist[enumerate]{font=\bfseries}    % Poner los numeros de los enumarate en negrita

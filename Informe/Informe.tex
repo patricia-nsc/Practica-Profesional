@@ -5,6 +5,10 @@
 \renewcommand{\baselinestretch}{1.1}   % cambio interlineado
 \setlength{\parskip}{0.8em}            % para q haya espacio entre parrafos
 
+% Para que no me trunque las palabras (no separa bien en silabas), q salte de linea
+\usepackage[none]{hyphenat}
+\usepackage{microtype}
+
 \usepackage{graphicx}                  % Para tener 'includegraphics'
 %\usepackage[bidi=default]{babel}      % Porque usamos español
 \usepackage{float}                     % Para que las figuras aparezcan en el lugar donde las ponemos 
@@ -67,6 +71,7 @@
 \definecolor{celestepastel}{RGB}{221, 245, 255}
 \definecolor{rosabebe}{RGB}{255, 182, 193}
 \definecolor{lila}{RGB}{208, 171, 198}
+\definecolor{griscaption}{HTML}{2A3439}
 
 
 \author{}
@@ -158,7 +163,14 @@
 \makeatother
                          % Cargar el partial llamado 'pandoc' (por defecto de Quarto)
 
-\floatplacement{figure}{H}             % Para que las figuras aparezcan en el lugar donde las ponemos 
+\floatplacement{figure}{H}             % Para que las figuras aparezcan en el lugar donde las ponemos
+\floatplacement{table}{H}              % Idem para las tablas
+
+% que los captions (si no especifico es para tablas y figuras) ocupe 75% del 
+% ancho del texto principal
+\usepackage{caption}
+\captionsetup{width=0.75\textwidth, font={color=griscaption}}
+
 % \setcounter{secnumdepth}{-\maxdimen}   % Para que las secciones no vayan numeradas. SECCIONES NUMERDAS porq comente la linea q desactiva la enumeracion
 \setcounter{secnumdepth}{3}            % Para q enumere las sections(#) subsections(##) y subsubsections(###)
   \setlist[enumerate]{font=\bfseries}    % Poner los numeros de los enumarate en negrita
@@ -186,18 +198,17 @@
   \section{Introducción}\label{introducciuxf3n}
 
   El sector agropecuario, que comprende actividades como la agricultura
-  y la ganadería, se dedica a la obtención de materias primas. Genera un
-  mayor nivel de producción, tanto para exportación como para consumo
-  interno, además de empleo, con su consiguiente impacto positivo en la
-  distribución del ingreso y la equidad social. Es decir, el sector
-  agropecuario es de gran relevancia para el desarrollo económico y
-  social de la República Argentina.
+  y la ganadería, se dedica a la obtención de materias primas; utilizada
+  tanto para exportación como para consumo interno, además de generar
+  empleo, con su consiguiente impacto positivo en sociedad. Es decir, el
+  sector agropecuario es de gran relevancia para el desarrollo económico
+  y social de la República Argentina.
 
   Dada la importancia del sector, el Centro de Agronegocios y Alimentos
   (CEAg) de la Universidad Austral sede Rosario desarrolla un índice
   denominado \emph{Ag Barometer Austral} que mide la confianza de los
   productores agropecuarios argentinos. Se desarrolla de manera
-  periódica a partir de encuestas estructuradas a productores
+  bimestral a partir de encuestas estructuradas a productores
   representativos del sector, permitiendo analizar la evolución de sus
   percepciones sobre la situación actual, expectativas futuras e
   intenciones de inversión a través del tiempo. Este indicador es
@@ -215,7 +226,7 @@
   alimentos, desde nuestro país, para la región y el mundo.
 
   A nivel internacional se reporta un índice similar conocido como
-  \emph{Ag Economy Barometer}. Es desarrollado por la Universidad de
+  \emph{Ag Economy Barometer}. Es elaborado por la Universidad de
   \emph{Purdue} desde 2015 y mide mensualmente la confianza de los
   productores estadounidenses. Representa un referente global en la
   medición de las percepciones y expectativas de los productores
@@ -297,26 +308,18 @@
 
   \newpage
 
+  \newpage
+
   \section{Materiales}\label{materiales}
 
   El objetivo de esta sección es mostrar las características de los
-  índices de interés y presentar los datos que han sido proporcionados
-  por las universidades.
+  índices en estudio tales como la definición de población, qué método
+  se utiliza para seleccionar la muestra, especificaciones sobre el
+  trabajo de campo, qué preguntas se realizan en cada edición y cómo se
+  utilizan estas últimas para construir los indicadores.
 
   \subsection{\texorpdfstring{Características del \emph{Ag Barometer
   Austral}}{Características del Ag Barometer Austral}}\label{caracteruxedsticas-del-ag-barometer-austral}
-
-  Cada valor del \emph{Ag Barometer Austral} se elabora, en la
-  Universidad Austral, a partir de preguntas que se les efectúan a una
-  muestra de productores, por teléfono. Este proceso toma alrededor de
-  tres semanas realizándose en los meses enero, marzo, mayo, julio,
-  septiembre y noviembre los cuales serán llamados ``meses impares'' en
-  el resto del presente informe.
-
-  Se entiende por productores agropecuarios a personas físicas o
-  jurídicas cuya actividad principal sea la producción de soja, trigo,
-  maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen
-  otras actividades).
 
   La población está conformada por productores de la Pampa Húmeda
   abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa
@@ -325,7 +328,10 @@
   un 7\% trigo, un 7\% tambo y un 4\% girasol. Estas últimas categorías
   no son mutuamente excluyentes porque cada productor podría dedicarse a
   más de una actividad, por lo que los porcentajes mencionados
-  representan mínimos.
+  representan mínimos. Se entiende por productores agropecuarios a
+  personas físicas o jurídicas cuya actividad principal sea la
+  producción de soja, trigo, maíz, etc. en tierras propias y/o
+  arrendadas (sin excluir que realicen otras actividades).
 
   Se realizó un muestreo estratificado de productores teniendo en cuenta
   datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
@@ -344,10 +350,14 @@
     igual a USD 1,000,000 al año.
   \end{itemize}
 
-  La muestra queda conformada por 406 productores en total.
+  En cuanto al trabajo de campo, la encuesta es realizada a 406
+  productores por teléfono insumiendo alrededor de tres semanas. El
+  relevamiento se realiza en los meses de enero, marzo, mayo, julio,
+  septiembre y noviembre. Éstos últimos se denominan ``meses impares''
+  en este documento.
 
-  En cada edición se formulan las siguientes cinco preguntas dicotómicas
-  (de respuesta ``Sí'' / ``No'') fijas:
+  En dicho relevamiento se formulan las siguientes cinco preguntas
+  dicotómicas (de respuesta ``Sí'' / ``No'') fijas:
 
   \begin{itemize}
   \tightlist
@@ -377,13 +387,14 @@
   temas coyunturales / estacionales que impactan al sector agropecuario
   argentino. Éstas varían según los temas de interés del momento.
 
-  El primer paso del cálculo del \emph{Ag Barometer Austral} es obtener
-  una medida para cada una de las cinco preguntas fijas. Se calcula como
-  el porcentaje de respuestas favorables (``Sí''), menos el porcentaje
-  de respuestas desfavorables (``No''), más 100. Esto da a cada medida
-  un rango de posibles puntajes de 0 a 200. Cuando todas las respuestas
-  son ``Sí'', el índice es 200. Cuando todas las respuestas son ``No'',
-  el índice es 0.
+  Finalizada la etapa de recolección, se procede a la construcción de
+  los índices. El primer paso del cálculo del \emph{Ag Barometer
+  Austral} es obtener una medida para cada una de las cinco preguntas
+  fijas. Se calcula como el porcentaje de respuestas favorables
+  (``Sí''), menos el porcentaje de respuestas desfavorables (``No''),
+  más 100. Esto da a cada medida un rango de posibles puntajes de 0 a
+  200. Cuando todas las respuestas son ``Sí'', el índice es 200. Cuando
+  todas las respuestas son ``No'', el índice es 0.
 
   El valor final del \emph{Ag Barometer Austral} es el promedio simple
   de las medidas de las cinco preguntas individuales donde el 100 indica
@@ -392,41 +403,53 @@
 
   Se hace uso de las respuestas recolectadas para construir otros dos
   índices: ``Condiciones presentes'' y ``Expectativas futuras'' a fines
-  de capturar cómo cambia la percepción netamente actual y la puramente
-  futura de los productores a través del tiempo. Se calculan igual que
-  el \emph{Ag Barometer Austral} sólo teniendo en cuenta algunas de las
-  preguntas.
+  de capturar, también, cómo cambia la percepción netamente actual y la
+  puramente futura de los productores a través del tiempo. Se calculan
+  igual que el \emph{Ag Barometer Austral} sólo teniendo en cuenta
+  algunas de las preguntas.
 
-  \begin{longtable}[t]{lll}
+  \begin{table}
 
-  \caption{\label{tbl-0}Preguntas utilizadas para el cálculo de cada
-  índice}
+  \caption{\label{tbl-preguntas_agb}Preguntas utilizadas para el cálculo de cada índice}
 
-  \tabularnewline
+  \centering{
 
+  \centering
+
+
+  \begin{tabular}{lll}
   \toprule
-  Índice & Preguntas para su cálculo & Qué representa\\
+  Índice & Preguntas para su cálculo & Qué representa \\
   \midrule
-  Ag Barometer & Q1, Q2, Q3, Q4, Q5 & Percepciones actuales y futuras\\
-  Condiciones presentes & Q1, Q5 & Percepciones actuales\\
-  Expectativas futuras & Q2, Q3, Q4 & Percepciones futuras\\
+  $Ag$ $Barometer$ & $Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$ & Percepciones actuales y futuras \\
+  Condiciones presentes & $Q_1$, $Q_5$ & Percepciones actuales \\
+  Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
   \bottomrule
+  \end{tabular}
 
-  \end{longtable}
+  }
+
+  \end{table}%
 
   \subsection{\texorpdfstring{Características del \emph{Ag Economy
   Barometer}}{Características del Ag Economy Barometer}}\label{caracteruxedsticas-del-ag-economy-barometer}
 
-  El \emph{Ag Economy Barometer} se construye todos los meses en la
-  Universidad de \emph{Purdue} mediante una encuesta telefónica
-  realizada a una muestra de productores, cuya recolección insume
-  aproximadamente una semana.
+  Si bien los dos índices, \emph{Ag Barometer Austral} y \emph{Ag
+  Economy Barometer}, comparten el objetivo de medir la confianza de los
+  productores de cada país, presentan similitudes y diferencias. Por
+  ejemplo, una diferencia entre ellos es la extensión de sus series
+  temporales: la primera observación del \emph{Ag Economy Barometer}
+  corresponde a octubre de 2015, mientras que la del \emph{Ag Barometer
+  Austral} corresponde a octubre de 2018. Esto evidencia que el estudio
+  de medir el sentimiento de los productores comenzó orginalmente en la
+  Universidad de \emph{Purdue}.
 
-  La población está compuesta por productores cuyo valor bruto de
-  producción es mayor o igual a USD 500,000; donde un 53\% producen
-  soja, un 14\% maíz, un 3\% algodón, un 19\% ganadería vacuna, un 5\%
-  tambo y un 6\% ganadería porcina. Al igual que en el caso del \emph{Ag
-  Barometer Austral} estos porcentajes representan mínimos.
+  En el caso del índice estadounidense, la población está compuesta por
+  productores cuyo valor bruto de producción es mayor o igual a USD
+  500,000; donde un 53\% producen soja, un 14\% maíz, un 3\% algodón, un
+  19\% ganadería vacuna, un 5\% tambo y un 6\% ganadería porcina. Al
+  igual que en el caso del \emph{Ag Barometer Austral} estos porcentajes
+  representan mínimos.
 
   Para la selección de los productores se aplicó un muestreo
   estratificado en base a los datos censales del \emph{United States
@@ -446,21 +469,25 @@
     igual a USD 2,500,000.
   \end{itemize}
 
-  La muestra queda conformada por 400 productores en total.
+  Respecto al trabajo de campo, la encuesta se realiza por vía
+  telefónica a una muestra de 400 productores y se demora
+  aproximadamente una semana. El relevamiento se realiza de manera
+  mensual, es decir, en los doce meses del año.
 
   Cada mes se entrevista a los productores realizándoles las mismas
   cinco preguntas fijas ya detalladas.
 
-  El primer paso del cálculo del \emph{Ag Economy Barometer} es idéntico
-  al del \emph{Ag Barometer Austral}, obtener la medida para cada una de
-  las cinco preguntas fijas. Sin embargo cambia la forma en que se
-  obtiene el valor final del índice estadounidense con respecto al
-  local. El \emph{Ag Economy Barometer} se obtiene sumando las cinco
-  medidas de cada una de las cinco preguntas fijas y se divide esa suma
-  por el promedio del período base (octubre 2015 a marzo 2016).
+  Recabadas las respuestas, el primer paso para calcular el \emph{Ag
+  Economy Barometer} es el mismo que para elaborar el \emph{Ag Barometer
+  Austral}: obtener la medida para cada una de las cinco preguntas
+  fijas. Sin embargo, cambia la forma en que se obtiene el valor final
+  del índice estadounidense. El \emph{Ag Economy Barometer} se obtiene
+  sumando las cinco medidas de cada una de las cinco preguntas fijas y
+  se divide esa suma por el promedio del período base (octubre 2015 a
+  marzo 2016).
 
-  Es decir que el valor del \emph{Ag Economy Barometer} para un mes dado
-  se calcula siempre en relación con el período base. El valor 100
+  Es decir que el valor del \emph{Ag Economy Barometer} para un mes
+  dado, se calcula siempre en relación con el período base. El valor 100
   implica que no hubo cambios respecto del período base. Un valor
   superior a 100 indica un aumento en el \emph{sentiment}, o la
   confianza, de los productores en comparación con el período base;
@@ -468,9 +495,9 @@
   los productores disminuyó en relación con dicho período.
 
   En Estados Unidos también se calculan los indicadores Condiciones
-  presentes y Expectativas futuras utilizando la misma forma de cálculo
-  que para el \emph{Ag Economy Barometer} a partir de las preguntas de
-  la Tabla~\ref{tbl-0}.
+  presentes y Expectativas futuras, utilizando la misma forma de cálculo
+  que para el \emph{Ag Economy Barometer}, cada uno a partir de las
+  preguntas de la Tabla~\ref{tbl-preguntas_agb}.
 
   En la Universidad de \emph{Purdue} también construyen, aparte de los
   tres índices ya mencionados, el indicador ``Inversión del capital
@@ -479,61 +506,31 @@
 
   \subsection{Los datos}\label{los-datos}
 
-  A continuación, se presentan las variables disponibles en las bases de
-  datos que han sido suministradas por las universidades para realizar
-  el análisis.
+  Para facilitar la visualización de las semejanzas y diferencias entre
+  estos dos índices, se muestra un resumen que permite comparar sus
+  características:
 
-  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{2.5cm}>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{2.5cm}}
+  \input{Tablas/tabla_materiales_comparacion.tex}
 
-  \caption{\label{tbl-0.1}Descripción de la base de datos de cada país}
-
-  \tabularnewline
-
-  \toprule
-  País & Variable & Descripción & Tipo\\
-  \midrule
-  \endfirsthead
-  \multicolumn{4}{@{}l}{\textit{(continued)}}\\
-  \toprule
-  País & Variable & Descripción & Tipo\\
-  \midrule
-  \endhead
-
-  \endfoot
-  \bottomrule
-  \endlastfoot
-   & Bimestre & Mes y año de la observación & Cualitativa Ordinal\\
-  \cmidrule{2-4}\nopagebreak
-   & Ag Barometer Austral & Ag Barometer en Argentina & Cuantitativa Continua\\
-  \cmidrule{2-4}\nopagebreak
-   & Condiciones presentes & Condiciones presentes en Argentina & Cuantitativa Continua\\
-  \cmidrule{2-4}\nopagebreak
-  \multirow{-4}{2.5cm}{\raggedright\arraybackslash Argentina} & Expectativas futuras & Expectativas futuras en Argentina & Cuantitativa Continua\\
-  \cmidrule{1-4}\pagebreak[0]
-   & Month & Mes de la observación & Cualitativa Ordinal\\
-  \cmidrule{2-4}\nopagebreak
-   & Year & Año de la observación & Cuantitativa Discreta\\
-  \cmidrule{2-4}\nopagebreak
-   & Ag Economy Barometer & Ag Barometer en Estados Unidos & Cuantitativa Continua\\
-  \cmidrule{2-4}\nopagebreak
-   & Current conditions & Condiciones presentes en Estados Unidos & Cuantitativa Continua\\
-  \cmidrule{2-4}\nopagebreak
-  \multirow{-5}{2.5cm}{\raggedright\arraybackslash Estados Unidos} & Future Expectations & Expectativas futuras en Estados Unidos & Cuantitativa Continua\\*
-
-  \end{longtable}
+  A partir de lo presentado en la Tabla \ref{tbl-comparacion}, puede
+  observarse que la cantidad de índices en estudio es seis, tres para
+  cada país: \emph{Ag Barometer}, Condiciones presentes y Expectativas
+  futuras. Considerando la base de datos de cada universidad, en total
+  se dispone de siete variables: los seis índices mencionados y una
+  variable adicional que indica la fecha de cada observación.
 
   \newpage
 
   \section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
 
-  El fin de esta sección es plasmar el camino que se siguió para armar
-  una base de datos que facilitó el análisis. Ésta reúne las series de
-  Argentina, de Estados Unidos y otras sugeridas por los especialistas
-  que fueron buscadas en diversas fuentes para poder responder a ciertos
-  objetivos de esta práctica profesional. Previamente a la unificación
-  se aplicaron procesamientos sobre algunas de las series provistas como
-  imputación de valores faltantes, eliminación de valores,
-  homogeneización de nombres de variables, etc.
+  El fin de este apartado es plasmar el camino que se siguió para armar
+  una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne
+  las series de Argentina, de Estados Unidos y otras sugeridas por los
+  especialistas que fueron buscadas en diversas fuentes para poder
+  responder a ciertos objetivos de esta práctica profesional.
+  Previamente a la unificación se aplicaron procesamientos sobre algunas
+  de las series provistas como imputación de valores faltantes,
+  eliminación de valores, homogeneización de nombres de variables, etc.
 
   \subsection{Tratamiento sobre las series
   provistas}\label{tratamiento-sobre-las-series-provistas}
@@ -734,7 +731,7 @@
   propias del manejo de bases de datos: se creó una columna
   \texttt{Fecha} a partir de las columnas \texttt{Year} y
   \texttt{Month}, con el fin de contar con una columna equivalente a
-  \texttt{Bimestre} (Tabla~\ref{tbl-0.1}) presente en los datos locales,
+  \texttt{Bimestre} (\textbf{?@tbl-0.1}) presente en los datos locales,
   y así poder unir posteriormente ambos conjuntos de datos a partir de
   dicha columna.
 
