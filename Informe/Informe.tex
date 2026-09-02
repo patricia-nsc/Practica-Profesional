@@ -535,7 +535,9 @@
   \subsection{Tratamiento sobre las series
   provistas}\label{tratamiento-sobre-las-series-provistas}
 
-  Se observan los datos argentinos.
+  Antes de decidir qué procesos aplicar sobre las series de Argentina,
+  fue necesario identificar algunos atributos de estos datos, que se
+  presentan a continuación.
 
   \begin{longtable}[t]{ccccccccc}
 
@@ -547,6 +549,16 @@
   \toprule
   Año & ene & mar & abr & may & jul & sept & oct & nov\\
   \midrule
+  \endfirsthead
+  \multicolumn{9}{@{}l}{(continuación)}\\
+  \toprule
+  Año & ene & mar & abr & may & jul & sept & oct & nov\\
+  \midrule
+  \endhead
+
+  \endfoot
+  \bottomrule
+  \endlastfoot
   2018 &  &  &  &  &  &  & 100 & 95\\
   2019 & 106 & 103 &  & 117 & 137 & 74 &  & 64\\
   2020 & 52 &  & 53 &  & 48 & 69 &  & 78\\
@@ -556,8 +568,7 @@
   2023 & 68 & 69 &  & 84 & 89 & 100 &  & 117\\
   2024 & 119 & 129 &  & 139 & 139 & 132 &  & 149\\
   2025 & 117 & 137 &  & 130 & 127 & 124 &  & 159\\
-  2026 & 158 &  &  &  &  &  &  & \\
-  \bottomrule
+  2026 & 158 &  &  &  &  &  &  & \\*
 
   \end{longtable}
 
@@ -574,33 +585,23 @@
 
   \end{figure}%
 
-  Se aprecian dos características en estos datos:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Los valores correspondientes a marzo 2020 y mayo 2020 son faltantes
-    como se puede ver en la Tabla~\ref{tbl-1} y en la
-    Figura~\ref{fig-1}.
-  \item
-    Si bien los investigadores planificaron generar observaciones en los
-    meses impares, se observaron algunas excepciones.
-  \end{itemize}
-
-  Hay una observación en el mes de abril sólo en el año 2020
-  (Tabla~\ref{tbl-1}) relevada para compensar los faltantes de marzo y
-  mayo.
-
-  La otra excepción ocurrió en 2018 por ser el único año que tiene una
-  observación en octubre (Tabla~\ref{tbl-1}). Esto se debe a que los
+  Se aprecian dos características en estos datos. La primera es que los
+  valores que corresponden a marzo 2020 y mayo 2020 son faltantes, como
+  se puede ver en la Tabla~\ref{tbl-1} y en la Figura~\ref{fig-1}. La
+  segunda característica es que, a pesar de que los investigadores hayan
+  planificado generar observaciones en los meses impares, hay dos
+  observaciones que no cumplen esto. La primera de éstas ocurrió en
+  octubre 2018 (Tabla~\ref{tbl-1}). Esto se debe a que los
   investigadores quisieron hacer una llamada ``observación piloto'' pero
   luego continuaron con su plan de proporcionar datos sólo en los meses
-  impares.
+  impares. El segundo dato de este estilo corresponde a abril 2020
+  (Tabla~\ref{tbl-1}) el cual fue relevado para compensar los faltantes
+  de marzo y mayo.
 
-  Estas características de los datos locales producen observaciones
-  separadas por un mes (como octubre 2018 y noviembre 2018), que la
-  mayoría estén separadas por dos meses (acorde a lo planificado) y que
-  otras estén separadas por tres meses (como enero 2020 y abril 2020).
+  Estos dos aspectos producen observaciones separadas por un mes (como
+  octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos
+  meses (acorde a lo planificado) y que otras estén separadas por tres
+  meses (como enero 2020 y abril 2020).
 
   Se propuso para las tres series imputar los valores que faltan para
   las fechas de marzo 2020, mayo 2020.
@@ -635,49 +636,27 @@
   \end{figure}%
 
   Es común que las series económicas sigan el patrón de un paseo
-  aleatorio. Por esta razón se analizó si la primera diferencia de cada
-  serie es un ruido blanco.
+  aleatorio (Hyndman \& Athanasopoulos, 2021). Por esta razón se analizó
+  si la primera diferencia de cada serie es un ruido blanco.
 
-  La mayoría de los bastones de las FACM de la Figura~\ref{fig-2}
-  parecen ser no significativos. De todas formas hay algunos que superan
-  el valor crítico representado con la línea punteada azul pero como
-  toman valores de aproximadamente 0.4, en valor absoluto, o menores;
-  éstos tampoco parecen ser significativos. Se realiza el test de
-  Ljung-Box y se concluye con un nivel de significación del 5\% y en
-  base a la evidencia muestral que los primeros veinte coeficientes de
-  la FAC de las diferencias de las series \emph{Ag Barometer Austral},
-  Condiciones presentes y Expectativas futuras son nulos, es decir, que
-  estas tres series son paseos aleatorios. (\(p-value=\) 0.9339,
-  \(p-value=\) 0.9443 y \(p-value=\) 0.8711 respectivamente, \(k=20\))
+  La mayoría de los bastones de las FACM de la Figura~\ref{fig-2} son no
+  significativos. Hay unos pocos que sí lo son porque los coeficientes
+  estimados superan el valor crítico (línea punteada azul). Sin embargo,
+  la relevancia práctica de cada uno de estos últimos es dudosa ya que
+  toman valores menores o iguales a 0.4, en valor absoluto. Observar qué
+  ocurre con cada bastón individualmente no conduce a conclusiones
+  claras, entonces se utilizó un recurso que contemple a todos los
+  primeros bastones de manera conjunta: el test de Ljung-Box. Se
+  concluye con un nivel de significación del 5\% y en base a la
+  evidencia muestral que los primeros veinte coeficientes de la FAC de
+  las diferencias de las series \emph{Ag Barometer Austral}, Condiciones
+  presentes y Expectativas futuras son nulos, es decir, que estas tres
+  series son paseos aleatorios. (\(p-value=\) 0.9339, \(p-value=\)
+  0.9443 y \(p-value=\) 0.8711 respectivamente)
 
-  Se imputaron las dos fechas con \emph{interpolación lineal} por ser
-  uno de los métodos que más conviene dadas las características vistas
-  de estas tres series según las conclusiones de la tesina de Lucía
-  Tamplín.
-
-  \begin{longtable}[t]{ccccccc}
-
-  \caption{\label{tbl-2}\emph{Ag Barometer Austral} en el período
-  noviembre 2018 - enero 2026}
-
-  \tabularnewline
-
-  \toprule
-  Año & ene & mar & may & jul & sept & nov\\
-  \midrule
-  2018 &  &  &  &  &  & 95\\
-  2019 & 106 & 103 & 117 & 137 & 74 & 64\\
-  2020 & 52 & 52.5 & 50.5 & 48 & 69 & 78\\
-  2021 & 79 & 90 & 79 & 69 & 79 & 79\\
-  2022 & 90 & 90 & 98 & 76 & 83 & 67\\
-  \addlinespace
-  2023 & 68 & 69 & 84 & 89 & 100 & 117\\
-  2024 & 119 & 129 & 139 & 139 & 132 & 149\\
-  2025 & 117 & 137 & 130 & 127 & 124 & 159\\
-  2026 & 158 &  &  &  &  & \\
-  \bottomrule
-
-  \end{longtable}
+  Dadas las características de estas series, se decidió imputar estos
+  dos valores mediante \emph{interpolación lineal}, uno de los métodos
+  comparados por Tamplín (2025).
 
   \begin{figure}
 
@@ -698,15 +677,52 @@
   resto del trabajo para lograr que las tres series tengan periodicidad
   regular.
 
-  Luego de todo este tratamiento se logran tres series de periodicidad
-  bimensual, de cuarenta y cuatro observaciones cada una para el período
-  noviembre 2018 - enero 2026. Se puede apreciar, tomando como ejemplo
-  al \emph{Ag Barometer Austral}, que luego de este proceso sólo hay
-  observaciones para los meses impares (Tabla~\ref{tbl-2}) y que los
-  valores de marzo 2020 y mayo 2020 fueron imputados
-  (Figura~\ref{fig-4}).
+  Luego de este tratamiento se logran tres series de periodicidad
+  bimestral, de 44 observaciones cada una para el período noviembre 2018
+  - enero 2026.
 
-  Se observan los datos estadounidenses.
+  De igual manera se planeó proceder a nivel internacional. A los fines
+  de decidir qué procesos realizar sobre las series de Estados Unidos,
+  en caso de ser requiridos, fue necesario primero identificar qué
+  características poseen estos datos. Por tal motivo se muestran, a
+  continuación, las series estadounidenses.
+
+  \begin{longtable}[t]{ccccccccccccc}
+
+  \caption{\label{tbl-2}\emph{Ag Economy Barometer} en el período
+  octubre 2015 - marzo 2026}
+
+  \tabularnewline
+
+  \toprule
+  Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
+  \midrule
+  \endfirsthead
+  \multicolumn{13}{@{}l}{(continuación)}\\
+  \toprule
+  Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
+  \midrule
+  \endhead
+
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  2015 &  &  &  &  &  &  &  &  &  & 116 & 97 & 107\\
+  2016 & 98 & 96 & 85 & 106 & 97 & 104 & 112 & 95 & 101 & 92 & 116 & 132\\
+  2017 & 153 & 134 & 124 & 130 & 130 & 131 & 139 & 132 & 132 & 135 & 128 & 126\\
+  2018 & 135 & 140 & 135 & 125 & 141 & 143 & 117 & 129 & 114 & 136 & 134 & 127\\
+  2019 & 143 & 136 & 133 & 115 & 101 & 126 & 153 & 124 & 121 & 136 & 153 & 150\\
+  \addlinespace
+  2020 & 167 & 168 & 121 & 96 & 103 & 117 & 118 & 144 & 156 & 183 & 167 & 174\\
+  2021 & 167 & 165 & 177 & 178 & 158 & 137 & 134 & 138 & 124 & 121 & 116 & 125\\
+  2022 & 119 & 125 & 113 & 121 & 99 & 97 & 103 & 117 & 112 & 102 & 102 & 126\\
+  2023 & 130 & 125 & 117 & 123 & 104 & 121 & 123 & 115 & 106 & 110 & 115 & 114\\
+  2024 & 106 & 111 & 114 & 99 & 108 & 105 & 113 & 100 & 88 & 115 & 145 & 136\\
+  \addlinespace
+  2025 & 141 & 152 & 140 & 148 & 158 & 146 & 135 & 125 & 126 & 129 & 139 & 136\\
+  2026 & 113 & 116 & 127 &  &  &  &  &  &  &  &  & \\*
+
+  \end{longtable}
 
   \begin{figure}
 
@@ -721,26 +737,35 @@
 
   \end{figure}%
 
-  No es posible que haya excepciones en las series de Estados Unidos,
-  como octubre 2018 o abril 2020 en el caso local, porque éstas son de
-  periodicidad mensual. Tampoco presentan datos faltantes tal como puede
-  verse en la Figura~\ref{fig-5}. Por este motivo, en este caso no fue
-  necesario realizar ni imputación ni eliminación de valores.
+  En las series de la Figura~\ref{fig-5} no se observan
+  discontinuidades, es decir que en el caso de Estados Unidos no hay
+  valores faltantes. En la Tabla~\ref{tbl-2}, tomando como ejemplo al
+  \emph{Ag Economy Barometer}, efectivamente se puede apreciar que los
+  datos están completos. Según lo presentado en la sección anterior, los
+  norteamericanos realizan el relevamiento en todos los meses (Tabla
+  \ref{tbl-comparacion}), o equivalentemente, las series son de
+  periodicidad mensual. Esto no da lugar a que haya observaciones en
+  meses que no van acorde a lo planificado, como ocurría en octubre 2018
+  y abril 2020 en el caso local.
 
-  El trabajo realizado con estas series se redujo, entonces, a tareas
-  propias del manejo de bases de datos: se creó una columna
-  \texttt{Fecha} a partir de las columnas \texttt{Year} y
-  \texttt{Month}, con el fin de contar con una columna equivalente a
-  \texttt{Bimestre} (\textbf{?@tbl-0.1}) presente en los datos locales,
-  y así poder unir posteriormente ambos conjuntos de datos a partir de
-  dicha columna.
+  Considerando estos aspectos, queda de manifiesto que no es necesario
+  emplear recursos, como imputación o eliminación de valores, para
+  lograr series de periodicidad regular. El trabajo realizado con estas
+  series se redujo, entonces, a tareas sencillas propias del manejo de
+  datos. Se creó una variable que indique la fecha de cada observación
+  para que ambas bases de datos tuvieran las mismas columnas y poder
+  unir los conjuntos de datos.
 
-  \subsection{Búsqueda de series
-  económicas}\label{buxfasqueda-de-series-econuxf3micas}
+  \subsection{Búsqueda de variables
+  económicas}\label{buxfasqueda-de-variables-econuxf3micas}
+
+  \paragraph{c.~26, completar!!}\label{c.-26-completar}
+
+  El siguiente paso a la hora de construir la base de datos en cuestion,
 
   Además de las series de interés ya mencionadas también debieron
-  agregarse al conjunto de datos otras variables a fines de poder
-  responder a los objetivos de la investigación. Se consultó a los
+  agregarse al conjunto de datos otras variables a los efectos de
+  responder los objetivos de la investigación. Se consultó a los
   especialistas qué variables podrían estar relacionadas con el \emph{Ag
   Barometer} en ambos países.
 
@@ -807,69 +832,17 @@
 
   \subsection{Base de datos construida}\label{base-de-datos-construida}
 
-  Una vez que se obtuvieron todas las series proporcionadas por las
-  universidades junto con las buscadas de forma independiente y
-  realizadas algunas tareas propias de manejo de datos, se construyó la
-  base de datos \texttt{base\_construida.xlsx}, con el software R, que
-  permitió realizar ciertos análisis del trabajo.
+  Una vez que se obtuvieron todas las series de las universidades junto
+  con las buscadas de forma independiente y realizadas las tareas
+  inherentes al manejo de datos, se construyó la base de datos
+  \texttt{base\_construida.xlsx}, con el software R, que permitió
+  realizar los análisis del trabajo.
 
-  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{3cm}>{\raggedright\arraybackslash}p{6.5cm}>{\raggedright\arraybackslash}p{5cm}}
-
-  \caption{\label{tbl-4}Descripción de las variables disponibles en la
-  base de datos construida}
-
-  \tabularnewline
-
-  \toprule
-  Variable & Descripción & Tipo\\
-  \midrule
-  \endfirsthead
-  \multicolumn{3}{@{}l}{(continuación)}\\
-  \toprule
-  Variable & Descripción & Tipo\\
-  \midrule
-  \endhead
-
-  \endfoot
-  \bottomrule
-  \endlastfoot
-  \cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de la observación} & \cellcolor{gray!10}{Cualitativa Ordinal}\\
-  Condiciones presentes Arg & Condiciones presentes en Argentina & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Expectativas futuras Arg} & \cellcolor{gray!10}{Expectativas futuras en Argentina} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Ag Barometer Austral & Ag Barometer en Argentina & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Condiciones presentes EEUU} & \cellcolor{gray!10}{Condiciones presentes en E.E.U.U} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  \addlinespace
-  Expectativas futuras EEUU & Expectativas futuras en E.E.U.U & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Ag Economy Barometer} & \cellcolor{gray!10}{Ag Barometer en E.E.U.U} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Petroleo Brent & Precio del petróleo Brent & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Petroleo WTI} & \cellcolor{gray!10}{Precio del petróleo WTI} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Gas Natural EEUU & Precio del Gas Natural EEUU & Cuantitativa Continua\\
-  \addlinespace
-  \cellcolor{gray!10}{Gas Natural Europa} & \cellcolor{gray!10}{Precio del Gas Natural Europa} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Soja & Precio de la Soja & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Maiz} & \cellcolor{gray!10}{Precio del Maíz} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Sorgo & Precio del Sorgo & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Trigo SRW} & \cellcolor{gray!10}{Precio del Trigo SRW} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  \addlinespace
-  Trigo HRW & Precio del Trigo HRW & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Carne} & \cellcolor{gray!10}{Precio de la carne vacuna} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Pollo & Precio del pollo & Cuantitativa Continua\\
-  \cellcolor{gray!10}{Urea} & \cellcolor{gray!10}{Precio de la Urea} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  FEFundsRate & NA & Cuantitativa Continua\\
-  \addlinespace
-  \cellcolor{gray!10}{Bono 2} & \cellcolor{gray!10}{Rendimiento (\%) del bono del Tesoro de EEUU a 2 años} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  Bono 10 & Rendimiento (\%) del bono del Tesoro de EEUU a 10 años & Cuantitativa Continua\\
-  \cellcolor{gray!10}{ICC Di Tella} & \cellcolor{gray!10}{Índice de Confianza del Consumidor hecho en UTDT} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  ICC Michigan & Índice de Confianza del Consumidor en UM & Cuantitativa Continua\\
-  \cellcolor{gray!10}{NASDAQ} & \cellcolor{gray!10}{NA} & \cellcolor{gray!10}{Cuantitativa Continua}\\
-  \addlinespace
-  Dow Jones & NA & Cuantitativa Continua\\
-  \cellcolor{gray!10}{IACA} & \cellcolor{gray!10}{Índice de Actividad de la Cadena Agropecuaria} & \cellcolor{gray!10}{Cuantitativa Continua}\\*
-
-  \end{longtable}
-
-  Se presentan las características de la base construida en la
-  Tabla~\ref{tbl-4}.
+  La mencionada base cuenta con 126 observaciones y 28 variables, una
+  corresponde a la fecha de cada observación, seis son los índices bajo
+  estudio relevados por las universidades y las 21 restantes son las
+  sugeridas por los especialistas. Excepto la fecha que es cualitativa
+  ordinal, el resto de las variables son cuantitativas continuas.
 
   \newpage
 
@@ -1375,6 +1348,10 @@
   https://finance.yahoo.com/
 
   https://www.argentina.gob.ar/economia/agricultura/agricultura
+
+  Hyndman, R.J., \& Athanasopoulos, G. (2021) \emph{Forecasting:
+  principles and practice}, 3rd edition, OTexts: Melbourne, Australia.
+  OTexts.com/fpp3.
   
 
 \end{document}

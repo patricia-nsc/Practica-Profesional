@@ -326,7 +326,7 @@ El fin de este apartado es plasmar el camino que se siguió para armar una base 
 ## Tratamiento sobre las series provistas
 
 
-Se observan los datos argentinos. 
+Antes de decidir qué procesos aplicar sobre las series de Argentina, fue necesario identificar algunos atributos de estos datos, que se presentan a continuación.
 
 
 
@@ -360,7 +360,10 @@ d_conNA |>
   ) |> 
   mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
   kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
-  kable_styling()
+  kable_styling(
+    latex_options = c("repeat_header"),
+    repeat_header_text = "(continuación)"
+  )
 ```
 
 
@@ -395,18 +398,13 @@ d_conNA |>
         legend.position = "bottom") 
 ```
 
-Se aprecian dos características en estos datos:
-
--   Los valores correspondientes a marzo 2020 y mayo 2020 son faltantes como se puede ver en la @tbl-1 y en la @fig-1. 
--   Si bien los investigadores planificaron generar observaciones en los meses impares, se observaron algunas excepciones. 
 
 
-Hay una observación en el mes de abril sólo en el año 2020 (@tbl-1) relevada para compensar los faltantes de marzo y mayo. 
-
-La otra excepción ocurrió en 2018 por ser el único año que tiene una observación en octubre (@tbl-1). Esto se debe a que los investigadores quisieron hacer una llamada "observación piloto" pero luego continuaron con su plan de proporcionar datos sólo en los meses impares.
+Se aprecian dos características en estos datos. La primera es que los valores que corresponden a marzo 2020 y mayo 2020 son faltantes, como se puede ver en la @tbl-1 y en la @fig-1. La segunda característica es que, a pesar de que los investigadores hayan planificado generar observaciones en los meses impares, hay dos observaciones que no cumplen esto. La primera de éstas ocurrió en octubre 2018 (@tbl-1). Esto se debe a que los investigadores quisieron hacer una llamada "observación piloto" pero luego continuaron con su plan de proporcionar datos sólo en los meses impares. El segundo dato de este estilo corresponde a abril 2020 (@tbl-1) el cual fue relevado para compensar los faltantes de marzo y mayo. 
 
 
-Estas características de los datos locales producen observaciones separadas por un mes (como octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos meses (acorde a lo planificado) y que otras estén separadas por tres meses (como enero 2020 y abril 2020).
+
+Estos dos aspectos producen observaciones separadas por un mes (como octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos meses (acorde a lo planificado) y que otras estén separadas por tres meses (como enero 2020 y abril 2020).
 
 
 Se propuso para las tres series imputar los valores que faltan para las fechas de marzo 2020, mayo 2020.
@@ -531,12 +529,16 @@ pv_expec_arg_dif1 <- round(pv_expec_arg_dif1, digits = 4)
 ```
 
 
-Es común que las series económicas sigan el patrón de un paseo aleatorio. Por esta razón se analizó si la primera diferencia de cada serie es un ruido blanco.
+Es común que las series económicas sigan el patrón de un paseo aleatorio (Hyndman & Athanasopoulos, 2021). Por esta razón se analizó si la primera diferencia de cada serie es un ruido blanco.
 
 
-La mayoría de los bastones de las FACM de la @fig-2 parecen ser no significativos. De todas formas hay algunos que superan el valor crítico representado con la línea punteada azul pero como toman valores de aproximadamente 0.4, en valor absoluto, o menores; éstos tampoco parecen ser significativos. Se realiza el test de Ljung-Box y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros veinte coeficientes de la FAC de las diferencias de las series *Ag Barometer Austral*, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg_dif1`, $p-value=$ `r pv_cond_arg_dif1` y $p-value=$ `r pv_expec_arg_dif1` respectivamente, $k=20$)
+La mayoría de los bastones de las FACM de la @fig-2 son no significativos. Hay unos pocos que sí lo son porque los coeficientes estimados superan el valor crítico (línea punteada azul). Sin embargo, la relevancia práctica de cada uno de estos últimos es dudosa ya que toman valores menores o iguales a 0.4, en valor absoluto. Observar qué ocurre con cada bastón individualmente no conduce a conclusiones claras, entonces se utilizó un recurso que contemple a todos los primeros bastones de manera conjunta: el test de Ljung-Box. Se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros veinte coeficientes de la FAC de las diferencias de las series *Ag Barometer Austral*, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg_dif1`, $p-value=$ `r pv_cond_arg_dif1` y $p-value=$ `r pv_expec_arg_dif1` respectivamente)
 
-Se imputaron las dos fechas con *interpolación lineal* por ser uno de los métodos que más conviene dadas las características vistas de estas tres series según las conclusiones de la tesina de Lucía Tamplín.
+
+
+Dadas las características de estas series, se decidió imputar estos dos valores mediante *interpolación lineal*, uno de los métodos comparados por Tamplín (2025).
+
+
 
 
 ```{r}
@@ -547,27 +549,7 @@ d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx")
 ```
 
 
-```{r}
-#| label: tbl-2
-#| tbl-cap: "*Ag Barometer Austral* en el período noviembre 2018 - enero 2026"
 
-# Tabla para visualizar la serie de periodicidad regular
-d_arg |> 
-  as_tibble() |> 
-  mutate(
-    Año = year(Bimestre),
-    Mes = month(Bimestre, label = TRUE, abbr = TRUE)
-  ) |> 
-  select(Año, Mes, `Ag Barometer Austral`) |> 
-  pivot_wider(
-    names_from = Mes, 
-    values_from = `Ag Barometer Austral`,
-    names_sort = TRUE
-  ) |> 
-  mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
-  kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
-  kable_styling()
-```
 
 
 ```{r}
@@ -610,9 +592,10 @@ d_arg |>
 
 Las observaciones de octubre 2018 y abril 2020, las cuales sólo representan un 4.54% de la totalidad de los datos, fueron consideradas a la hora de imputar pero no se las tuvo en cuenta en el resto del trabajo para lograr que las tres series tengan periodicidad regular. 
 
-Luego de todo este tratamiento se logran tres series de periodicidad bimensual, de cuarenta y cuatro observaciones cada una para el período noviembre 2018 - enero 2026. Se puede apreciar, tomando como ejemplo al *Ag Barometer Austral*, que luego de este proceso sólo hay observaciones para los meses impares (@tbl-2) y que los valores de marzo 2020 y mayo 2020 fueron imputados (@fig-4).
+Luego de este tratamiento se logran tres series de periodicidad bimestral, de 44 observaciones cada una para el período noviembre 2018 - enero 2026. 
 
-Se observan los datos estadounidenses.
+De igual manera se planeó proceder a nivel internacional. A los fines de decidir qué procesos realizar sobre las series de Estados Unidos, en caso de ser requiridos, fue necesario primero identificar qué características poseen estos datos. Por tal motivo se muestran, a continuación, las series estadounidenses.
+
 
 ```{r}
 # Carga de datos de eeuu
@@ -631,7 +614,31 @@ d_eeuu <- readxl::read_excel("../Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |>
 
 
 
+```{r}
+#| label: tbl-2
+#| tbl-cap: "*Ag Economy Barometer* en el período octubre 2015 - marzo 2026"
 
+# Tabla para visualizar la serie de periodicidad regular
+d_eeuu |> 
+  as_tibble() |> 
+  mutate(
+    Año = year(Fecha),
+    Mes = month(Fecha, label = TRUE, abbr = TRUE)
+  ) |> 
+  select(Año, Mes, `Ag Economy Barometer`) |> 
+  pivot_wider(
+    names_from = Mes, 
+    values_from = `Ag Economy Barometer`,
+    names_sort = TRUE
+  ) |> 
+  mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
+  kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
+  kable_styling(
+    latex_options = c("repeat_header"),
+    repeat_header_text = "(continuación)"
+  )
+
+```
 
 
 ```{r}
@@ -662,24 +669,41 @@ d_eeuu |>
   theme(legend.title = element_blank(),
         legend.position = "bottom") + 
   guides(color = guide_legend(nrow = 2))
-  
 ```
 
 
 
 
 
-No es posible que haya excepciones en las series de Estados Unidos, como octubre 2018 o abril 2020 en el caso local, porque éstas son de periodicidad mensual. Tampoco presentan datos faltantes tal como puede verse en la @fig-5. Por este motivo, en este caso no fue necesario realizar ni imputación ni eliminación de valores.
+En las series de la @fig-5 no se observan discontinuidades, es decir que en el caso de Estados Unidos no hay valores faltantes. En la @tbl-2, tomando como ejemplo al *Ag Economy Barometer*, efectivamente se puede apreciar que los datos están completos. 
+Según lo presentado en la sección anterior, los norteamericanos realizan el relevamiento en todos los meses (Tabla \ref{tbl-comparacion}), o equivalentemente, las series son de periodicidad mensual. Esto no da lugar a que haya observaciones en meses que no van acorde a lo planificado, como ocurría en octubre 2018 y abril 2020 en el caso local.
 
-El trabajo realizado con estas series se redujo, entonces, a tareas propias del manejo de bases de datos: se creó una columna `Fecha` a partir de las columnas `Year` y `Month`, con el fin de contar con una columna equivalente a `Bimestre` (@tbl-0.1) presente en los datos locales, y así poder unir posteriormente ambos conjuntos de datos a partir de dicha columna.
-
-
-## Búsqueda de series económicas
+Considerando estos aspectos, queda de manifiesto que no es necesario emplear recursos, como imputación o eliminación de valores, para lograr series de periodicidad regular. El trabajo realizado con estas series se redujo, entonces, a tareas sencillas propias del manejo de datos. Se creó una variable que indique la fecha de cada observación para que ambas bases de datos tuvieran las mismas columnas y poder unir los conjuntos de datos.
 
 
-Además de las series de interés ya mencionadas también debieron agregarse al conjunto de datos otras variables a fines de poder responder a los objetivos de la investigación. Se consultó a los especialistas qué  variables podrían estar relacionadas con el *Ag Barometer* en ambos países.
+
+## Búsqueda de variables económicas
+
+#### c. 26, completar!! 
+
+<!-- (papa, algo tengo en word) -->
+
+<!-- EXPLICAR: porqué estamos incluyendo estas series y agruparlas por ejemplo todo lo que es precio de granos, precio de carne, precio de energía/insumos, indicadores financieros, indicadores de confianza/economía -->
+
+
+El siguiente paso a la hora de construir la base de datos en cuestion,
+
+
+Además de las series de interés ya mencionadas también debieron agregarse al conjunto de datos otras variables a los efectos de responder los objetivos de la investigación. Se consultó a los especialistas qué variables podrían estar relacionadas con el *Ag Barometer* en ambos países.
+
+
+
+
+
 
 A partir de estas indicaciones, se realizó una búsqueda en distintas fuentes y las variables fueron organizadas, con el software Excel, en el archivo `Covariables.xlsx`. 
+
+<!-- esto ultimo lo tengo q hacer todo de nuevo pero con R !! -->
 
 
 ```{r}
@@ -711,32 +735,14 @@ readxl::read_excel("Tablas/tabla_covs.xlsx") |>
 
 ## Base de datos construida
 
-Una vez que se obtuvieron todas las series proporcionadas por las universidades junto con las buscadas de forma independiente y realizadas algunas tareas propias de manejo de datos, se construyó la base de datos `base_construida.xlsx`, con el software R, que permitió realizar ciertos análisis del trabajo.
+Una vez que se obtuvieron todas las series de las universidades junto con las buscadas de forma independiente y realizadas las tareas inherentes al manejo de datos, se construyó la base de datos `base_construida.xlsx`, con el software R, que permitió realizar los análisis del trabajo.
+
+
+La mencionada base cuenta con 126 observaciones y 28 variables, una corresponde a la fecha de cada observación, seis son los índices bajo estudio relevados por las universidades y las 21 restantes son las sugeridas por los especialistas. Excepto la fecha que es cualitativa ordinal, el resto de las variables son cuantitativas continuas.
 
 
 
-```{r}
-#| label: tbl-4
-#| tbl-cap: "Descripción de las variables disponibles en la base de datos construida"
 
-readxl::read_excel("Tablas/tabla_base_construida.xlsx") |>
-  kable(
-    booktabs = TRUE,
-    longtable = TRUE,
-    align = "l"
-  ) |>
-  kable_styling(
-    latex_options = c("striped", "repeat_header"),
-    repeat_header_text = "(continuación)",
-    full_width = FALSE
-  ) |>
-  column_spec(1, width = "3cm") |>
-  column_spec(2, width = "6.5cm") |>
-  column_spec(3, width = "5cm")
-```
-
-
-Se presentan las características de la base construida en la @tbl-4.
 
 
 
@@ -1952,6 +1958,7 @@ https://finance.yahoo.com/
 
 https://www.argentina.gob.ar/economia/agricultura/agricultura
 
+Hyndman, R.J., & Athanasopoulos, G. (2021) *Forecasting: principles and practice*, 3rd edition, OTexts: Melbourne, Australia. OTexts.com/fpp3.
 
 
 
