@@ -760,7 +760,7 @@ Una vez dispuestos los datos en una misma base, con el fin de conocer las caract
 
 
 
-En primer lugar, se ofrece una primera impresión del *Ag Barometer Austral*.
+Se ofrece una primera impresión del *Ag Barometer Austral*, su FACM y su FACPM.
 
 ```{r}
 #| label: fig-6
@@ -819,7 +819,7 @@ acf_agb_arg + pacf_agb_arg
 
 
 
-Los bastones de la FACM de la @fig-7 parecen presentar un decaimiento exponencial donde la estimación del primer coeficiente es casi 0.8, lo cual sugiere que la serie no sería ruido blanco.
+En primer lugar, es menester inspeccionar la dinámica temporal de estos datos. Los bastones de la FACM de la @fig-7 parecen presentar un decaimiento exponencial donde la estimación del primer coeficiente es casi 0.8. Alrededor del rezago 24, también hay bastones significativos. Esto sugiere que la serie no sería ruido blanco.
 
 Se realiza el test de Ljung-Box para analizar si el *Ag Barometer Austral* se comporta como un ruido blanco.
 
@@ -852,7 +852,7 @@ map_dfr(c(6, 12, 18, 24), \(l) {
 
 Con un nivel de significación del 5% y en base a la evidencia muestral, se rechaza la hipótesis nula de ausencia de autocorrelación, para los cuatro rezagos considerados ($p-value < 0.001$, @tbl-pvalue_arg_rb). Consecuentemente, la serie presenta dependencia temporal y no puede modelarse como ruido blanco. Esto justifica continuar con el análisis de su estructura temporal.
 
-A continuación, se muestran más gráficos para identificar más aspectos del *Ag Barometer Austral* y luego se presentan todas las conclusiones.
+De esta manera, se muestran más gráficos para identificar más aspectos del *Ag Barometer Austral* y luego se presentan todas las conclusiones.
 
 
 
@@ -994,17 +994,17 @@ pv2_agb_arg_dif1 <- round(pv2_agb_arg_dif1, digits = 4)
 
 
 
-(graf agba): Mediante una simple inspección, viendo los valores que toma el *Ag Barometer Austral* en la @fig-6, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023 en Argentina, la confianza fue pesimista, con valores similares de condiciones presentes y expectativas futuras (@fig-4). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
+A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig-6, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023 en Argentina, la confianza fue pesimista, con valores similares de condiciones presentes y expectativas futuras (@fig-4). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
 
 
 
-(graf prom): En gran parte del período de relevamiento, a partir del 2020, el *Ag Barometer Austral* medio, @fig-8, parece ir aumentado a medida que pasa el tiempo, empezando por una confianza media pesimista, evolucionando, y observándose un promedio optimista al final del período. 
+En gran parte del período de relevamiento, a partir del 2020, el *Ag Barometer Austral* medio, @fig-8, parece ir aumentado a medida que pasa el tiempo, empezando por una confianza media pesimista, evolucionando, y observándose un promedio optimista al final del período. 
 
-(Graf fideos): En la @fig-9 se puede ver que hay años como el 2020, 2021, 2022 que la confianza es pesimista; hay otros años en que el sentimiento es optimista como en el 2024 y en el 2025; en el 2019 la confianza aumentaba hasta un momento en el cual pasó drásticamente de optimista a pesimista; se observa finalmente que en el 2023 las percepciones presentan una tendencia a crecer. 
+En la @fig-9 se puede ver que hay años como el 2020, 2021, 2022 que la confianza es pesimista; hay otros años en que el sentimiento es optimista como en el 2024 y en el 2025; en el 2019 la confianza aumentaba hasta un momento en el cual pasó drásticamente de optimista a pesimista; se observa finalmente que en el 2023 las percepciones presentan una tendencia a crecer. 
 (graf meses): En la @fig-10, en todos los meses parecería ocurrir que, el *Ag Barometer Austral* medio oscila alrededor del valor neutro 100 y que los valores presentan dispersiones similares. 
 Todas estas observaciones conllevarían a pensar que el comportamiento del *Ag Barometer Austral* parecería ser distinto en cada año y similar en los seis meses. En consecuencia, no parece presentar un patrón estacional.
 
-(boxplot): Se pueden observar en la @fig-11 dos características sobre la serie. La primera es que, desde el 2020 en adelante, el *Ag Barometer Austral* mediano parece crecer con el correr de los años. La segunda es que, sin considerar los años 2018 y 2026 por solo tener una observación, los valores de este índice no parecen variar de manera similar en todos los años. En el 2021 las observaciones no parecen variar mucho; los valores parecen tener dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año 2019, seguido del 2023, es cuando las percepciones parecen presentar mayor volatilidad. Esto querría decir que la variancia del sentimiento no parece ser constante a través de los años, observándose en 2019 los valores más dispersos. Fusionando estos dos aspectos, también podría decirse que no parece  haber relación entre la mediana y la variancia.
+Se pueden observar en la @fig-11 dos características sobre la serie. La primera es que, desde el 2020 en adelante, el *Ag Barometer Austral* mediano parece crecer con el correr de los años. La segunda es que, sin considerar los años 2018 y 2026 por solo tener una observación, los valores de este índice no parecen variar de manera similar en todos los años. En el 2021 las observaciones no parecen variar mucho; los valores parecen tener dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año 2019, seguido del 2023, es cuando las percepciones parecen presentar mayor volatilidad. Esto querría decir que la variancia del sentimiento no parece ser constante a través de los años, observándose en 2019 los valores más dispersos. Fusionando estos dos aspectos, también podría decirse que no parece  haber relación entre la mediana y la variancia.
 
 
 
@@ -1017,28 +1017,11 @@ Con el fin de obtener más características sobre la serie local, también se de
 
 
 
-==================================================
-
-
-Aproximadamente durante el período 2020-2023 en Argentina, la confianza fue pesimista, con valores similares de condiciones presentes y expectativas futuras. En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales (@fig-6). Este patrón no parece estar presente en las percepciones de los productores estadounidenses, donde las tres series toman valores similares en todo el período relevado (@fig-5).
-
-
-La confianza promedio de los productores estadounidenses varía a través del tiempo, manteniéndose siempre optimista durante todos los años analizados. En cambio, en Argentina la confianza media muestra una tendencia creciente a medida que pasa el tiempo, con excepción del período 2019-2020, donde se observó una disminución que generó en 2020 el promedio de confianza más pesimista histórico (@fig-9). 
-
-
-
-Las variabilidades de las percepciones parecen ser distintas entre año y año tanto para productores argentinos como  para estadounidenses donde el año de respuestas más variables en Argentina fue el 2019 y el 2020 seguido por el 2021 para Estados Unidos (@fig-12). 
-
-
-La confianza promedio parece ser similar en todos los meses y entre ambos países sugiriendo que ninguno de los índices posee pauta estacional (@fig-10 y  @fig-11). 
-
-
-Para obtener aún más características de estas series también se tuvo en cuenta sus primeras diferencias. Ninguno de los rezagos de la @fig-13 son significativos y en la @fig-14 son casi todos no significativos salvo tres coeficientes cuyas estimaciones valen 0.2 o menos, en valor absoluto. Se realizó el Test de Ljung-Box sobre cada una de las series diferenciadas y se concluyó al 5% de significación y en base a la evidencia muestral que los primeros 20 coefiecientes de la FAC son nulos en ambas series diferenciadas ($p-value =$ `r pv2_agb_arg_dif1`). Es decir que las dos diferencias son ruido blanco, en otras palabras, tanto el *Ag Barometer Austral* como el *Ag Economy Barometer* siguen un patrón de paseo aleatorio.
-
-================================================
 
 
 ## Análisis descriptivo univariado del *Ag Economy Barometer*
+
+Para llevar a cabo este análisis, se comienza presentado la serie junto a su FACM y FACMP.
 
 
 ```{r}
@@ -1090,6 +1073,12 @@ acf_agb_eeuu + pacf_agb_eeuu
 ```
 
 
+En cuanto a su estructura temporal, se puede observar que los bastones de la FACM de la @fig-14 decaen de forma, aparentemente, exponencial y que para retardos más elevados algunos coeficientes también son significativos. Además, el primer bastón de la FACPM es significativo. El primer coeficiente estimado toma un valor alto, en torno a 0.8, en ambas funciones. Considerando todo esto, se podría pensar que la serie presenta una estructura de dependencia temporal.
+Sin embargo, al igual que en el caso local, se realiza el test de Ljung-Box para probar si esta serie se comporta como un ruido blanco. 
+
+
+
+
 ```{r}
 #| label: tbl-pvalue_eeuu_rb
 #| tbl-cap: "Pruebas Ljung-Box sobre el *Ag Economy Barometer* en el período octubre 2015 - marzo 2026"
@@ -1114,8 +1103,9 @@ map_dfr(c(6, 12, 18, 24), \(l) {
 
 
 
+Con un nivel de significación del 5% y en base a la evidencia muestral, se rechaza la hipótesis nula de incorrelación para los cuatro retardos considerados. Al menos uno de los coeficientes de la FAC es no nulo, indicando que las percepciones de los productores a través del tiempo, de alguna manera, están relacionadas ($p-value < 0.001$, @tbl-pvalue_eeuu_rb). Consecuentemente, tiene sentido analizar la serie objeto de la presente sub-sección. De este modo, se presentan más herramientas que permitan identificar características de estos datos.
 
-mas carcs ....
+
 
 
 ```{r}
@@ -1249,10 +1239,43 @@ pv_agb_eeuu_dif1 <- round(pv_agb_eeuu_dif1, digits = 4)
 
 
 
-## Análisis bivariado
+
+A primera vista en la @fig-13, la serie no exhibe períodos de tendencia. Sin embargo, se observan cambios en las percepciones en los años 2016, 2020 y 2024. Asimismo, el comportamiento de los datos no parecería presentar patrones repetitivos, ya sea anuales o de mayor frecuencia. En conjunto, estas observaciones sugieren que la serie no presentaría componentes tendencia, estacional ni cíclica. 
+Si además se consideran las condiciones presentes y expectativas futuras (@fig-5), las tres series norteamericanas parecen tomar valores similares en cada instante de tiempo, en todo el período de relevamiento.
 
 
-Para comparar el *Ag Barometer Austral* y el *Ag Economy Barometer* se presentan los siguientes gráficos.
+
+En promedio (@fig-15), la confianza de los norteamericanos aumentó en comparación con el período base, en todos los años desde que comenzó el relevamiento. Por otro lado, otra característica a destacar del *Ag Economy Barometer* medio es que tiene saltos, como el cambio entre el promedio del 2016 y el de 2017, ocasionados por los cambios en la confianza observados en la @fig-13. 
+
+
+
+
+El comportamiento del *Ag Economy Barometer* no parece presentar un patrón inter-anual que se repita todos los años (@fig-16). Esto queda de manifiesto al comparar algunas trayectorias anuales. Mientras que en 2016 el índice oscila en torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala hasta un máximo en octubre; en contraste, en 2021 comienza con valores similares al 2020 pero alcanza su pico abril para luego mantener una tendencia decreciente durante el resto del año.
+
+
+
+
+En la @fig-17, se aprecia en todos los meses que: la confianza promedio es de alrededor 130 puntos y que las percepciones presentan variaciones similares. Estos dos últimos aspectos conllevarían a concluir que el sentimiento de los norteamericanos no parece tener una componente estacional.
+
+
+
+
+El *Ag Economy Barometer* mediano (@fig-18) parece seguir un patrón similar al promedio (@fig-15), su principal rasgo son los cambios repentinos. En el período 2017-2020, la variancia aumenta a medida que pasan los años. Fuera de ese período y salvo el 2021, la variabilidad de las percepciones parece ser similar en el resto de los años. En el 2020, seguido del 2021, son los años en que las observaciones resultaron más dispersas. En consecuencia, la variancia del *Ag Economy Barometer* no parece ser constante a través del tiempo. De estos dos aspectos se desprende que las medidas de centralización no tendrían relación con las de dispersión.
+
+
+
+Con el fin de ahondar más en las características presentes en esta serie, también se analiza su primera diferencia a partir de la @fig-19. La mayoría de los bastones de la FACM son, de manera individual, no significativos excepto por dos de ellos. Estos últimos, a pesar de ser significativos, están asociados a estimaciones alrededor de -0.2 dejando en duda su relevancia práctica. Lo mismo ocurre con un rezago en la FACMP. Es decir, este criterio de evaluar individualmente la significación de cada coeficiente no conduce a conclusiones claras acerca de la estructura temporal de la diferencia. Por tal motivo, hacemos test…
+
+
+
+
+
+
+
+## Análisis bivariado 
+
+
+Una vez analizadas por separado y de forma univariada, las series principales de este informe, el objetivo del presente apartado es Para comparar el *Ag Barometer Austral* y el *Ag Economy Barometer* se presentan los siguientes gráficos.
 
 <!-- comparo los dos AgB!! -->
 
