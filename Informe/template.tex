@@ -1,9 +1,14 @@
 \documentclass[12pt]{article}
 
-%paquete para poder cambiar interlineado
+% paquete para poder cambiar interlineado
 \usepackage{setspace}
 \renewcommand{\baselinestretch}{1.1}   % cambio interlineado
 \setlength{\parskip}{0.8em}            % para q haya espacio entre parrafos
+
+\usepackage{needspace}  %para q ponga la tabla en otra pag si no entra
+
+% para q los footnotes (aclaraciones al pie de pag) se pongan al final de la hoja
+\usepackage[bottom]{footmisc}
 
 % Para que no me trunque las palabras (no separa bien en silabas), q salte de linea
 \usepackage[none]{hyphenat}

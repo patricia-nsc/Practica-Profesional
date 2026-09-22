@@ -9,6 +9,7 @@ execute:
   echo: false
   warning: false
   message: false
+number-sections: true
 engine: knitr
 editor: source
 ---
@@ -46,7 +47,7 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 library(tsibble)
 library(lubridate)      # ymd()
 library(dplyr)          # mutate()
-library(feasts)         # para plots
+library(feasts)         # para plots y tests: adf, kpss
 library(fabletools)     # para test dickey 
 library(ggplot2)
 library(fable)          # para ajustar modelos
@@ -56,6 +57,12 @@ library(tidyr)
 library(patchwork)      # acomodar graficos
 library(purrr)          # extraer p-values de los test Ljunj-Box
 library(ggrepel)
+library(tseries)        # test adf
+library(aTSA)           # test engle-granger
+library(TSA)            # 4 librerias q uso p crear ccf_prewhitened_plot()
+library(ggplot2)
+library(dplyr)
+library(rlang)
 ```
 
 
@@ -257,13 +264,7 @@ Respecto al trabajo de campo, la encuesta se realiza por vía telefónica a una 
 
 
 
-
-
-
-
 Cada mes se entrevista a los productores realizándoles las mismas cinco preguntas fijas ya detalladas.
-
-
 
 
 
@@ -342,7 +343,7 @@ d_conNA <- readxl::read_excel("../Datos/Crudos/agbarometerARG_enero2026_conNA.xl
 
 
 ```{r}
-#| label: tbl-1
+#| label: tbl-agba_sin_imputar
 #| tbl-cap: "*Ag Barometer Austral* en el período octubre 2018 - enero 2026"
 
 # Tabla para visualizar en que meses y en que año hay obs
@@ -369,8 +370,8 @@ d_conNA |>
 
 
 ```{r}
-#| label: fig-1
-#| fig-cap: "Series locales provistas por la Austral en el período octubre 2018 - enero 2026"
+#| label: fig-indices_arg_sin_imputar
+#| fig-cap: "Evolución de los índices argentinos en el período octubre 2018 - enero 2026"
 #| fig-height: 4
 #| fig-width: 6
 
@@ -400,7 +401,7 @@ d_conNA |>
 
 
 
-Se aprecian dos características en estos datos. La primera es que los valores que corresponden a marzo 2020 y mayo 2020 son faltantes, como se puede ver en la @tbl-1 y en la @fig-1. La segunda característica es que, a pesar de que los investigadores hayan planificado generar observaciones en los meses impares, hay dos observaciones que no cumplen esto. La primera de éstas ocurrió en octubre 2018 (@tbl-1). Esto se debe a que los investigadores quisieron hacer una llamada "observación piloto" pero luego continuaron con su plan de proporcionar datos sólo en los meses impares. El segundo dato de este estilo corresponde a abril 2020 (@tbl-1) el cual fue relevado para compensar los faltantes de marzo y mayo. 
+Se aprecian dos características en estos datos. La primera es que los valores que corresponden a marzo 2020 y mayo 2020 son faltantes, como se puede ver en la @tbl-agba_sin_imputar y en la @fig-indices_arg_sin_imputar. La segunda característica es que, a pesar de que los investigadores hayan planificado generar observaciones en los meses impares, hay dos observaciones que no cumplen esto. La primera de éstas ocurrió en octubre 2018 (@tbl-agba_sin_imputar). Esto se debe a que los investigadores quisieron hacer una llamada "observación piloto" pero luego continuaron con su plan de proporcionar datos sólo en los meses impares. El segundo dato de este estilo corresponde a abril 2020 (@tbl-agba_sin_imputar) el cual fue relevado para compensar los faltantes de marzo y mayo. 
 
 
 
@@ -415,7 +416,7 @@ Para poder elegir un método de imputación apropiado para el caso se analizaron
 
 ```{r}
 #| label: fig-2
-#| fig-cap: "FACM de la primer diferencia de cada serie local"
+#| fig-cap: "FACM de la primera diferencia de cada serie local"
 #| fig-width: 10
 
 acf1 <- d_conNA |> 
@@ -452,7 +453,7 @@ acf1 + acf2 + acf3
 
 ```{r}
 #| label: fig-3
-#| fig-cap: "FACPM de la primer diferencia de cada serie local"
+#| fig-cap: "FACPM de la primera diferencia de cada serie local"
 #| fig-width: 10
 
 pacf1 <- d_conNA |> 
@@ -553,7 +554,7 @@ d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx")
 
 
 ```{r}
-#| label: fig-4
+#| label: fig-indices_arg
 #| fig-cap: "Series locales en el período noviembre 2018 - enero 2026"
 #| fig-height: 4
 #| fig-width: 6
@@ -615,7 +616,7 @@ d_eeuu <- readxl::read_excel("../Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |>
 
 
 ```{r}
-#| label: tbl-2
+#| label: tbl-ageb
 #| tbl-cap: "*Ag Economy Barometer* en el período octubre 2015 - marzo 2026"
 
 # Tabla para visualizar la serie de periodicidad regular
@@ -642,8 +643,8 @@ d_eeuu |>
 
 
 ```{r}
-#| label: fig-5
-#| fig-cap: "Series provistas por la Universidad de *Purdue* en el período octubre 2015 - marzo 2026"
+#| label: fig-indices_usa
+#| fig-cap: "Evolución de los índices norteamericanos en el período octubre 2015 - marzo 2026"
 #| fig-height: 4.5
 #| fig-width: 6.5
 
@@ -675,7 +676,7 @@ d_eeuu |>
 
 
 
-En las series de la @fig-5 no se observan discontinuidades, es decir que en el caso de Estados Unidos no hay valores faltantes. En la @tbl-2, tomando como ejemplo al *Ag Economy Barometer*, efectivamente se puede apreciar que los datos están completos. 
+En las series de la @fig-indices_usa no se observan discontinuidades, es decir que en el caso de Estados Unidos no hay valores faltantes. En la @tbl-ageb, tomando como ejemplo al *Ag Economy Barometer*, efectivamente se puede apreciar que los datos están completos. 
 Según lo presentado en la sección anterior, los norteamericanos realizan el relevamiento en todos los meses (Tabla \ref{tbl-comparacion}), o equivalentemente, las series son de periodicidad mensual. Esto no da lugar a que haya observaciones en meses que no van acorde a lo planificado, como ocurría en octubre 2018 y abril 2020 en el caso local.
 
 Considerando estos aspectos, queda de manifiesto que no es necesario emplear recursos, como imputación o eliminación de valores, para lograr series de periodicidad regular. El trabajo realizado con estas series se redujo, entonces, a tareas sencillas propias del manejo de datos. Se creó una variable que indique la fecha de cada observación para que ambas bases de datos tuvieran las mismas columnas y poder unir los conjuntos de datos.
@@ -687,25 +688,21 @@ Considerando estos aspectos, queda de manifiesto que no es necesario emplear rec
 
 Además de las variables ya consideradas en la base, resultó necesario incorporar otras con el fin de estudiar qué fenómenos podrían estar vinculados con el *Ag Barometer*. Estas otras que debían agregarse fueron sugeridas por los especialistas y están relacionadas a:
 
--   Ingresos: Precio internacional de la soja, maíz, trigo, sorgo, carne vacuna, porcina y aviar
--   Gasto/Insumos: Precio internacional de la urea, petróleo y gas natural
+-   Precios de la producción: Precio internacional de la soja, maíz, trigo, sorgo, carne vacuna, porcina y aviar
+-   Insumos: Precio internacional de la urea, petróleo y gas natural
 -   Tasas de interés de referencia internacional: *Federal Funds Rate*, tasa de interés (%)  del bono de tesoro de EE.UU a dos y diez años
 -   Índices Bursátiles: *Dow Jones* y Nasdaq
--   Indicadores de confianza: Índice de confianza del consumidor relevado por la Universidad Di Tella y la de Michigan
--   Índices de actividad: Índice de Actividad de la Cadena Agropecuaria
+-   Indicadores de confianza/actividad: Índice de confianza del consumidor relevado por la Universidad Di Tella y la de Michigan, Índice de Actividad de la Cadena Agropecuaria 
+-   Eventos: Resultados de elecciones presidenciales, hechos bélicos y pandemia Covid 19 
 
 
-Los especialistas sugirieron estas variables, posteriormente, buscadas en diversas fuentes. A continuación, se presenta una descripción para cada una y de qué fuentes fueron extraídas.
-
-
-A partir de las sugerencias de los especialistas, se buscaron estas variables en diversas fuentes. A continuación, se presenta la descripción y el origen de cada una.
 
 Estas variables incorporadas fueron propuestas por los especialistas y buscadas en diversas fuentes. A continuación, se detallan sus características y su procedencia.
 
 
 
 ```{r}
-#| label: tbl-3
+#| label: tbl-covs_economicas
 #| tbl-cap: "Descripción de las variables sugeridas por los especialistas"
 
 readxl::read_excel("Tablas/tabla_covs.xlsx") |> 
@@ -723,7 +720,7 @@ readxl::read_excel("Tablas/tabla_covs.xlsx") |>
   column_spec(2, width = "7.5cm") |> 
   column_spec(3, width = "5cm") |> 
   footnote(
-    general = "ICC = Índice de Confianza del Consumidor; IACA = Índice de Actividad de la Cadena Agropecuaria; WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.",
+    general = "WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.",
     general_title = "Nota: ",
     footnote_as_chunk = FALSE, # Permite saltos de línea para que se vea completa
     threeparttable = TRUE      # Ajusta el ancho de la nota al ancho exacto de la tabla
@@ -752,18 +749,18 @@ La mencionada base cuenta con 126 observaciones y 28 variables, una corresponde 
 
 
 
-Una vez dispuestos los datos en una misma base, con el fin de conocer las características de los índices se decidió comenzar esta práctica profesional, presentando un análisis exploratorio de los datos de las universidades que constó de tres partes. En la primera se realizó un análisis univariado del *Ag Barometer Austral* y del *Ag Economy Barometer*, en la segunda se llevó a cabo un análisis bivariado en el que se analizó la relación entre ciertos pares considerando las seis series de interés. Finalmente en la tercera parte, se estudió la posible relación del *Ag Barometer* con las variables propuestas por economistas anteriormente presentadas.
+Una vez dispuestos los datos en una misma base, con el fin de conocer las características de los índices se decidió comenzar esta práctica profesional, presentando un análisis exploratorio de los datos de las universidades que constó de tres partes. En la primera se realizó un análisis univariado del *Ag Barometer Austral* y del *Ag Economy Barometer*, en la segunda se llevó a cabo un análisis bivariado en el que se analizó la relación entre ciertos pares considerando las seis series de interés. Finalmente en la tercera parte, se estudió la posible relación del *Ag Barometer* con las variables y eventos propuestos por economistas anteriormente presentadas.
 
 
 
-## Análisis descriptivo univariado del *Ag Barometer Austral*
+## Análisis descriptivo univariado del *Ag Barometer Austral* {#sec-univ_arg}
 
 
 
 Se ofrece una primera impresión del *Ag Barometer Austral*, su FACM y su FACPM.
 
 ```{r}
-#| label: fig-6
+#| label: fig-agba
 #| fig-cap: "Evolución del *Ag Barometer Austral* en el período noviembre 2018 - enero 2026"
 #| fig-height: 4
 #| fig-width: 6
@@ -789,7 +786,7 @@ d_arg |>
 
 
 ```{r}
-#| label: fig-7
+#| label: fig-acf_agba
 #| fig-cap: "FACM y FACPM del *Ag Barometer Austral*"
 #| fig-width: 8
 
@@ -819,7 +816,7 @@ acf_agb_arg + pacf_agb_arg
 
 
 
-En primer lugar, es menester inspeccionar la dinámica temporal de estos datos. Los bastones de la FACM de la @fig-7 parecen presentar un decaimiento exponencial donde la estimación del primer coeficiente es casi 0.8. Alrededor del rezago 24, también hay bastones significativos. Esto sugiere que la serie no sería ruido blanco.
+En primer lugar, fue necesario inspeccionar la dinámica temporal de estos datos. Los bastones de la FACM de la @fig-acf_agba parecen presentar un decaimiento exponencial donde la estimación del primer coeficiente es casi 0.8. Alrededor del rezago 24, también hay bastones significativos. Esto sugiere que la serie no sería ruido blanco.
 
 Se realiza el test de Ljung-Box para analizar si el *Ag Barometer Austral* se comporta como un ruido blanco.
 
@@ -833,16 +830,22 @@ Se realiza el test de Ljung-Box para analizar si el *Ag Barometer Austral* se co
 
 # Test Ljung-Box para varios k
 map_dfr(c(6, 12, 18, 24), \(l) {
-  d_arg |> 
-    features(`Ag Barometer Austral`, ljung_box, lag = l) |> 
+  d_arg |>  
+    features(`Ag Barometer Austral`, ljung_box, lag = l) |>  
     mutate(lag = l)
-}) |> 
-  select(lag, everything()) |> # Para que el 'lag' sea la primer columna
+}) |>  
+  select(lag, everything()) |> # Para que el 'lag' sea la primera columna
+  mutate(
+    lb_stat = round(lb_stat, 4), # redondea la estadística a 4 decimales
+    lb_pvalue = if_else(lb_pvalue < 0.001, # si p<0.001, pone <0.001
+                        "<0.001",  
+                        as.character(round(lb_pvalue, 4))) 
+  ) |>  
   knitr::kable(
     col.names = c("Rezago", "Estadística", "p-value"),
-    digits = 4,
     align = "c"
-  )
+  )|> 
+  kableExtra::kable_styling(latex_options = "hold_position") # para q no se corte la tabla
 
 ```
 
@@ -857,7 +860,7 @@ De esta manera, se muestran más gráficos para identificar más aspectos del *A
 
 
 ```{r}
-#| label: fig-8
+#| label: fig-acf_prom
 #| fig-cap: "Evolución del *Ag Barometer Austral* medio desde 2018 hasta 2026"
 #| fig-height: 4
 #| fig-width: 6
@@ -881,7 +884,7 @@ d_arg |>
 
 
 ```{r}
-#| label: fig-9
+#| label: fig-fideos_agba
 #| fig-cap: "Comportamiento anual del *Ag Barometer Austral*"
 #| fig-height: 4
 #| fig-width: 6
@@ -911,7 +914,7 @@ d_arg |>
 
 
 ```{r}
-#| label: fig-10
+#| label: fig-subseries_agba
 #| fig-cap: "Comportamiento mensual del *Ag Barometer Austral*"
 #| fig-height: 4
 #| fig-width: 6
@@ -929,7 +932,7 @@ d_arg |>
 
 
 ```{r}
-#| label: fig-11
+#| label: fig-boxplot_arg
 #| fig-cap: "Distribución del *Ag Barometer Austral* por año"
 #| fig-height: 4
 #| fig-width: 6
@@ -945,8 +948,8 @@ d_arg |>
 
 
 ```{r}
-#| label: fig-12
-#| fig-cap: "FACM y FACPM de la primer diferencia del *Ag Barometer Austral*"
+#| label: fig-acf_agba_dif1
+#| fig-cap: "FACM y FACPM de la primera diferencia del *Ag Barometer Austral*"
 #| fig-width: 8
 
 acf_agb_arg_dif1 <- d_arg |> 
@@ -977,55 +980,115 @@ acf_agb_arg_dif1 + pacf_agb_arg_dif1
 ```{r}
 #| include: false
 
-# NO SE PRUEBA SOLO CON ESTO Q LA SERIE ES RW
+# -------------------------------------------------
+# TESTS A REALIZAR (para probar q agb es RW):
+# -------------------------------------------------
 
-# arg dif 1
-pv2_agb_arg_dif1 <- d_arg |>     # segunda vez q calculo esto en arg
+# 1. serie original es estacionaria? (ADF y KPSS), (rta = no)
+# 2. dif es estacionaria? (ADF y KPSS), (rta = si)
+# 3. esta dif1 q es estacionaria, en particular es un
+# RB? (test Ljung-Box) (rta = si)
+
+# adf,  Ho) serie no es estac
+# KPSS, Ho) serie es estac
+# Ljung-Box, Ho) p_1 = ... = p_k = 0
+
+
+# -------------------------------------------------
+# Tests ARG
+# -------------------------------------------------
+
+# 1. adf sobre agba 
+pv_agba_adf <- d_arg |> 
+  pull(`Ag Barometer Austral`) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.11 --> Ho) agba no es estac
+
+# 2. kpss sobre agba
+pv_agba_kpss <- d_arg  |>  
+  features(`Ag Barometer Austral`, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.01 --> H1) agba no estac
+
+
+# 3. adf sobre dif1 agba
+pv_agba_dif1_adf <- d_arg |> 
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  filter(!is.na(dif1)) |> 
+  pull(dif1) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.02 --> H1) dif1 es estac
+
+# 4. kpss sobre dif1 agba
+pv_agba_dif1_kpss <- d_arg  |>  
+  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
+  filter(!is.na(dif1)) |> 
+  features(dif1, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) dif1 agba es estac
+
+
+# 5. arg dif 1
+pv_agba_dif1_ljung <- d_arg |>     # segunda vez q calculo esto en arg
   mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
   drop_na(dif1) |>           
   pull(dif1) |>             
   Box.test(lag = 20, type = "Ljung-Box") |> 
-  pluck("p.value")
+  pluck("p.value") |> 
+  (\(x) sprintf("%.4f", x))() # 0.46 --> Ho) p_1 = ... = p_20 = 0 -->
+# --> dif1 es RB --> agba es RW
 
-pv2_agb_arg_dif1 <- round(pv2_agb_arg_dif1, digits = 4)
+# pv2_agb_arg_dif1 <- round(pv2_agb_arg_dif1, digits = 4)
 ```
 
 
 
 
 
-A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig-6, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023 en Argentina, la confianza fue pesimista, con valores similares de condiciones presentes y expectativas futuras (@fig-4). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
+A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig-agba, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023, la confianza en Argentina fue pesimista con valores similares de condiciones presentes y expectativas futuras (@fig-indices_arg). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
+
+A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig-agba, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023, la confianza en Argentina fue pesimista y en todo el 2023 hasta mediados de 2024 la confianza fue creciendo. En el período de pesimismo de la confianza del productor argentino, los indicadores de Condiciones presentes y Expectativas futuras también tuvieron valores similares (@fig-indices_arg). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
 
 
 
-En gran parte del período de relevamiento, a partir del 2020, el *Ag Barometer Austral* medio, @fig-8, parece ir aumentado a medida que pasa el tiempo, empezando por una confianza media pesimista, evolucionando, y observándose un promedio optimista al final del período. 
+En gran parte del período de relevamiento, a partir del 2020, el *Ag Barometer Austral* medio, @fig-acf_prom, parece ir aumentado a medida que pasa el tiempo, empezando por una confianza media pesimista, evolucionando, y observándose un promedio optimista al final del período. 
 
-En la @fig-9 se puede ver que hay años como el 2020, 2021, 2022 que la confianza es pesimista; hay otros años en que el sentimiento es optimista como en el 2024 y en el 2025; en el 2019 la confianza aumentaba hasta un momento en el cual pasó drásticamente de optimista a pesimista; se observa finalmente que en el 2023 las percepciones presentan una tendencia a crecer. 
-(graf meses): En la @fig-10, en todos los meses parecería ocurrir que, el *Ag Barometer Austral* medio oscila alrededor del valor neutro 100 y que los valores presentan dispersiones similares. 
+En la @fig-fideos_agba se puede ver que hay años como el 2020, 2021, 2022 que la confianza es pesimista; hay otros años en que el sentimiento es optimista como en el 2024 y en el 2025; en el 2019 la confianza aumentaba hasta un momento en el cual pasó drásticamente de optimista a pesimista; se observa finalmente que en el 2023 las percepciones presentan una tendencia a crecer. 
+En la @fig-subseries_agba, en todos los meses parecería ocurrir que, el *Ag Barometer Austral* medio oscila alrededor del valor neutro 100 y que los valores presentan dispersiones similares. 
 Todas estas observaciones conllevarían a pensar que el comportamiento del *Ag Barometer Austral* parecería ser distinto en cada año y similar en los seis meses. En consecuencia, no parece presentar un patrón estacional.
 
-Se pueden observar en la @fig-11 dos características sobre la serie. La primera es que, desde el 2020 en adelante, el *Ag Barometer Austral* mediano parece crecer con el correr de los años. La segunda es que, sin considerar los años 2018 y 2026 por solo tener una observación, los valores de este índice no parecen variar de manera similar en todos los años. En el 2021 las observaciones no parecen variar mucho; los valores parecen tener dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año 2019, seguido del 2023, es cuando las percepciones parecen presentar mayor volatilidad. Esto querría decir que la variancia del sentimiento no parece ser constante a través de los años, observándose en 2019 los valores más dispersos. Fusionando estos dos aspectos, también podría decirse que no parece  haber relación entre la mediana y la variancia.
+Se pueden observar en la @fig-boxplot_arg dos características sobre la serie. La primera es que, desde el 2020 en adelante, el *Ag Barometer Austral* mediano parece crecer con el correr de los años. La segunda es que, sin considerar los años 2018 y 2026 por solo tener una observación, los valores de este índice no parecen variar de manera similar en todos los años. En el 2021 las observaciones no parecen variar mucho; los valores parecen tener dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año 2019, seguido del 2023, es cuando las percepciones parecen presentar mayor volatilidad. Esto querría decir que la variancia del sentimiento no parece ser constante a través de los años, observándose en 2019 los valores más dispersos. Fusionando estos dos aspectos, también podría decirse que no parece  haber relación entre la mediana y la variancia.
+
+
+Características de la serie tales como la presencia de tendencias temporales y variancia no constante a lo largo de los años, pueden interpretarse como indicios de no estacionariedad del *Ag Barometer Austral*. Siguiendo esta línea de análisis, se realizaron los tests *Augmented Dickey-Fuller* (ADF) (Peña, 2010) y *Kwiatkowski, Phillips, Schmidt y Shin* (KPSS) (Lütkepohl-Krätzig, 2004). Se concluye en base a la evidencia muestral que la serie de las percepciones del sector agropecuario argentino no es estacionaria, al 5% de nivel de significación ($p-value=$ `r pv_agba_adf`, $p-value=$ `r pv_agba_kpss`)[^hipotesis].
+
+[^hipotesis]: El test ADF evalúa la hipótesis nula "$H_0)$ La serie no es estacionaria" mientras que el test KPSS prueba "$H_0)$ La serie es estacionaria". Por lo que se concluye a un 5% de nivel de significación que la serie no es estacionaria si para el test ADF se obtiene un $p-value>0.05$ y para el KPSS un $p-value \leq 0.05$.
+
+<!-- ADF:  Ho) no estac,  quiero pv grande -->
+<!-- KPSS: Ho) estac,     quiero pv chico (quiero H1) -->
 
 
 
-Con el fin de obtener más características sobre la serie local, también se decidió analizar su primera diferencia. Ninguno de los rezagos en la @fig-12 es significativo, esto sugiere que la primera diferencia de la serie sería ruido blanco. 
-
-<!-- BUSCAAAAAAAAAR TEST ! -->
-
-<!-- Se realiza el test ljung, dickey y lo de los niveles, concluyo que la primer dif es RB, es decir que esta serie se comporta como un paseo aleatorio (pv, pv, pv).  -->
+<!-- autor, (anio), nombre seccion, editorial, nombre libro (pag) -->
 
 
 
+Con el fin de obtener más características, también se decidió analizar la primera diferencia. Ninguno de los rezagos en la @fig-acf_agba_dif1 es significativo, esto sugiere que la primera diferencia de la serie sería ruido blanco. Para presentar conclusiones más allá de lo heurístico, se realizaron los tests de ADF, KPSS y Ljung-Box (Box, 2016) sobre la serie diferenciada. Obteniéndose, al 5% de nivel de significación a partir de la evidencia muestral, que la serie diferenciada es estacionaria ($p-value=$ `r pv_agba_dif1_adf`, $p-value=$ `r pv_agba_dif1_kpss`) y que los primeros 20 coeficientes de su FAC son nulos ($p-value=$ `r pv_agba_dif1_ljung`). Estos resultados conducen a que la serie diferenciada sigue un ruido blanco y que consecuentemente el *Ag Barometer Austral* sigue el patrón de paseo aleatorio.
+
+
+<!-- autor, (anio), nombre seccion, editorial, nombre libro (pag) -->
 
 
 
-## Análisis descriptivo univariado del *Ag Economy Barometer*
+## Análisis descriptivo univariado del *Ag Economy Barometer* {#sec-univ_usa}
 
 Para llevar a cabo este análisis, se comienza presentado la serie junto a su FACM y FACMP.
 
 
 ```{r}
-#| label: fig-13
+#| label: fig-ageb
 #| fig-cap: "Evolución del *Ag Economy Barometer* en el período octubre 2015 - marzo 2026"
 #| fig-height: 4
 #| fig-width: 6
@@ -1046,7 +1109,7 @@ d_eeuu |>
 
 
 ```{r}
-#| label: fig-14
+#| label: fig-acf_ageb
 #| fig-cap: "FACM y FACPM del *Ag Economy Barometer*"
 #| fig-width: 8
 
@@ -1073,7 +1136,7 @@ acf_agb_eeuu + pacf_agb_eeuu
 ```
 
 
-En cuanto a su estructura temporal, se puede observar que los bastones de la FACM de la @fig-14 decaen de forma, aparentemente, exponencial y que para retardos más elevados algunos coeficientes también son significativos. Además, el primer bastón de la FACPM es significativo. El primer coeficiente estimado toma un valor alto, en torno a 0.8, en ambas funciones. Considerando todo esto, se podría pensar que la serie presenta una estructura de dependencia temporal.
+En cuanto a su estructura temporal, se puede observar que los bastones de la FACM de la @fig-acf_ageb decaen de forma, aparentemente, exponencial y que para retardos más elevados, alrededor del 38 y del 58, algunos coeficientes también son significativos. Considerando todo esto, se podría pensar que la serie presenta una estructura de dependencia temporal.
 Sin embargo, al igual que en el caso local, se realiza el test de Ljung-Box para probar si esta serie se comporta como un ruido blanco. 
 
 
@@ -1088,16 +1151,22 @@ Sin embargo, al igual que en el caso local, se realiza el test de Ljung-Box para
 
 # Test Ljung-Box para varios k
 map_dfr(c(6, 12, 18, 24), \(l) {
-  d_eeuu |> 
-    features(`Ag Economy Barometer`, ljung_box, lag = l) |> 
+  d_eeuu |>  
+    features(`Ag Economy Barometer`, ljung_box, lag = l) |>  
     mutate(lag = l)
-}) |> 
-  select(lag, everything()) |> # Para que el 'lag' sea la primer columna
+}) |>  
+  select(lag, everything()) |> # Para que el 'lag' sea la primera columna
+  mutate(
+    lb_stat = round(lb_stat, 4), # redondea la estadística a 4 decimales
+    lb_pvalue = if_else(lb_pvalue < 0.001, # si p<0.001, pone <0.001
+                        "<0.001",  
+                        as.character(round(lb_pvalue, 4))) 
+  ) |>  
   knitr::kable(
     col.names = c("Rezago", "Estadística", "p-value"),
-    digits = 4,
     align = "c"
-  )
+  )|> 
+  kableExtra::kable_styling(latex_options = "hold_position") # para q no se corte la tabla
 
 ```
 
@@ -1109,7 +1178,7 @@ Con un nivel de significación del 5% y en base a la evidencia muestral, se rech
 
 
 ```{r}
-#| label: fig-15
+#| label: fig-ageb_prom
 #| fig-cap: "Evolución del *Ag Economy Barometer* medio desde 2015 hasta 2026"
 #| fig-height: 4
 #| fig-width: 6
@@ -1132,7 +1201,7 @@ d_eeuu |>
 
 
 ```{r}
-#| label: fig-16
+#| label: fig-fideos_ageb
 #| fig-cap: "Comportamiento anual del *Ag Economy Barometer*"
 #| fig-height: 4
 #| fig-width: 7
@@ -1156,7 +1225,7 @@ d_eeuu |>
 
 
 ```{r}
-#| label: fig-17
+#| label: fig-subseries_ageb
 #| fig-cap: "Comportamiento mensual del *Ag Economy Barometer*"
 #| fig-height: 4
 #| fig-width: 7
@@ -1175,7 +1244,7 @@ d_eeuu |>
 
 
 ```{r}
-#| label: fig-18
+#| label: fig-boxplot_usa
 #| fig-cap: "Distribución del *Ag Economy Barometer* por año"
 #| fig-height: 4
 #| fig-width: 6.5
@@ -1191,8 +1260,8 @@ d_eeuu |>
 
 
 ```{r}
-#| label: fig-19
-#| fig-cap: "FACM y FACPM de la primer diferencia del *Ag Economy Barometer*"
+#| label: fig-acf_ageb_dif1
+#| fig-cap: "FACM y FACPM de la primera diferencia del *Ag Economy Barometer*"
 #| fig-width: 8
 
 acf_agb_eeuu_dif1 <- d_eeuu |> 
@@ -1223,59 +1292,113 @@ acf_agb_eeuu_dif1 + pacf_agb_eeuu_dif1
 ```{r}
 #| include: false
 
-# NO SE PRUEBA SOLO CON ESTO Q LA SERIE ES RW
+# -------------------------------------------------
+# TESTS A REALIZAR (para probar q agb es RW):
+# -------------------------------------------------
 
-# eeuu dif1
-pv_agb_eeuu_dif1 <- d_eeuu |> 
+# 1. serie original es estacionaria? (ADF y KPSS), (rta = no)
+# 2. dif es estacionaria? (ADF y KPSS), (rta = si)
+# 3. esta dif1 q es estacionaria, en particular es un
+# RB? (test Ljung-Box) (rta = si)
+
+# adf,  Ho) serie no es estac
+# KPSS, Ho) serie es estac
+# Ljung-Box, Ho) p_1 = ... = p_k = 0
+
+
+# -------------------------------------------------
+# Tests EEUU
+# -------------------------------------------------
+
+# 1. adf sobre ageb
+pv_ageb_adf <- d_eeuu |> 
+  pull(`Ag Economy Barometer`) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.07 --> Ho) ageb no es estac
+
+# 2. kpss sobre ageb
+pv_ageb_kpss <- d_eeuu  |>  
+  features(`Ag Economy Barometer`, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) ageb es estac
+
+
+# 3. adf sobre dif1 ageb
+pv_ageb_dif1_adf <- d_eeuu |> 
+  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
+  filter(!is.na(dif1)) |> 
+  pull(dif1) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.01 --> H1) dif1 ageb es estac
+
+# 4. kpss sobre dif1 ageb
+pv_ageb_dif1_kpss <- d_eeuu  |>  
+  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
+  filter(!is.na(dif1)) |> 
+  features(dif1, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) dif1 ageb es estac
+
+
+# 5. arg dif 1
+pv_ageb_dif1_ljung <- d_eeuu |>     # segunda vez q calculo esto en arg
   mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
   drop_na(dif1) |>           
   pull(dif1) |>             
   Box.test(lag = 20, type = "Ljung-Box") |> 
-  pluck("p.value")
+  pluck("p.value") |> 
+  (\(x) sprintf("%.4f", x))() # 0.70 --> Ho) p_1 = ... = p_20 = 0 -->
+# --> dif1 es RB --> agba es RW
 
-pv_agb_eeuu_dif1 <- round(pv_agb_eeuu_dif1, digits = 4)
+# pv2_agb_arg_dif1 <- round(pv2_agb_arg_dif1, digits = 4)
 ```
 
 
 
 
 
-A primera vista en la @fig-13, la serie no exhibe períodos de tendencia. Sin embargo, se observan cambios en las percepciones en los años 2016, 2020 y 2024. Asimismo, el comportamiento de los datos no parecería presentar patrones repetitivos, ya sea anuales o de mayor frecuencia. En conjunto, estas observaciones sugieren que la serie no presentaría componentes tendencia, estacional ni cíclica. 
-Si además se consideran las condiciones presentes y expectativas futuras (@fig-5), las tres series norteamericanas parecen tomar valores similares en cada instante de tiempo, en todo el período de relevamiento.
+A primera vista en la @fig-ageb, la serie no exhibe períodos de tendencia. Sin embargo, se observan cambios en las percepciones en los años 2016, 2020 y 2024. Asimismo, el comportamiento de los datos no parecería presentar patrones repetitivos, ya sea anuales o de mayor frecuencia. En conjunto, estas observaciones sugieren que la serie no presentaría componentes tendencia, estacional ni cíclica. 
+Si además se consideran las condiciones presentes y expectativas futuras (@fig-indices_usa), las tres series norteamericanas parecen tomar valores similares en cada instante de tiempo, en todo el período de relevamiento.
 
 
 
-En promedio (@fig-15), la confianza de los norteamericanos aumentó en comparación con el período base, en todos los años desde que comenzó el relevamiento. Por otro lado, otra característica a destacar del *Ag Economy Barometer* medio es que tiene saltos, como el cambio entre el promedio del 2016 y el de 2017, ocasionados por los cambios en la confianza observados en la @fig-13. 
-
-
-
-
-El comportamiento del *Ag Economy Barometer* no parece presentar un patrón inter-anual que se repita todos los años (@fig-16). Esto queda de manifiesto al comparar algunas trayectorias anuales. Mientras que en 2016 el índice oscila en torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala hasta un máximo en octubre; en contraste, en 2021 comienza con valores similares al 2020 pero alcanza su pico abril para luego mantener una tendencia decreciente durante el resto del año.
+En promedio (@fig-ageb_prom), la confianza de los norteamericanos aumentó en comparación con el período base, en todos los años desde que comenzó el relevamiento. Por otro lado, otra característica a destacar del *Ag Economy Barometer* medio es que tiene saltos, como el cambio entre el promedio del 2016 y el de 2017, ocasionados por los cambios en la confianza observados en la @fig-ageb. 
 
 
 
 
-En la @fig-17, se aprecia en todos los meses que: la confianza promedio es de alrededor 130 puntos y que las percepciones presentan variaciones similares. Estos dos últimos aspectos conllevarían a concluir que el sentimiento de los norteamericanos no parece tener una componente estacional.
+El comportamiento del *Ag Economy Barometer* no parece presentar un patrón inter-anual que se repita todos los años (@fig-fideos_ageb). Esto queda de manifiesto al comparar algunas trayectorias anuales. Mientras que en 2016 el índice oscila en torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala hasta un máximo en octubre; en contraste, en 2021 comienza con valores similares al 2020 pero alcanza su pico abril para luego mantener una tendencia decreciente durante el resto del año.
 
 
 
 
-El *Ag Economy Barometer* mediano (@fig-18) parece seguir un patrón similar al promedio (@fig-15), su principal rasgo son los cambios repentinos. En el período 2017-2020, la variancia aumenta a medida que pasan los años. Fuera de ese período y salvo el 2021, la variabilidad de las percepciones parece ser similar en el resto de los años. En el 2020, seguido del 2021, son los años en que las observaciones resultaron más dispersas. En consecuencia, la variancia del *Ag Economy Barometer* no parece ser constante a través del tiempo. De estos dos aspectos se desprende que las medidas de centralización no tendrían relación con las de dispersión.
-
-
-
-Con el fin de ahondar más en las características presentes en esta serie, también se analiza su primera diferencia a partir de la @fig-19. La mayoría de los bastones de la FACM son, de manera individual, no significativos excepto por dos de ellos. Estos últimos, a pesar de ser significativos, están asociados a estimaciones alrededor de -0.2 dejando en duda su relevancia práctica. Lo mismo ocurre con un rezago en la FACMP. Es decir, este criterio de evaluar individualmente la significación de cada coeficiente no conduce a conclusiones claras acerca de la estructura temporal de la diferencia. Por tal motivo, hacemos test…
+En la @fig-subseries_ageb, se aprecia en todos los meses que: la confianza promedio es de alrededor 130 puntos y que las percepciones presentan variaciones similares. Estos dos últimos aspectos conllevarían a concluir que el sentimiento de los norteamericanos no parece tener una componente estacional.
 
 
 
 
+El *Ag Economy Barometer* mediano (@fig-boxplot_usa) parece seguir un patrón similar al promedio (@fig-ageb_prom), su principal rasgo son los cambios repentinos. En el período 2017-2020, la variancia aumenta a medida que pasan los años. Fuera de ese período y salvo el 2021, la variabilidad de las percepciones parece ser similar en el resto de los años. En el 2020, seguido del 2021, son los años en que las observaciones resultaron más dispersas. En consecuencia, la variancia del *Ag Economy Barometer* no parece ser constante a través del tiempo. De estos dos aspectos se desprende que las medidas de centralización no tendrían relación con las de dispersión.
 
 
 
-## Análisis bivariado 
+
+Se realizó el test ADF y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que el *Ag Economy Barometer* no es estacionario ($p-value=$ `r pv_ageb_adf`). Sin embargo, al realizar el test KPSS con el mismo nivel de significación, se concluye lo opuesto ($p-value=$ `r pv_ageb_kpss`). Ante esta discrepancia, retomando los hechos de que el primer coeficiente de la FACPM (@fig-acf_ageb) tiene una estimación de aproximadamente 0.8 y de que hay varios bastones significativos alrededor del retardo 58, finalmente se consideró al *Ag Economy Barometer* como no estacionario.
 
 
-Una vez analizadas por separado y de forma univariada, las series principales de este informe, el objetivo del presente apartado es Para comparar el *Ag Barometer Austral* y el *Ag Economy Barometer* se presentan los siguientes gráficos.
+Con el fin de ahondar más en las características presentes en esta serie, también se analiza su primera diferencia a partir de la @fig-acf_ageb_dif1. La mayoría de los bastones de la FACM son, de manera individual, no significativos excepto por dos de ellos. Estos últimos, a pesar de ser significativos, están asociados a estimaciones alrededor de -0.2 dejando en duda su relevancia práctica. Lo mismo ocurre con un rezago en la FACMP. Es decir, este criterio de evaluar individualmente la significación de cada coeficiente no conduce a conclusiones claras acerca de la estructura temporal de la diferencia. Por tal motivo, se recurrió a otro tipo de recursos. Se llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box sobre la serie diferenciada, obteniéndose que ésta es estacionaria ($p-value=$ `r pv_ageb_dif1_adf`, $p-value=$ `r pv_ageb_dif1_kpss`) y que los primeros 20 coeficientes de su FAC son nulos ($p-value=$ `r pv_ageb_dif1_ljung`), a partir de la evidencia muestral con un 5% de nivel de significación. Estos resultados conducen a que la serie diferenciada sigue un ruido blanco y que consecuentemente el *Ag Economy Barometer* sigue el patrón de paseo aleatorio.
+
+
+
+
+## Análisis bivariado
+
+Superada la etapa de análisis univariado, se aborda el estudio bivariado. Este apartado presenta un estudio comparativo entre las percepciones de ambos países y muestra la relación del *Ag Barometer* con las condiciones presentes, expecticvas futuras, diversas variables económicas y eventos clave.
+
+
+
+A continuación se presentan herramientas que permitan comparar la evolución del *Ag Barometer Austral* y del *Ag Economy Barometer*.
 
 <!-- comparo los dos AgB!! -->
 
@@ -1289,8 +1412,8 @@ d <- readxl::read_excel("../Datos/Procesados/base_construida.xlsx") |>
 ```
 
 ```{r}
-#| label: fig-20
-#| fig-cap: "*Ag Barometer Austral* y *Ag Economy Barometer*"
+#| label: fig-ambos_agb
+#| fig-cap: "Evolución del *Ag Barometer Austral* y del *Ag Economy Barometer* en el período octubre 2015 - marzo 2026"
 #| fig-height: 4
 #| fig-width: 6
 
@@ -1344,11 +1467,9 @@ tabla_medidas <- d |>
 
 ```{r}
 #| label: fig-promedios_ambos_paises
-#| eval: false
-#| fig-cap: Evolución anual del *Ag Barometer*
+#| fig-cap: "Evolución del *Ag Barometer* medio"
 #| fig-height: 4
 #| fig-width: 6
-#| include: false
 
 # grafico q compara las medias de arg y usa
 tabla_medidas |> 
@@ -1382,166 +1503,352 @@ tabla_medidas |>
 
 ```
 
+
+
+
+
+Visualizando las series de la @fig-ambos_agb y cómo van evolucionando los promedios del *Ag Barometer* (@fig-promedios_ambos_paises), en el período 2023-2026, podría dar la impresión de que el comportamiento de los indicadores sería inverso, en el sentido de que si uno incrementa el otro decrementa. Sin embargo, en el resto del período, las series no parecen presentar algún patrón que las relacione. Teniendo en cuenta estas características, en base a la inspección meramente gráfica resulta ambiguo detectar si los *Barometers* están relacionados. Por tal motivo, se decidió recurrir a herramientas que permitan estudiar sus estructuras de autocorrelación conjuntamente.
+
+En primer lugar, se estimó la FCC entre estas dos series. Éstas fueron previamente sometidas a un proceso de pre-blanqueo, a los fines de no obtener correlaciones espurias, es decir, obtener correlaciones no distorsionadas por la no estacionariedad[^noestac_arg_usa] de las series.
+
+[^noestac_arg_usa]: Se probó la no estacionariedad del *Ag Barometer Austral* y del *Ag Economy Barometer* en la @sec-univ_arg y en la @sec-univ_usa respectivamente.
+
+
 ```{r}
-#| label: fig-21
-#| fig-cap: "FCCM del *Ag Barometer Austral* y el *Ag Economy Barometer*"
+# Creo fc ccf_prewhitened_plot()
+
+ccf_prewhitened_plot <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = NULL) {
+  
+  x_var <- enquo(x)
+  y_var <- enquo(y)
+  
+  x_vec <- data |> pull({{ x }})
+  y_vec <- data |> pull({{ y }})
+  
+  pw <- prewhiten(x = x_vec, y = y_vec, lag.max = lag_max, plot = FALSE)
+  
+  df <- data.frame(
+    lag = as.numeric(pw$ccf$lag),
+    ccf = as.numeric(pw$ccf$acf)
+  )
+  
+  ic <- qnorm(0.975) / sqrt(pw$ccf$n.used) # 1.96/sqrt(# obs usadas en ccf)
+  
+  if (is.null(lab_x)) lab_x <- as_label(x_var)
+  if (is.null(lab_y)) lab_y <- as_label(y_var)
+  
+  ggplot(df, aes(lag, ccf)) +
+    geom_col(width = 0.15, fill = "black") +
+    geom_hline(yintercept = c(-ic, ic), linetype = "dashed", color = "blue") +
+    geom_hline(yintercept = 0, color = "black", linewidth = 0.6) +
+    ylim(-1, 1) +
+    scale_x_continuous(breaks = seq(-lag_max, lag_max, by = 3)) +
+    labs(
+      x = "Retardo",
+      y = "FCCM",
+      caption = paste0("x = ", lab_x, "\ny = ", lab_y)
+    ) +
+    theme_bw()
+}
+```
+
+
+
+
+
+
+```{r}
+#| label: fig-ccf_arg_usa
+#| fig-cap: "FCCM del *Ag Barometer Austral* y el *Ag Economy Barometer* diferenciados en el período noviembre 2018 - enero 2026"
+
+# ddf agba y ageb !!! (falta poner linea negra en y=0 y chekear fc)
+d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  as_tsibble(index = Fecha) |>  
+  mutate(dif_agba = difference((`Ag Barometer Austral`)),
+         dif_ageb = difference((`Ag Economy Barometer`))) |> 
+  filter(!is.na(dif_agba)) |> 
+  ccf_prewhitened_plot(x = dif_ageb, 
+                       y = dif_agba, 
+                       lag_max = 18,
+                       lab_x = 'Ag Economy Barometer',
+                       lab_y = 'Ag Barometer Austral')
+```
+
+
+
+
+<!-- interpretacion ccf arg vs usa, en general no veo q haya relacion, no se bien q decir igual -->
+
+
+
+
+<!-- test cointegracion, engle-granger -->
+
+
+
+
+
+
+
+```{r}
+#| include: false
+
+# Test Engle-Granger
+
+d_cointeg <- d |> 
+  select(Fecha, `Ag Barometer Austral`, `Ag Economy Barometer`) |> 
+  filter(!is.na(`Ag Barometer Austral`))
+
+coint.test(d_cointeg$`Ag Economy Barometer`, d_cointeg$`Ag Barometer Austral`)
+```
+
+
+
+
+
+Todos los rezagos de la @fig-ccf_arg_usa son no significativos, sugiriendo que ningún índice influye sobre el otro. En segundo lugar, se realizó la prueba de Engle-Granger[^obs_eeuu_usadas_en_ccf] y se concluye en base a la evidencia muestral que los *Barometers* no están cointegrados ($p-value > 0.1000$). Considerando los resultados de estos dos recursos empleados, se concluyó que la confianza de los productores argentinos no está asociada a la de los productores norteamericanos.
+
+
+[^obs_eeuu_usadas_en_ccf]: Tanto para estimar la FCC como para poder realizar la prueba es necesario que las dos series tengan la misma longitud y periodicidad. En este sentido, sólo se utilizaron 44 datos estadounidenses los cuales representan un 34.92% de la totalidad.
+
+<!-- No hay fig 22, 23 ni 24 -->
+
+
+
+
+### Análisis de los índices argentinos {#sec-ccfs_arg}
+
+<!-- ccf's de ARG-->
+
+
+
+Descartada la relación entre las percepciones de Argentina y las de Estados Unidos, se analizaron las asociaciones entre los índices argentinos. Para esto, se estimaron las FCC entre pares de índices locales. Estos últimos fueron pre-blanqueados para evitar que la no estacionariedad[^ccfs_arg] conduzca a correlaciones espurias.  
+
+[^ccfs_arg]: La no estacionariedad del *Ag Barometer Austral* fue probada en la @sec-univ_arg y la de las series Condiciones presentes y Expectativas futuras de Argentina en la @sec-carcs_indices_arg.
+
+
+
+
+```{r}
+#| label: fig-ccf_arg1
+#| fig-cap: "FCCM del *Ag Barometer Austral* y las Condiciones presentes pre-blanqueadas"
 
 d |> 
   filter(!is.na(`Ag Barometer Austral`)) |> 
-  as_tsibble(index = Fecha) |> 
-  feasts::CCF(`Ag Barometer Austral`, `Ag Economy Barometer`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM", # CCF crossed correl fc = FCC fc de correl cruzada
-    caption = "x = Ag Barometer Austral \n y = Ag Economy Barometer"
-  ) +
-  theme_bw()
+  as_tsibble(index = Fecha) |>  
+  mutate(dif_agba = difference((`Ag Barometer Austral`)),
+         dif_cond = difference((`Condiciones presentes Arg`))) |> 
+  filter(!is.na(dif_agba)) |> 
+  ccf_prewhitened_plot(x = dif_cond, 
+                       y = dif_agba, 
+                       lag_max = 18,
+                       lab_x = 'Condiciones presentes',
+                       lab_y = 'Ag Barometer Austral')
 ```
 
+```{r}
+#| label: fig-ccf_arg2
+#| fig-cap: "FCCM del *Ag Barometer Austral* y las Expectativas futuras pre-blanqueadas"
 
-<!-- ccf's de ARG vs EEUU-->
 
+d |> 
+  filter(!is.na(`Ag Barometer Austral`)) |> 
+  as_tsibble(index = Fecha) |>  
+  mutate(dif_agba = difference((`Ag Barometer Austral`)),
+         dif_exp = difference((`Expectativas futuras Arg`))) |> 
+  filter(!is.na(dif_agba)) |> 
+  ccf_prewhitened_plot(x = dif_exp, 
+                       y = dif_agba, 
+                       lag_max = 18,
+                       lab_x = 'Expectativas futuras',
+                       lab_y = 'Ag Barometer Austral')
+```
 
-A partir de los seis índices brindados por las universidades, se presentan figuras adicionales para analizar posibles relaciones entre pares de ellos de interés práctico, así como para estudiar si alguno anticipa a otro.
 
 
 
 ```{r}
-#| label: fig-22
-#| fig-cap: "FCCM del *Ag Barometer* y las Condiciones presentes en Argentina y en Estados Unidos"
-#| fig-width: 8
+#| label: fig-ccf_arg3
+#| fig-cap: "FCCM de Condiciones presentes y las Expectativas futuras argentinas pre-blanqueadas"
 
-ccf_arg_agb_cond <- d |> 
+d |> 
   filter(!is.na(`Ag Barometer Austral`)) |> 
   as_tsibble(index = Fecha) |>  
-  feasts::CCF(`Ag Barometer Austral`, `Condiciones presentes Arg`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM",
-    caption = "x = Ag Barometer Austral \n y = Condiciones presentes Arg"
-  ) +
-  theme_bw()
-
-
-ccf_eeuu_agb_cond <- d |> 
-  feasts::CCF(`Ag Economy Barometer`, `Condiciones presentes EEUU`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM",
-    caption = "x = Ag Economy Barometer \n y = Condiciones presentes EEUU"
-  ) +
-  theme_bw()
-
-ccf_arg_agb_cond + ccf_eeuu_agb_cond
+  mutate(dif_cond = difference((`Condiciones presentes Arg`)),
+         dif_exp = difference((`Expectativas futuras Arg`))) |> 
+  filter(!is.na(dif_cond)) |> 
+  ccf_prewhitened_plot(x = dif_cond, 
+                       y = dif_exp, 
+                       lag_max = 18,
+                       lab_x = 'Condiciones presentes',
+                       lab_y = 'Expectativas futuras')
 ```
+
+
+
+
+
+
+El *Ag Barometer Austral* mantiene una relación contemporánea con las condiciones presentes como se puede apreciar en la @fig-ccf_arg1. Es decir, las percepciones de los productores argentinos están asociadas con su situación actual. Asimismo, se destaca una relación contemporánea moderada entre la confianza y las Expectativas futuras (@fig-ccf_arg2), así como entre las Condiciones presentes y las Expectativas (@fig-ccf_arg3). El hecho de que las tres estimaciones de las FCC en el retardo cero son significativas y positivas conlleva a concluir que las tres evolucionan juntas.
+
+
+
+### Análisis de los índices estadounidenses {#ccfs_usa}
+
+
+
+Análogamente al caso local, se estudió la relación entre los indicadores norteamericanos estimando la FCC. Para no incurrir en correlaciones infladas por las fuertes estructuras de autocorrelación[^ccfs_usa] de las series, se sometió estas últimas a pre-blanqueo.
+
+[^ccfs_usa]: La no estacionariedad del *Ag Economy Barometer* fue probada en la @sec-univ_usa y la de las Condiciones presentes y Expectativas futuras de Estados Unidos en la @sec-carcs_indices_usa.
+
+
+
 
 ```{r}
-#| label: fig-23
-#| fig-cap: "FCCM del *Ag Barometer* y las Expectativas futuras en Argentina y en Estados Unidos"
-#| fig-width: 8
+#| label: fig-ccf_usa1
+#| fig-cap: "FCCM del *Ag Economy Barometer* y las Condiciones presentes pre-blanqueados"
 
-ccf_arg_agb_expec <- d |> 
-  filter(!is.na(`Ag Barometer Austral`)) |> 
-  as_tsibble(index = Fecha) |>  
-  feasts::CCF(`Ag Barometer Austral`, `Expectativas futuras Arg`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM",
-    caption = "x = Ag Barometer Austral \n y = Expectativas futuras Arg"
-  ) +
-  theme_bw()
-
-
-ccf_eeuu_agb_expec <- d |> 
-  feasts::CCF(`Ag Economy Barometer`, `Expectativas futuras EEUU`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM",
-    caption = "x = Ag Economy Barometer \n y = Expectativas futuras EEUU"
-  ) +
-  theme_bw()
-
-ccf_arg_agb_expec + ccf_eeuu_agb_expec
+d |> 
+  mutate(dif_ageb = difference((`Ag Economy Barometer`)),
+         dif_cond = difference((`Condiciones presentes EEUU`))) |> 
+  filter(!is.na(dif_ageb)) |> 
+  ccf_prewhitened_plot(x = dif_cond, 
+                       y = dif_ageb, 
+                       lag_max = 18,
+                       lab_x = 'Condiciones presentes',
+                       lab_y = 'Ag Economy Barometer')
 ```
+
+
+
+
 
 ```{r}
-#| label: fig-24
-#| fig-cap: "FCCM de Expectativas futuras y las Condiciones presentes en Argentina y en Estados Unidos"
-#| fig-width: 8
-
-ccf_arg_expec_cond <- d |> 
-  filter(!is.na(`Ag Barometer Austral`)) |> 
-  as_tsibble(index = Fecha) |>  
-  feasts::CCF(`Expectativas futuras Arg`, `Condiciones presentes Arg`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM",
-    caption = "x = Expectativas futuras Arg \n y = Condiciones presentes Arg"
-  ) +
-  theme_bw()
+#| label: fig-ccf_usa2
+#| fig-cap: "FCCM del *Ag Economy Barometer* y las Expectativas futuras pre-blanqueadas"
 
 
-ccf_eeuu_expec_cond <- d |> 
-  feasts::CCF(`Expectativas futuras EEUU`, `Condiciones presentes EEUU`, lag_max = 18) |> 
-  autoplot() +
-  ylim(-1, 1) +
-  scale_x_continuous(breaks = seq(-18, 18, by = 3)) +
-  labs(
-    x = "Retardo",
-    y = "FCCM",
-    caption = "x = Expectativas futuras EEUU \n y = Condiciones presentes EEUU"
-  ) +
-  theme_bw()
-
-ccf_arg_expec_cond + ccf_eeuu_expec_cond
+d |> 
+  mutate(dif_ageb = difference((`Ag Economy Barometer`)),
+         dif_exp = difference((`Expectativas futuras EEUU`))) |> 
+  filter(!is.na(dif_ageb)) |> 
+  ccf_prewhitened_plot(x = dif_exp, 
+                       y = dif_ageb, 
+                       lag_max = 18,
+                       lab_x = 'Expectativas futuras',
+                       lab_y = 'Ag Economy Barometer')
 ```
 
 
 
 
-La y la @fig-9 parecen sugerir que el *Ag Barometer Austral* y el *Ag Economy Barometer* tienen comportamientos opuestos. Esto se condice con la presencia de bastones negativos significativos en la @fig-16 que toman valores negativos moderados.
-
-El rezago del cero de la @fig-16 es prácticamente nulo. Esto puede estar indicando que no hay relación entre estos índices. 
-
-
-En ambos países se observa que:
-
-- A medida que el *Ag Barometer* aumenta las condiciones presentes también. El *Ag Barometer* anticipa, de manera moderada, las condiciones presentes de relevamientos posteriores. Estas características se presentan con mayor fuerza en Estados Unidos (@fig-17). 
-- El *Ag Barometer* tiene una relación directa muy fuerte con las Expectativas futuras porque en la @fig-18 se ve que la estimación del rezago asociado al cero es cercana a uno.
-- Las Expectativas futuras anticipan moderadamente las Condiciones presentes de ediciones posteriores. Como el bastón del cero de la @fig-19 tiene una estimación alrededor de 0.5, existe una relación moderada entre las Expectativas futuras y las Condiciones presentes.
+```{r}
+#| label: fig-ccf_usa3
+#| fig-cap: "FCCM de Condiciones presentes y las Expectativas futuras en Estados Unidos pre-blanqueadas"
 
 
-## Relación del *Ag Barometer* con otras series económicas
+d |> 
+  mutate(dif_cond = difference((`Condiciones presentes EEUU`)),
+         dif_exp = difference((`Expectativas futuras EEUU`))) |> 
+  filter(!is.na(dif_cond)) |> 
+  ccf_prewhitened_plot(x = dif_cond, 
+                       y = dif_exp, 
+                       lag_max = 18,
+                       lab_x = 'Condiciones presentes',
+                       lab_y = 'Expectativas futuras')
+```
+
+Según la @fig-ccf_usa1, a medida que la confianza de los productores norteamericanos aumenta (o disminuye), sus Condiciones presentes también. De igual manera ocurre entre el *Ag Economy Barometer* con las Expectativas futuras (@fig-ccf_usa2) y entre las Condiciones presentes con las Expectativas futuras (@fig-ccf_usa3). En otras palabras, los tres índices evolucionan juntos a través del tiempo.
+
+
+Otro aspecto a destacar de las tres FCCM, es que en los tres casos el único rezago significativo es el cero. Esto quiere decir que si bien las tres series están relacionadas, las asociaciones sólo son contemporáneas y no hay ningún índice que anticipe el comportamiento futuro de otro.
+
+
+
+
+
+
+
+### Análisis de variables económicas
 
  
 
-Terminado el análisis descriptivo, el objetivo de la presente sub-sección es analizar a qué fenómenos el *Ag Barometer* podría estar relacionado. Según economistas de la Austral, el primer conjunto de variables candidatas son los precios internacionales (*commodities*). 
+Estudiadas las relaciones entre los índices de las universidades, el interés se centró en analizar a qué fenómenos el *Ag Barometer* podría estar relacionado. Con este propósito se consultó a economistas de la Austral, quienes propusieron como primer conjunto de variables candidatas a los precios internacionales (*commodities*). 
 
 
 
-Se presentan gráficos que permitan analizar la posible existencia de relaciones. Éstos tienen una particularidad, cada punto representa el *Ag Barometer* de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación entre las variables porque el relevamiento del *Ag Barometer* se efectúa a principios de mes y a principios de cada mes se publican los precios del mes anterior. Es decir, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de agosto para relevar el *Ag Barometer* de ese mes, la información de precios más reciente con la que cuentan es la de julio, ya que los datos de agosto todavía no fueron publicados.
+Se presentan gráficos que permitieron analizar la posible existencia de relaciones. Éstos tienen dos particularidades. La primera es que cada punto representa el *Ag Barometer* de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación porque tanto el relevamiento del *Ag Barometer* como la publicación de los precios ocurren a principios de cada mes, de tal manera que los productores responen en base a los precios del mes anterior. Por ende, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de septiembre para relevar el *Ag Barometer* de ese mes, la información de precios más reciente con la que cuentan es la de los precios de agosto, ya que los datos de septiembre todavía no fueron publicados. La segunda particularidad está vinculada a la 
+no estacionariedad de las series. Es muy común que variables económicas como tasas de interés, precios, etc, sean no estacionarias (Tsay, 2010). Por tal motivo se asumió que todas las variables buscadas tienen una raiz unitaria. Además, el propio *Ag Barometer Austral* tampoco es estacionario como se probó en la @sec-univ_arg. En consecuencia, a la hora de intentar medir la asociación entre la confianza de los productores y estas variables, se podría estar obteniendo un alto valor de correlación, no porque las variables estén asociadas, sino debido a la fuerte estructura de autocorrelación de las series (Cryer y Chan, 2008). Para no obtener estas correlaciones espurias, se realizó el proceso de pre-blanqueo previo a cada gráfico de dispersión en todas las figuras.
 
 
 
-<!-- COMMODITIES VS AGB -->
+
+
+<!-- primero creo fc q una vez q le pasas el data de la y(t) vs x(t-1), cada grafico le hace el preblanqueo a la x y usa esa misma transformacion para la y, asi con todas las x. evitamos correlaciones espurias!! -->
+
+
+```{r}
+# CREACION DE FUNCION CORRELACIONES
+
+correlaciones_preblanqueadas <- function(df, y_col, x_cols) {
+  library(forecast)
+  library(tidyverse)
+  
+  lista_preblanqueada <- list()
+  y_original <- df[[y_col]]
+  
+  for (col in x_cols) {
+    x <- df[[col]]
+    validos <- complete.cases(x, y_original)
+    
+    # Ajustar ARIMA a X y filtrar Y
+    fit_x <- auto.arima(x[validos], seasonal = TRUE, ic = "aicc")
+    x_whitened <- residuals(fit_x)
+    
+    fit_y <- Arima(y_original[validos], model = fit_x)
+    y_whitened <- residuals(fit_y)
+    
+    lista_preblanqueada[[col]] <- tibble(
+      Fecha = df$Fecha[validos],
+      variable = col,
+      x_pre = x_whitened,
+      y_pre = y_whitened
+    )
+  }
+  
+  d_pre_long <- bind_rows(lista_preblanqueada)
+  
+  # Calcular correlaciones
+  df_cor_pre <- d_pre_long |>
+    group_by(variable) |>
+    summarise(r = cor(x_pre, y_pre, method = "pearson")) |>
+    arrange(r) |>
+    mutate(variable = factor(variable, levels = variable))
+  
+  # Generar gráfico
+  p <- d_pre_long |>
+    left_join(df_cor_pre, by = "variable") |>
+    mutate(label = paste0(variable, "\nr = ", round(r, 2)),
+           label = reorder(label, -r)) |>
+    ggplot(aes(x = x_pre, y = y_pre)) +
+    geom_point(alpha = 1, color = "black", size = 1.5) +
+    geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
+    facet_wrap(~label, scales = "free", ncol = 4) +
+    labs(
+      y = paste0(y_col),
+      caption = "r: coeficiente de correlación de Pearson estimado"
+    ) +
+    theme_bw(base_size = 10) +
+    theme(axis.title.x = element_blank())
+    
+  return(list(datos = d_pre_long, correlaciones = df_cor_pre, grafico = p))
+}
+```
+
+
+
+<!-- AGB vs COMMODITIES -->
 
 <!-- arg -->
 
@@ -1589,33 +1896,22 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 
 
 
-
 ```{r}
-#| label: fig-25
-#| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y *commodities*"
+#| label: fig-commodities_arg
+#| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y *commodities* pre-blanqueados"
 #| fig-width: 6
 #| fig-height: 6
 
 ## Scatter AgB(t) vs covariables(t-1)
 
-d_completo_arg |>
-  select(Fecha, `Ag Barometer Austral`, 3:ncol(d_completo_arg)) |>
-  pivot_longer(cols = -c(Fecha, `Ag Barometer Austral`),
-               names_to = "variable", values_to = "valor") |>
-  left_join(df_cor_arg |> select(variable, r), 
-            by = "variable") |>
-  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
-         label = reorder(label, -r)) |>
-  ggplot(aes(x = valor, y = `Ag Barometer Austral`)) +
-  geom_point(alpha = 1, color = "black", size = 1.5) +
-  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
-  facet_wrap(~label, scales = "free_x", ncol = 4) +
-  labs(
-       x = NULL, 
-       y = "Ag Barometer Austral",
-       caption = "r: coeficiente de correlación de Pearson") +
-  theme_bw(base_size = 10)
+correlaciones_preblanqueadas(
+  df = d_completo_arg, 
+  y_col = "Ag Barometer Austral", 
+  x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)]
+)$grafico
 ```
+
+
 
 
 <!-- eeuu -->
@@ -1660,37 +1956,26 @@ df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variab
 
 
 ```{r}
-#| label: fig-26
-#| fig-cap: "Correlaciones entre el *Ag Economy Barometer* y los *commodities*"
+#| label: fig-commodities_usa
+#| fig-cap: "Correlaciones entre el *Ag Economy Barometer* y los *commodities* pre-blanqueados"
 #| fig-width: 6
 #| fig-height: 6
 
 ## Scatter AgB(t) vs covariables(t-1)
 
-d_completo_eeuu |>
-  select(Fecha, `Ag Economy Barometer`, 3:ncol(d_completo_eeuu)) |>
-  pivot_longer(cols = -c(Fecha, `Ag Economy Barometer`),
-               names_to = "variable", values_to = "valor") |>
-  left_join(df_cor_eeuu |> select(variable, r), 
-            by = "variable") |>
-  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
-         label = reorder(label, -r)) |>
-  ggplot(aes(x = valor, y = `Ag Economy Barometer`)) +
-  geom_point(alpha = 1, color = "black", size = 1.5) +
-  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
-  facet_wrap(~label, scales = "free_x", ncol = 4) +
-  labs(
-       x = NULL, 
-       y = "Ag Economy Barometer",
-       caption = "r: coeficiente de correlación de Pearson") +
-  theme_bw(base_size = 10)
+correlaciones_preblanqueadas(
+  df = d_completo_eeuu, 
+  y_col = "Ag Economy Barometer", 
+  x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)]
+)$grafico
 ```
 
 
 
-Las correlaciones observadas en la @fig-20 y en la @fig-21 son bajas, se consideraron las asociaciones del *Ag Barometer* con los precios como débiles. Seguidamente los economistas propusieron otro conjunto de series económicas candidatas con la creencia de que, en caso de existir relación, sólo sería con el *Ag Economy Barometer*.
+Tal como puede observarse en la @fig-commodities_arg y en la @fig-commodities_usa, las asociaciones con los precios son débiles. Esto significa que el *Ag Barometer* no está relacionado a fenómenos vinculados a los precios de producción ni con los insumos. Descartada esta posibilidad, los economistas propusieron un segundo conjunto de variables económicas candidatas relacionadas con el ámbito financiero y de actividad. 
 
-Las figuras presentadas a continuación tienen la misma característica que la @fig-20 y la @fig-21.
+
+A continuación se presentan figuras con las mismas particularidades anteriormente mencionadas. 
 
 
 
@@ -1744,28 +2029,16 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 
 
 ```{r}
-#| label: fig-27
-#| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y otras variables económicas"
+#| label: fig-vars_economicas_arg
+#| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y otras variables económicas pre-blanqueadas"
 
 ## Scatter AgB(t) vs covariables(t-1)
 
-d_completo_arg |>
-  select(Fecha, `Ag Barometer Austral`, 3:ncol(d_completo_arg)) |>
-  pivot_longer(cols = -c(Fecha, `Ag Barometer Austral`),
-               names_to = "variable", values_to = "valor") |>
-  left_join(df_cor_arg |> select(variable, r), 
-            by = "variable") |>
-  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
-         label = reorder(label, -r)) |>
-  ggplot(aes(x = valor, y = `Ag Barometer Austral`)) +
-  geom_point(alpha = 1, color = "black", size = 1.5) +
-  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
-  facet_wrap(~label, scales = "free_x", ncol = 4) +
-  labs(
-       x = NULL, 
-       y = "Ag Barometer Austral",
-       caption = "r: coeficiente de correlación de Pearson") +
-  theme_bw(base_size = 10)
+correlaciones_preblanqueadas(
+  df = d_completo_arg, 
+  y_col = "Ag Barometer Austral", 
+  x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)]
+)$grafico
 ```
 
 
@@ -1815,70 +2088,58 @@ df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variab
 
 
 ```{r}
-#| label: fig-28
-#| fig-cap: "Correlaciones entre el *Ag Economy Barometer* y otras variables económicas"
+#| label: fig-vars_economicas_usa
+#| fig-cap: "Correlaciones entre el *Ag Economy Barometer* y otras variables económicas pre-blanqueadas"
 
 ## Scatter AgB(t) vs covariables(t-1)
 
-d_completo_eeuu |>
-  select(Fecha, `Ag Economy Barometer`, 3:ncol(d_completo_eeuu)) |>
-  pivot_longer(cols = -c(Fecha, `Ag Economy Barometer`),
-               names_to = "variable", values_to = "valor") |>
-  left_join(df_cor_eeuu |> select(variable, r), 
-            by = "variable") |>
-  mutate(label = paste0(variable, "\nr = ", round(r, 2)),
-         label = reorder(label, -r)) |>
-  ggplot(aes(x = valor, y = `Ag Economy Barometer`)) +
-  geom_point(alpha = 1, color = "black", size = 1.5) +
-  geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
-  facet_wrap(~label, scales = "free_x", ncol = 4) +
-  labs(
-       x = NULL, 
-       y = "Ag Economy Barometer",
-       caption = "r: coeficiente de correlación de Pearson") +
-  theme_bw(base_size = 10)
+correlaciones_preblanqueadas(
+  df = d_completo_eeuu, 
+  y_col = "Ag Economy Barometer", 
+  x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)]
+)$grafico
 ```
 
 
-Las relaciones entre estas variables y el *Ag Economy Barometer* también son débiles como se puede ver en la @fig-23. Si bien algunas correlaciones entre el *Ag Barometer Austral* y este nuevo conjunto de series parecen ser moderadas-altas (@fig-22), también se las considera como débiles por carecer de sentido práctico según los especialistas.
+<!-- ver como pongo! solo tengo q decir q con estas variables tambien da bajisimo!! -->
 
 
-Al no haber encontrado con qué está relacionado el *Ag Barometer* aún, la búsqueda no podía darse por finalizada. Nuevamente se consulta con los especialistas. A partir de su experiencia en el tema, sostienen que el índice bajo estudio probablemente esté asociado a hechos políticos y/o bélicos. A continuación, se estudian esas posibles relaciones.
+En base a la inspección gráfica de la @fig-vars_economicas_arg y la @fig-vars_economicas_usa, se deduce que la confianza de los productores tampoco estaría asociada a fenómenos vinculados a tasas de interés, índices bursátiles ni de confianza/actividad.
+
+
+
+
+### Análisis de eventos 
+
+
+
+
 
  
+Dado que aún no se habían identificado factores asociados al *Ag Barometer*, la investigación no podía darse por concluida. Por esta razón, se revisó la situación con los expertos. Éstos sostienen que el índice bajo estudio probablemente esté vinculado a acontecimientos políticos, bélicos y/o globales como la pandemia de Covid 19. Se presentan dichas posibles relaciones.
 
 
 
 ```{r}
-#| label: fig-29
-#| fig-cap: "*Ag Barometer Austral* y resultados electivos en Argentina"
-#| fig-height: 5.5
-#| fig-width: 6
+#| label: fig-elecciones_arg
+#| fig-cap: "Evolución del *Ag Barometer Austral* y resultados de las elecciones presidenciales argentinas"
+#| fig-height: 4.5
+#| fig-width: 6.3
 
 # 1. Definimos los 8 hitos con un solo color para las líneas
 hitos <- data.frame(
   Bimestre = yearmonth(c(
-    "2019 Aug", "2019 Oct", 
-    "2021 Sep", "2021 Nov", 
-    "2023 Aug", "2023 Oct", "2023 Nov", 
-    "2025 Oct"
+    "2019 Oct", 
+    "2023 Nov"
   )),
-  Tag = as.character(1:8),
-  # Escalamos posiciones verticales si quieres evitar solapamientos entre números cercanos
-  Y_pos = c(175, 168, 175, 168, 175, 168, 175, 170)
+  Tag = as.character(1:2),
+  Y_pos = rep(155, 2)
 )
 
-# 2. Texto explicativo para poner al pie del gráfico
 leyenda_hitos <- paste(
-  "Ganador de cada hito electoral:",
-  "1: Alberto Fernández (Frente de Todos) | PASO",
-  "2: Alberto Fernández (Frente de Todos) | Elecciones presidenciales generales",
-  "3: Juntos por el Cambio | PASO Legislativas",
-  "4: Juntos por el Cambio | Generales Legislativas",
-  "5: Javier Milei (La Libertad Avanza) | PASO",
-  "6: Sergio Massa (Unión por la Patria) | Elecciones presidenciales generales",
-  "7: Javier Milei (La Libertad Avanza) | Elecciones presidenciales Ballotage",
-  "8: La Libertad Avanza | Generales Legislativas",
+  "Ganador de cada elección presidencial:",
+  "1: Alberto Fernández (Partido Frente de Todos)",
+  "2: Javier Milei (Partido La Libertad Avanza) | Ballotage",
   sep = "\n"
 )
 
@@ -1931,33 +2192,29 @@ d_arg |>
 ```
 
 ```{r}
-#| label: fig-30
-#| fig-cap: "*Ag Economy Barometer* y resultados electivos en Estados Unidos"
-#| fig-height: 5
-#| fig-width: 6
+#| label: fig-elecciones_usa
+#| fig-cap: "Evolución del *Ag Economy Barometer* y resultados de la elecciones presidenciales estadounidenses"
+#| fig-height: 4.5
+#| fig-width: 6.3
 
 
 # 1. Definición de los 5 hitos electorales en EE.UU. (2015 - 2026)
 hitos_eeuu <- data.frame(
   Fecha = yearmonth(c(
     "2016 Nov", 
-    "2018 Nov", 
     "2020 Nov", 
-    "2022 Nov", 
     "2024 Nov"
   )),
-  Tag = as.character(1:5),
-  Y_pos = rep(175, 5) # Al estar separados por 2 años, entran todos a la misma altura
+  Tag = as.character(1:3),
+  Y_pos = rep(175, 3) 
 )
 
 # 2. Explicación limpia de cada resultado electoral
 leyenda_hitos_eeuu <- paste(
-  "Resultados electorales en EE.UU.:",
-  "1: Donald Trump (Republicano) | Elecciones presidenciales",
-  "2: Partido Demócrata | Elecciones medio término",
-  "3: Joe Biden (Demócrata) | Elecciones presidenciales",
-  "4: Partido Republicano | Elecciones medio término",
-  "5: Donald Trump (Republicano) | Elecciones presidenciales",
+  "Ganador de cada elección presidencial:",
+  "1: Donald Trump (Partido Republicano)",
+  "3: Joe Biden (Partido Demócrata)",
+  "5: Donald Trump (Partido Republicano)",
   sep = "\n"
 )
 
@@ -2010,17 +2267,20 @@ d_eeuu |>
 ```
 
 
-Tanto en Argentina como en Estados Unidos, parece que la confianza de los productores sí está relacionada con los resultados electorales.
-En la @fig-24 y en la @fig-25 se observan dos tipos de cambios en la confianza de los productores:
+La información de la @fig-elecciones_arg y de la @fig-elecciones_usa sugiere que tanto en Argentina como en Estados Unidos, la confianza de los productores presentaría cambios alrededor de los tiempos en que se publican los resultados de las elecciones presidenciales.
+Se observan dos tipos de cambios en la confianza de los productores:
 
--   Los que ocurren antes del resultado electoral definitivo, como en las elecciones presidenciales de 2023 y las de medio término de 2021 en Argentina, o las presidenciales de 2020 en Estados Unidos; que responden a encuestas o sospechas previas a la votación.
--   Los que se dan inmediatamente después de conocerse el resultado, a causa de desenlaces inesperados. Tal es el caso del triunfo de Alberto Fernández en las PASO presidenciales 2019, del triunfo legislativo de La Libertad Avanza en 2025 o de la victoria presidencial de Donald Trump en 2016.
+-   Los que ocurren antes de conocerse el resultado electoral definitivo, como en el triunfo de Alberto Fernández en 2019, que responden a encuestas o presunciones previas a la votación.
+-   Los que se dan inmediatamente después de conocerse el resultado a causa de desenlaces inesperados. Tal es el caso de la victoria de Donald Trump en 2016.
 
-Estos cambios de sentimiento también pueden observarse en la @fig-12. Dentro del período de estudio del *Ag Barometer Austral*, los valores de confianza resultan más variables en los años 2019 y 2023, coincidentes con elecciones presidenciales en Argentina. En 2020, año de elecciones presidenciales en Estados Unidos, la confianza del *Ag Economy Barometer* fue la más variable de todo el período analizado. Esto sugiere que las series en estudio se ven alteradas por efectos políticos.
 
-También puede observarse que las elecciones legislativas suelen asociarse a cambios menores en el sentimiento de los productores —por ejemplo, el triunfo de La Libertad Avanza en 2025 (@fig-24) o el de los republicanos en 2022 (@fig-25)— en comparación con los cambios vinculados a las elecciones presidenciales, como el triunfo de Alberto Fernández en 2019 (@fig-24) o el de Joe Biden en 2020 (@fig-25).
 
-Puede destacarse también una diferencia entre la confianza de ambos países. Los cambios en Argentina no siguen el mismo comportamiento que los de Estados Unidos. En este último se observa que, cuando hay elecciones presidenciales de por medio, la confianza siempre sube independientemente del partido que resulte ganador y que unos meses después baja. Esto podría deberse a que los partidos estadounidenses no son tan heterogéneos entre sí. En Argentina, en cambio, el sentimiento puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó Alberto Fernández en 2019, se produjo la baja más abrupta histórica de la serie, generando al año siguiente la confianza promedio más baja de todo el período, y el pesimismo se sostuvo durante todo su mandato (@fig-9). En cambio, al ganar Javier Milei en 2023, la confianza comenzó a crecer, pasando del pesimismo al optimismo. Esto podría explicarse por la heterogeneidad ideológica entre los partidos políticos argentinos. 
+En Argentina, tanto el cambio repentino en la confianza de 2019 como la tendencia creciente de 2023, mencionados en la @sec-univ_arg, tuvieron lugar en torno a las fechas de los resultados electorales (@fig-elecciones_arg), siendo estos dos años aquellos en los que las percepciones se mostraron más volátiles (@fig-boxplot_arg). De manera análoga, en Estados Unidos se observó una tendencia creciente repentina y efímera en 2020 (@fig-ageb), la cual tuvo lugar en las proximidades de una elección presidencial (@fig-elecciones_usa). Durante ese mismo año, los valores de confianza de los productores exhibieron, aparentemente, una mayor dispersión (@fig-boxplot_usa). Esta exploracion visual en conjunto, sugiere que el *Ag Barometer* se ve alterado por efectos políticos.
+
+
+
+
+Puede destacarse también una diferencia entre la confianza de ambos países. Los cambios en Argentina no siguen el mismo comportamiento que los de Estados Unidos. En este último se observa que, cuando hay elecciones presidenciales de por medio, la confianza siempre sube independientemente del partido que resulte ganador y que unos meses después baja. Esto podría deberse a que los partidos estadounidenses no son tan heterogéneos entre sí. En Argentina, en cambio, el sentimiento puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó Alberto Fernández en 2019, se produjo la baja más abrupta histórica de la serie, generando al año siguiente la confianza promedio más baja de todo el período, y el pesimismo se sostuvo durante todo su mandato (@fig-acf_prom). En cambio, al ganar Javier Milei en 2023, la confianza comenzó a crecer, pasando del pesimismo al optimismo. Esto podría explicarse por la heterogeneidad ideológica entre los partidos políticos argentinos. 
 
 
 
@@ -2030,33 +2290,24 @@ Puede destacarse también una diferencia entre la confianza de ambos países. Lo
 
 
 ```{r}
-#| label: fig-31
-#| fig-cap: "*Ag Barometer Austral*, *Ag Economy Barometer* y hechos bélicos"
+#| label: fig-eventos_globales
+#| fig-cap: "Evolución de los *Barometers* y otros eventos globales/bélicos"
 #| fig-height: 5.5
 #| fig-width: 6
 
-# 1. los 5 hitos bélicos
 hitos_belicos <- data.frame(
   Fecha = yearmonth(c(
-    "2021 Aug",  
-    "2022 Feb",  
-    "2023 Oct",  
-    "2023 Nov",  
-    "2026 Feb"   
+    "2020 Apr",
+    "2022 Feb"
   )),
-  Tag = as.character(1:5),
-  # Alturas para que 3 y 4 no se pisen 
-  Y_pos = c(175, 175, 175, 168, 175)
+  Tag = as.character(1:2), # 1 hasta numero de rayas
+  Y_pos = rep(180, 2)
 )
 
-# 2. Leyenda explicativa al pie (reestructurada en renglones dobles para ahorrar espacio)
 leyenda_belica <- paste(
-  "Hitos bélicos y geopolíticos globales",
-  "1: Retiro de EE.UU. de Afganistán",
+  "Hitos globales/bélicos:",
+  "1: Covid 19",
   "2: Invasión rusa a Ucrania",
-  "3: Ataque de Hamas y guerra en Gaza",
-  "4: Ataques Hutíes en el Mar Rojo a buques",
-  "5: Ataques de EE.UU./Israel a Irán",
   sep = "\n"
 )
 
@@ -2122,13 +2373,474 @@ d |>
 ```
 
 
-Según la @fig-26, el *Ag Barometer* no parece presentar cambios notorios cerca de fechas en las que ocurren hechos bélicos. No parece haber relación *Ag Barometer*-hechos bélicos.
+A partir de la información disponible hasta el momento, plasmada en la @fig-eventos_globales, y mediante inspección gráfica no parecen presentarse cambios notorios en el *Ag Barometer* en torno a los hitos considerados. Esto sugiere que eventos de esta índole no afectarían las percepciones de los productores agropecuarios.
+
+
+\newpage
+
+
+# Anexo
+
+
+
+
+
+
+
+## Características de los otros índices locales {#sec-carcs_indices_arg}
+
+
+
+
+Acorde a lo mencionado, a la hora de estudiar la relación entre dos series estimando la FCC, éstas deberían ser estacionarias. En caso de no serlo, para evitar correlaciones espurias, se realiza el pre-blanqueo sobre el par en cuestión previamente a la estimación. En este contexto, al investigar la relación entre las series locales en la @sec-ccfs_arg fue importante estudiar si estas tres son estacionarias o no. Este análisis ya fue presentado para el *Ag Barometer Austral* en la @sec-univ_arg, por lo que el interés de este apartado es presentar qué ocurre para las Condiciones presentes y Expectativas futuras. A continuación se muestran resultados que permitieron analizar esta característica.
+
+
+
+
+```{r}
+#| include: false
+
+# -------------------------------------------------
+# Tests ARG, Condiciones presentes
+# -------------------------------------------------
+
+# 1. adf sobre cond
+pv_condarg_adf <- d_arg |> 
+  pull(`Condiciones presentes`) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.44 --> Ho) cond no es estac
+
+# 2. kpss sobre cond
+pv_condarg_kpss <- d_arg  |>  
+  features(`Condiciones presentes`, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) ageb es estac PROBLEMA!! (poenr var)
+
+
+# 3. adf sobre dif1 cond
+pv_condarg_dif1_adf <- d_arg |> 
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  filter(!is.na(dif1)) |> 
+  pull(dif1) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.04 --> H1) dif1 cond es estac
+
+# 4. kpss sobre dif1 cond
+pv_condarg_dif1_kpss <- d_arg  |>  
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  filter(!is.na(dif1)) |> 
+  features(dif1, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) dif1 cond es estac
+
+
+# 5. ljung sobre dif 1 cond
+pv_condarg_dif1_ljung <- d_arg |>     
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  drop_na(dif1) |>           
+  pull(dif1) |>             
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") |> 
+  (\(x) sprintf("%.4f", x))() # 0.06 --> Ho) p_1 = ... = p_20 = 0 -->
+# --> dif1 es RB --> cond arg es RW
+```
+
+
+
+```{r}
+#| include: false
+
+# -------------------------------------------------
+# Tests ARG, Expectativas futuras
+# -------------------------------------------------
+
+# 1. adf sobre expec 
+pv_exparg_adf <- d_arg |> 
+  pull(`Expectativas futuras`) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.0512 --> Ho) ageb no es estac
+
+# 2. kpss sobre ageb
+pv_exparg_kpss <- d_arg  |>  
+  features(`Expectativas futuras`, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.01 --> Ho) expe no es estac
+
+
+# 3. adf sobre dif1 ageb
+pv_exparg_dif1_adf <- d_arg |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  filter(!is.na(dif1)) |> 
+  pull(dif1) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.08 --> Ho) dif1 exp no es estac PROBLEMA!!
+
+# 4. kpss sobre dif1 ageb
+pv_exparg_dif1_kpss <- d_arg  |>  
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  filter(!is.na(dif1)) |> 
+  features(dif1, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) dif1 expe es estac
+
+
+# 5. ljung sobre dif 1 exp
+pv_exparg_dif1_ljung <- d_arg |>     
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  drop_na(dif1) |>           
+  pull(dif1) |>             
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") |> 
+  (\(x) sprintf("%.4f", x))() # 0.89 --> Ho) p_1 = ... = p_20 = 0 -->
+# --> dif1 es RB --> exp arg es RW
+```
+
+
+
+
+```{r}
+#| label: tbl-carcs_indices_arg
+#| tbl-cap: "Pruebas sobre las Condiciones presentes y Expectativas futuras argentinas"
+
+# vector con los 5 pvalues de cond p y los 5 de expec fut.
+p_values_arg <- c(
+  # Condiciones presentes
+  pv_condarg_adf,        # ADF
+  pv_condarg_kpss,       # KPSS
+  pv_condarg_dif1_adf,   # ADF (primera dif.)
+  pv_condarg_dif1_kpss,  # KPSS (primera dif.)
+  pv_condarg_dif1_ljung, # Ljung-Box (K = 20)
+  
+  # Expectativas futuras
+  pv_exparg_adf,         # ADF
+  pv_exparg_kpss,        # KPSS
+  pv_exparg_dif1_adf,    # ADF (primera dif.)
+  pv_exparg_dif1_kpss,   # KPSS (primera dif.)
+  pv_exparg_dif1_ljung   # Ljung-Box (K = 20)
+)
+
+# armo tabla
+tibble(
+  Variable = c(
+    "Condiciones presentes", "", 
+    "Condiciones presentes, primera dif.", "", "", 
+    "Expectativas futuras", "", 
+    "Expectativas futuras, primera dif.", "", ""
+  ),
+  Test = c(
+    "ADF", "KPSS", 
+    "ADF", "KPSS", "Ljung-Box", 
+    "ADF", "KPSS", 
+    "ADF", "KPSS", "Ljung-Box"
+  ),
+  `p-value` = p_values_arg
+)  |> 
+  kable(align = "llc") |> 
+  row_spec(5, extra_css = "border-bottom: 1px solid black;") 
+```
+
+
+
+A partir de los resultados de la @tbl-carcs_indices_arg y en base a la evidencia muestral, se concluye con un 5% de nivel de significacion, que la primera diferencia de las Condiciones presentes es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la serie Expectativas futuras no es estacionaria y los primeros 20 coeficientes de la FAC de su primera diferencia son nulos.
+
+
+Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que es estacionaria, se la considero como no estacionaria por presentar tendencia en el periodo que comprende desde principios de 2023 hasta fines de 2024 (@fig-indices_arg).
+
+
+<!-- acf dif1 exp fut arg -->
+
+```{r}
+#| label: fig-acf_expec_arg_dif1
+#| fig-cap: "FACM y FACPM de la primera diferencia de las Expectativas futuras argentinas"
+#| fig-width: 8
+
+acf_expec_arg_dif1 <- d_arg |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  ACF(dif1, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_expec_arg_dif1 <- d_arg |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  PACF(dif1, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_expec_arg_dif1 + pacf_expec_arg_dif1
+```
+
+Por otro lado, ante la discrepancia de los resultados para las Expectativas futuras diferenciadas, el test ADF conduce a que no son estacionarias y el KPSS si, teniendo en cuenta su FACM y FACPM (@fig-acf_expec_arg_dif1) se observa que ninguno de sus rezagos es significativo, sugiriendo que esta serie sigue un ruido blanco. Teniendo en cuenta esto, esta serie fue considerada estacionaria.
+ 
+
+Teniendo en cuenta todos estos aspectos, se considero a ambas series en niveles como no estacionarias, siendo necesario diferenciarlas para lograr la estacionariedad. 
+
+
+
+
+
+## Características de los otros índices estadounidenses {#sec-carcs_indices_usa}
+
+
+
+Al igual que en el caso argentino, para inspeccionar la relación entre los índices norteamericanos, fue necesario estudiar si las Condiciones presentes y Expectativas futuras son estacionarias o no.
+
+
+```{r}
+#| include: false
+
+# -------------------------------------------------
+# Tests EEUU, Condiciones presentes
+# -------------------------------------------------
+
+# 1. adf sobre cond
+pv_condeeuu_adf <- d_eeuu |> 
+  pull(`Condiciones presentes`) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.0388 --> H1) cond es estac
+
+# 2. kpss sobre cond
+pv_condeeuu_kpss <- d_eeuu  |>  
+  features(`Condiciones presentes`, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) cond es estac 
+
+# ACLARACION: la serie original cond p de eeuu es estacionaria! la uso a secas en las ccf, no hace falta el prewhitening
+
+# !! usar SERIE ORGINAL
+
+
+
+# 3. adf sobre dif1 exp
+pv_condeeuu_dif1_adf <- d_eeuu |> 
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  filter(!is.na(dif1)) |> 
+  pull(dif1) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.01 --> H1) dif1 exp es estac
+
+# 4. kpss sobre dif1 exp
+pv_condeeuu_dif1_kpss <- d_eeuu  |>  
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  filter(!is.na(dif1)) |> 
+  features(dif1, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) dif1 expe es estac
+
+
+# 5. ljung sobre dif 1 exp
+pv_condeeuu_dif1_ljung <- d_eeuu |>    
+  mutate(dif1 = difference(`Condiciones presentes`)) |> 
+  drop_na(dif1) |>           
+  pull(dif1) |>             
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") |> 
+  (\(x) sprintf("%.4f", x))()  # 0.48 --> Ho) p_1 = ... = p_20 = 0 -->
+# --> dif1 es RB --> exp arg es RW
+
+```
+
+
+
+```{r}
+#| include: false
+
+# -------------------------------------------------
+# Tests EEUU, Expectativas futuras
+# -------------------------------------------------
+
+# 1. adf sobre expec 
+pv_expeeuu_adf <- d_eeuu |> 
+  pull(`Expectativas futuras`) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.08 --> Ho) ageb no es estac
+
+# 2. kpss sobre exp
+pv_expeeuu_kpss <- d_eeuu  |>  
+  features(`Expectativas futuras`, unitroot_kpss) |>  
+  pull(kpss_pvalue)|> 
+  (\(x) sprintf("%.4f", x))()  # 0.10 --> Ho) expe es estac PROBLEMA! (poner lo de la var y q ents es no estac)
+
+
+# 3. adf sobre dif1 exp
+pv_expeeuu_dif1_adf <- d_eeuu |> 
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  filter(!is.na(dif1)) |> 
+  pull(dif1) |> 
+  tseries::adf.test() |> 
+  (\(x) x$p.value)() |> 
+  (\(x) sprintf("%.4f", x))() # 0.01 --> H1) dif1 exp es estac
+
+# 4. kpss sobre dif1 exp
+pv_expeeuu_dif1_kpss <- d_eeuu  |>  
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  filter(!is.na(dif1)) |> 
+  features(dif1, unitroot_kpss) |>  
+  pull(kpss_pvalue) |> 
+  (\(x) sprintf("%.4f", x))() # 0.10 --> Ho) dif1 expe es estac
+
+
+# 5. ljung sobre dif 1 exp
+pv_expeeuu_dif1_ljung <- d_eeuu |>     # segunda vez q calculo esto en arg
+  mutate(dif1 = difference(`Expectativas futuras`)) |> 
+  drop_na(dif1) |>           
+  pull(dif1) |>             
+  Box.test(lag = 20, type = "Ljung-Box") |> 
+  pluck("p.value") |> 
+  (\(x) sprintf("%.4f", x))()  # 0.48 --> Ho) p_1 = ... = p_20 = 0 -->
+# --> dif1 es RB --> exp arg es RW
+```
+
+
+
+```{=latex}
+\needspace{16\baselineskip}
+```
+
+
+
+```{r}
+#| label: tbl-carcs_indices_usa
+#| tbl-cap: "Pruebas sobre las Condiciones presentes y Expectativas futuras norteamericanas"
+#| tbl-pos: "H"
+
+# vector con los 5 pvalues de cond p y los 5 de expec fut.
+p_values_eeuu <- c(
+  # Condiciones presentes
+  pv_condeeuu_adf,        # ADF
+  pv_condeeuu_kpss,       # KPSS
+  pv_condeeuu_dif1_adf,   # ADF (primera dif.)
+  pv_condeeuu_dif1_kpss,  # KPSS (primera dif.)
+  pv_condeeuu_dif1_ljung, # Ljung-Box (K = 20)
+  
+  # Expectativas futuras
+  pv_expeeuu_adf,         # ADF
+  pv_expeeuu_kpss,        # KPSS
+  pv_expeeuu_dif1_adf,    # ADF (primera dif.)
+  pv_expeeuu_dif1_kpss,   # KPSS (primera dif.)
+  pv_expeeuu_dif1_ljung   # Ljung-Box (K = 20)
+)
+
+# armo tabla
+tibble(
+  Variable = c(
+    "Condiciones presentes", "", 
+    "Condiciones presentes, primera dif.", "", "", 
+    "Expectativas futuras", "", 
+    "Expectativas futuras, primera dif.", "", ""
+  ),
+  Test = c(
+    "ADF", "KPSS", 
+    "ADF", "KPSS", "Ljung-Box", 
+    "ADF", "KPSS", 
+    "ADF", "KPSS", "Ljung-Box"
+  ),
+  `p-value` = p_values_eeuu
+)  |> 
+  kable(align = "llc") |> 
+  row_spec(5, extra_css = "border-bottom: 1px solid black;") 
+  
+```
+
+
+En base a la evidencia muestral y los resultados de la @tbl-carcs_indices_usa, se concluye que tanto para las Condiciones presentes como para las Expectativas futuras la primera diferencia es estacionaria y que los primeros 20 coeficientes de las FAC son nulos. Sin embargo, para estas mismas series en niveles, los p-values conducen a resultados que ameritaron mas analisis. 
+
+
+En primer lugar, se obtiene mediante el test ADF y KPSS que la serie de las Condiciones presentes es estacionaria.
+
+
+```{r}
+#| label: fig-acf_cond_eeuu
+#| fig-cap: "FACM y FACPM de las Condiciones presentes de Estados Unidos"
+#| fig-width: 8
+
+# acf y pacf condiciones presentes eeuu
+
+acf_cond_eeuu <- d_eeuu |> 
+  ACF(`Condiciones presentes`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.1)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_cond_eeuu <- d_eeuu |> 
+  PACF(`Condiciones presentes`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.1)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_cond_eeuu + pacf_cond_eeuu
+```
+
+
+<!-- cond p: los test me da q es estac, pero el priemr baston de la acf es mas de 0.8 y tiene bastones sig alrededor de 60, y considerando q las series ec suelen ser no estac, la considero no estac -->
+
+
+```{r}
+#| label: fig-acf_expec_eeuu
+#| fig-cap: "FACM y FACPM de las Expectativas futuras de Estados Unidos"
+#| fig-width: 8
+
+# acf y pacf condiciones presentes eeuu
+
+acf_expec_eeuu <- d_eeuu |> 
+  ACF(`Expectativas futuras`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACM',
+       x = 'Retardo') +
+  theme_bw()
+
+
+pacf_expec_eeuu <- d_eeuu |> 
+  PACF(`Expectativas futuras`, lag_max = 60) |> 
+  autoplot() +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
+  labs(y = 'FACPM',
+       x = 'Retardo') +
+  theme_bw()
+
+acf_expec_eeuu + pacf_expec_eeuu
+```
+
+
+
+<!-- expec f: lo mismo -->
+
+
+## Soporte computacional
+
+
+Todo el código que permitió armar la base de datos, llevar a cabo pruebas de hipótesis, desarrollar la aplicación, redactar el informe, etc, fue realizado con R y se encuentra en el siguiente [repositorio](https://github.com/patricia-nsc/Practica-Profesional-Privado).
 
 
 
 \newpage
 
+
+
+
+
 # Referencias
+
+<!-- ver como se citan los dataset! -->
 
 https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
 
@@ -2142,9 +2854,17 @@ https://finance.yahoo.com/
 
 https://www.argentina.gob.ar/economia/agricultura/agricultura
 
-Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* (3rd ed.). OTexts. https://otexts.com/fpp3/
+<!-- falta tesina lucia tamplin!, tiene otra forma de citarse -->
 
+Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016). *Time series analysis: Forecasting and control* ($5^a$ ed.). Wiley.
 
+Cryer, J. D., & Chan, K.-S. (2008). *Time series analysis: With applications in R* ($2^a$ ed.). Springer.
+
+Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* ($3^a$ ed.). OTexts. https://otexts.com/fpp3/
+
+Lütkepohl, H., & Krätzig, M. (Eds.). (2004). *Applied Time Series Econometrics*. Cambridge University Press.
+
+Tsay, R. S. (2010). *Analysis of financial time series* ($3^a$ ed.). John Wiley & Sons.
 
 
 
