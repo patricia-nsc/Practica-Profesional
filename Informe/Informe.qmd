@@ -59,10 +59,50 @@ library(purrr)          # extraer p-values de los test Ljunj-Box
 library(ggrepel)
 library(tseries)        # test adf
 library(aTSA)           # test engle-granger
-library(TSA)            # 4 librerias q uso p crear ccf_prewhitened_plot()
-library(ggplot2)
-library(dplyr)
-library(rlang)
+library(imputeTS)
+```
+
+
+
+```{r}
+# Datos
+
+# Carga de datos de Arg con faltantes
+d_conNA <- readxl::read_excel("../Datos/Crudos/agbarometerARG_enero2026_conNA.xlsx") |>
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre,
+             regular = F)
+
+# datos locales imputados
+d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx") |> 
+  mutate(Bimestre = yearmonth(Bimestre)) |> 
+  as_tsibble(index = Bimestre)
+
+# Carga de datos de eeuu
+d_eeuu <- readxl::read_excel("../Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |> 
+  rename(Mes = 1, 
+         Año = 2,
+         `Ag Economy Barometer` = 3,
+         `Condiciones presentes` = 4,
+         `Expectativas futuras` = 5,
+         `Inversion de capital agricola` = 6) |> 
+  mutate(
+    Fecha = yearmonth(sprintf("%d-%02d", Año, match(Mes, month.name)))) |> 
+  relocate(Fecha) |> 
+  as_tsibble(index = Fecha)
+
+# Cargo la base creada
+d <- readxl::read_excel("../Datos/Procesados/base_construida.xlsx") |> 
+  mutate(Fecha = yearmonth(Fecha)) |> 
+  as_tsibble(index = Fecha)
+
+```
+
+
+
+```{r}
+# importo funciones
+source("../Scripts/funciones.R")
 ```
 
 
@@ -324,7 +364,7 @@ El fin de este apartado es plasmar el camino que se siguió para armar una base 
 
 
 
-## Tratamiento sobre las series provistas
+## Tratamiento sobre las series de las universidades
 
 
 Antes de decidir qué procesos aplicar sobre las series de Argentina, fue necesario identificar algunos atributos de estos datos, que se presentan a continuación.
@@ -332,14 +372,7 @@ Antes de decidir qué procesos aplicar sobre las series de Argentina, fue necesa
 
 
 
-```{r}
-# Carga de datos de Arg con faltantes
 
-d_conNA <- readxl::read_excel("../Datos/Crudos/agbarometerARG_enero2026_conNA.xlsx") |>
-  mutate(Bimestre = yearmonth(Bimestre)) |> 
-  as_tsibble(index = Bimestre,
-             regular = F)
-```
 
 
 ```{r}
@@ -405,149 +438,67 @@ Se aprecian dos características en estos datos. La primera es que los valores q
 
 
 
-Estos dos aspectos producen observaciones separadas por un mes (como octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos meses (acorde a lo planificado) y que otras estén separadas por tres meses (como enero 2020 y abril 2020).
+Estos dos aspectos producen observaciones separadas por un mes (como octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos meses (acorde a lo planificado) y que otras estén separadas por tres meses (como enero 2020 y abril 2020). Es otras palabras, las series argentinas son de periodicidad irregular.
+
+<!-- #### IMPUT ! -->
+
+Sin embargo, con el fin de responder a los objetivos de esta práctica profesional, fue necesario emplear varios recursos que requieren que las series bajo estudio sean de periodicidad regular. Por lo tanto se propuso, en primer lugar, imputar los valores que faltan para las tres series en las fechas de marzo y mayo 2020.
 
 
-Se propuso para las tres series imputar los valores que faltan para las fechas de marzo 2020, mayo 2020.
+Se imputaron cada una de las tres series con los métodos de interpolación lineal, interpolación de Stine y el filtro de Kalman presentados por Tamplín (2025). A continuación se muestran los resultados.
+
+
+
+```{r}
+#| label: tbl-agba_imputacion_3mets
+#| tbl-cap: "Imputación de las series argentinas según los tres métodos"
+
+d_conNA |>
+  mutate(across(c(`Ag Barometer Austral`,
+                   `Condiciones presentes`,
+                   `Expectativas futuras`), 
+                list(Lineal = ~na_interpolation(., "linear"),
+                     Stine = ~na_interpolation(., "stine"), 
+                     Kalman = na_kalman), 
+                .names = "{.col}_{.fn}")) |>
+  filter(Bimestre %in% yearmonth(c("2020 M03", "2020 M05"))) |>
+  select(Bimestre, ends_with("_Lineal"), ends_with("_Stine"), ends_with("_Kalman")) |>
+  as_tibble() |> 
+  pivot_longer(-Bimestre, names_to = c("Serie", "Método"), names_sep = "_") |>
+  pivot_wider(names_from = Bimestre, values_from = value) |>
+  mutate(
+    Método = case_when(
+      Método == "Lineal" ~ "Interpolacion lineal",
+      Método == "Stine"  ~ "Interpolacion Stine",
+      Método == "Kalman" ~ "Filtro de Kalman"
+    )
+  ) |>
+  rename(`Valor imputado marzo 2020` = 3, `Valor imputado mayo 2020` = 4) |>
+  select(Serie, Método, `Valor imputado marzo 2020`, `Valor imputado mayo 2020`) |>
+  mutate(across(where(is.numeric), ~ round(., 4))) |> 
+  arrange(Serie, factor(Método, levels = c("Interpolacion lineal", "Interpolacion Stine", "Filtro de Kalman"))) |>
+  kable(booktabs = TRUE, escape = FALSE, align = "llcc") |>       
+  kable_styling(
+    latex_options = c("repeat_header", "hold_position"),
+    repeat_header_text = "(continuación)",
+    full_width = FALSE
+  ) |>
+  column_spec(1, width = "4.5cm") |>
+  column_spec(2, width = "4.5cm") |>
+  column_spec(3, width = "3.2cm") |>
+  column_spec(4, width = "3.2cm") |>
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")
+```
+
+
+
+Para cada serie y cada fecha, los valores imputados mediante cualquiera de los tres métodos, son similares (@tbl-agba_imputacion_3mets). Por tal motivo se decidió imputar con el método de imputación lineal ya que es el más sencillo en cuanto a metodología.
+
+
+
 
 <!-- Es decir, se buscó lograr que las series locales tengan periodicidad regular para poder realizar análisis posteriores. -->
 
-Para poder elegir un método de imputación apropiado para el caso se analizaron los atributos principales de las series.
-
-```{r}
-#| label: fig-2
-#| fig-cap: "FACM de la primera diferencia de cada serie local"
-#| fig-width: 10
-
-acf1 <- d_conNA |> 
-  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
-  ACF(dif1 , lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACM del Ag Barometer Austral',
-       x = 'Retardo') +
-  theme_bw()
-
-acf2 <- d_conNA |> 
-  mutate(dif1 = difference(`Condiciones presentes`)) |> 
-  ACF(dif1 , lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACM de las Condiciones presentes',
-       x = 'Retardo') +
-  theme_bw()
-
-acf3 <- d_conNA |> 
-  mutate(dif1 = difference(`Expectativas futuras`)) |> 
-  ACF(dif1 , lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACM de las Expectativas futuras',
-       x = 'Retardo') +
-  theme_bw()
-
-acf1 + acf2 + acf3
-
-```
-
-
-```{r}
-#| label: fig-3
-#| fig-cap: "FACPM de la primera diferencia de cada serie local"
-#| fig-width: 10
-
-pacf1 <- d_conNA |> 
-  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
-  PACF(dif1 , lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACPM del Ag Barometer Austral',
-       x = 'Retardo') +
-  theme_bw()
-
-pacf2 <- d_conNA |> 
-  mutate(dif1 = difference(`Condiciones presentes`)) |> 
-  PACF(dif1 , lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACPM de las Condiciones presentes',
-       x = 'Retardo') +
-  theme_bw()
-
-pacf3 <- d_conNA |> 
-  mutate(dif1 = difference(`Expectativas futuras`)) |> 
-  PACF(dif1 , lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACPM de las Expectativas futuras',
-       x = 'Retardo') +
-  theme_bw()
-
-pacf1 + pacf2 + pacf3
-```
-
-
-```{r}
-#| include: false
-
-# Test Ljung-Box Ho) p_1 = .... = p_30 = 0
-
-# AgB
-pv_agb_arg_dif1 <- d_conNA |> 
-  fill_gaps() |> 
-  tidyr::fill(`Ag Barometer Austral`, .direction = "down") |> 
-  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
-  drop_na(dif1) |> 
-  pull(dif1) |> 
-  Box.test(lag = 20, type = "Ljung-Box") |> 
-  pluck("p.value") # solo guardo el p-value
-
-# Condiciones
-pv_cond_arg_dif1 <- d_conNA |> 
-  fill_gaps() |> 
-  tidyr::fill(`Condiciones presentes`, .direction = "down") |> 
-  mutate(dif1 = difference(`Condiciones presentes`)) |> 
-  drop_na(dif1) |> 
-  pull(dif1) |> 
-  Box.test(lag = 20, type = "Ljung-Box") |> 
-  pluck("p.value") 
-
-# Expectativas
-pv_expec_arg_dif1 <- d_conNA |> 
-  fill_gaps() |> 
-  tidyr::fill(`Expectativas futuras`, .direction = "down") |> 
-  mutate(dif1 = difference(`Expectativas futuras`)) |> 
-  drop_na(dif1) |> 
-  pull(dif1) |> 
-  Box.test(lag = 20, type = "Ljung-Box") |> 
-  pluck("p.value")
-
-pv_agb_arg_dif1 <- round(pv_agb_arg_dif1, digits = 4) 
-pv_cond_arg_dif1 <- round(pv_cond_arg_dif1, digits = 4)
-pv_expec_arg_dif1 <- round(pv_expec_arg_dif1, digits = 4)
-
-
-```
-
-
-Es común que las series económicas sigan el patrón de un paseo aleatorio (Hyndman & Athanasopoulos, 2021). Por esta razón se analizó si la primera diferencia de cada serie es un ruido blanco.
-
-
-La mayoría de los bastones de las FACM de la @fig-2 son no significativos. Hay unos pocos que sí lo son porque los coeficientes estimados superan el valor crítico (línea punteada azul). Sin embargo, la relevancia práctica de cada uno de estos últimos es dudosa ya que toman valores menores o iguales a 0.4, en valor absoluto. Observar qué ocurre con cada bastón individualmente no conduce a conclusiones claras, entonces se utilizó un recurso que contemple a todos los primeros bastones de manera conjunta: el test de Ljung-Box. Se concluye con un nivel de significación del 5% y en base a la evidencia muestral que los primeros veinte coeficientes de la FAC de las diferencias de las series *Ag Barometer Austral*, Condiciones presentes y Expectativas futuras son nulos, es decir, que estas tres series son paseos aleatorios. ($p-value=$ `r pv_agb_arg_dif1`, $p-value=$ `r pv_cond_arg_dif1` y $p-value=$ `r pv_expec_arg_dif1` respectivamente)
-
-
-
-Dadas las características de estas series, se decidió imputar estos dos valores mediante *interpolación lineal*, uno de los métodos comparados por Tamplín (2025).
-
-
-
-
-```{r}
-# datos locales imputados
-d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx") |> 
-  mutate(Bimestre = yearmonth(Bimestre)) |> 
-  as_tsibble(index = Bimestre)
-```
 
 
 
@@ -555,7 +506,7 @@ d_arg <- readxl::read_excel("../Datos/Procesados/agbarometer_ARG_imputado.xlsx")
 
 ```{r}
 #| label: fig-indices_arg
-#| fig-cap: "Series locales en el período noviembre 2018 - enero 2026"
+#| fig-cap: "Evolución de las series argentinas en el período noviembre 2018 - enero 2026"
 #| fig-height: 4
 #| fig-width: 6
 
@@ -598,20 +549,7 @@ Luego de este tratamiento se logran tres series de periodicidad bimestral, de 44
 De igual manera se planeó proceder a nivel internacional. A los fines de decidir qué procesos realizar sobre las series de Estados Unidos, en caso de ser requiridos, fue necesario primero identificar qué características poseen estos datos. Por tal motivo se muestran, a continuación, las series estadounidenses.
 
 
-```{r}
-# Carga de datos de eeuu
-d_eeuu <- readxl::read_excel("../Datos/Crudos/agbarometerUSA_marzo2026.xlsx") |> 
-  rename(Mes = 1, 
-         Año = 2,
-         `Ag Economy Barometer` = 3,
-         `Condiciones presentes` = 4,
-         `Expectativas futuras` = 5,
-         `Inversion de capital agricola` = 6) |> 
-  mutate(
-    Fecha = yearmonth(sprintf("%d-%02d", Año, match(Mes, month.name)))) |> 
-  relocate(Fecha) |> 
-  as_tsibble(index = Fecha)
-```
+
 
 
 
@@ -633,7 +571,7 @@ d_eeuu |>
     names_sort = TRUE
   ) |> 
   mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
-  kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
+  kable(align = "c") |>       
   kable_styling(
     latex_options = c("repeat_header"),
     repeat_header_text = "(continuación)"
@@ -709,7 +647,7 @@ readxl::read_excel("Tablas/tabla_covs.xlsx") |>
   kable( 
     align = c("l", "l", "l"),
     longtable = TRUE,
-    booktabs = TRUE # Estilo limpio y profesional para las líneas de LaTeX
+    booktabs = TRUE 
   ) |> 
   kable_styling(
     latex_options = c("repeat_header", "striped"),
@@ -1403,13 +1341,7 @@ A continuación se presentan herramientas que permitan comparar la evolución de
 <!-- comparo los dos AgB!! -->
 
 
-```{r}
-# Cargo la base creada
 
-d <- readxl::read_excel("../Datos/Procesados/base_construida.xlsx") |> 
-  mutate(Fecha = yearmonth(Fecha)) |> 
-  as_tsibble(index = Fecha)
-```
 
 ```{r}
 #| label: fig-ambos_agb
@@ -1514,45 +1446,6 @@ En primer lugar, se estimó la FCC entre estas dos series. Éstas fueron previam
 [^noestac_arg_usa]: Se probó la no estacionariedad del *Ag Barometer Austral* y del *Ag Economy Barometer* en la @sec-univ_arg y en la @sec-univ_usa respectivamente.
 
 
-```{r}
-# Creo fc ccf_prewhitened_plot()
-
-ccf_prewhitened_plot <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = NULL) {
-  
-  x_var <- enquo(x)
-  y_var <- enquo(y)
-  
-  x_vec <- data |> pull({{ x }})
-  y_vec <- data |> pull({{ y }})
-  
-  pw <- prewhiten(x = x_vec, y = y_vec, lag.max = lag_max, plot = FALSE)
-  
-  df <- data.frame(
-    lag = as.numeric(pw$ccf$lag),
-    ccf = as.numeric(pw$ccf$acf)
-  )
-  
-  ic <- qnorm(0.975) / sqrt(pw$ccf$n.used) # 1.96/sqrt(# obs usadas en ccf)
-  
-  if (is.null(lab_x)) lab_x <- as_label(x_var)
-  if (is.null(lab_y)) lab_y <- as_label(y_var)
-  
-  ggplot(df, aes(lag, ccf)) +
-    geom_col(width = 0.15, fill = "black") +
-    geom_hline(yintercept = c(-ic, ic), linetype = "dashed", color = "blue") +
-    geom_hline(yintercept = 0, color = "black", linewidth = 0.6) +
-    ylim(-1, 1) +
-    scale_x_continuous(breaks = seq(-lag_max, lag_max, by = 3)) +
-    labs(
-      x = "Retardo",
-      y = "FCCM",
-      caption = paste0("x = ", lab_x, "\ny = ", lab_y)
-    ) +
-    theme_bw()
-}
-```
-
-
 
 
 
@@ -1568,7 +1461,7 @@ d |>
   mutate(dif_agba = difference((`Ag Barometer Austral`)),
          dif_ageb = difference((`Ag Economy Barometer`))) |> 
   filter(!is.na(dif_agba)) |> 
-  ccf_prewhitened_plot(x = dif_ageb, 
+  ccf_preblanqueadas(x = dif_ageb, 
                        y = dif_agba, 
                        lag_max = 18,
                        lab_x = 'Ag Economy Barometer',
@@ -1607,7 +1500,7 @@ coint.test(d_cointeg$`Ag Economy Barometer`, d_cointeg$`Ag Barometer Austral`)
 
 
 
-Todos los rezagos de la @fig-ccf_arg_usa son no significativos, sugiriendo que ningún índice influye sobre el otro. En segundo lugar, se realizó la prueba de Engle-Granger[^obs_eeuu_usadas_en_ccf] y se concluye en base a la evidencia muestral que los *Barometers* no están cointegrados ($p-value > 0.1000$). Considerando los resultados de estos dos recursos empleados, se concluyó que la confianza de los productores argentinos no está asociada a la de los productores norteamericanos.
+Todos los rezagos de la @fig-ccf_arg_usa son no significativos, sugiriendo que ningún índice influye sobre el otro. En segundo lugar, se realizó la prueba de Engle-Granger[^obs_eeuu_usadas_en_ccf] (Enders, ) y se concluye en base a la evidencia muestral que los *Barometers* no están cointegrados ($p-value > 0.1000$). Considerando los resultados de estos dos recursos empleados, se concluyó que la confianza de los productores argentinos no está asociada a la de los productores norteamericanos.
 
 
 [^obs_eeuu_usadas_en_ccf]: Tanto para estimar la FCC como para poder realizar la prueba es necesario que las dos series tengan la misma longitud y periodicidad. En este sentido, sólo se utilizaron 44 datos estadounidenses los cuales representan un 34.92% de la totalidad.
@@ -1640,7 +1533,7 @@ d |>
   mutate(dif_agba = difference((`Ag Barometer Austral`)),
          dif_cond = difference((`Condiciones presentes Arg`))) |> 
   filter(!is.na(dif_agba)) |> 
-  ccf_prewhitened_plot(x = dif_cond, 
+  ccf_preblanqueadas(x = dif_cond, 
                        y = dif_agba, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
@@ -1658,7 +1551,7 @@ d |>
   mutate(dif_agba = difference((`Ag Barometer Austral`)),
          dif_exp = difference((`Expectativas futuras Arg`))) |> 
   filter(!is.na(dif_agba)) |> 
-  ccf_prewhitened_plot(x = dif_exp, 
+  ccf_preblanqueadas(x = dif_exp, 
                        y = dif_agba, 
                        lag_max = 18,
                        lab_x = 'Expectativas futuras',
@@ -1678,7 +1571,7 @@ d |>
   mutate(dif_cond = difference((`Condiciones presentes Arg`)),
          dif_exp = difference((`Expectativas futuras Arg`))) |> 
   filter(!is.na(dif_cond)) |> 
-  ccf_prewhitened_plot(x = dif_cond, 
+  ccf_preblanqueadas(x = dif_cond, 
                        y = dif_exp, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
@@ -1694,11 +1587,11 @@ El *Ag Barometer Austral* mantiene una relación contemporánea con las condicio
 
 
 
-### Análisis de los índices estadounidenses {#ccfs_usa}
+### Análisis de los índices norteamericanos {#ccfs_usa}
 
 
 
-Análogamente al caso local, se estudió la relación entre los indicadores norteamericanos estimando la FCC. Para no incurrir en correlaciones infladas por las fuertes estructuras de autocorrelación[^ccfs_usa] de las series, se sometió estas últimas a pre-blanqueo.
+Análogamente al caso local, se estudió la relación entre los indicadores estadounidenses estimando la FCC. Para no incurrir en correlaciones infladas por las fuertes estructuras de autocorrelación[^ccfs_usa] de las series, se sometió estas últimas a pre-blanqueo.
 
 [^ccfs_usa]: La no estacionariedad del *Ag Economy Barometer* fue probada en la @sec-univ_usa y la de las Condiciones presentes y Expectativas futuras de Estados Unidos en la @sec-carcs_indices_usa.
 
@@ -1713,7 +1606,7 @@ d |>
   mutate(dif_ageb = difference((`Ag Economy Barometer`)),
          dif_cond = difference((`Condiciones presentes EEUU`))) |> 
   filter(!is.na(dif_ageb)) |> 
-  ccf_prewhitened_plot(x = dif_cond, 
+  ccf_preblanqueadas(x = dif_cond, 
                        y = dif_ageb, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
@@ -1733,7 +1626,7 @@ d |>
   mutate(dif_ageb = difference((`Ag Economy Barometer`)),
          dif_exp = difference((`Expectativas futuras EEUU`))) |> 
   filter(!is.na(dif_ageb)) |> 
-  ccf_prewhitened_plot(x = dif_exp, 
+  ccf_preblanqueadas(x = dif_exp, 
                        y = dif_ageb, 
                        lag_max = 18,
                        lab_x = 'Expectativas futuras',
@@ -1752,7 +1645,7 @@ d |>
   mutate(dif_cond = difference((`Condiciones presentes EEUU`)),
          dif_exp = difference((`Expectativas futuras EEUU`))) |> 
   filter(!is.na(dif_cond)) |> 
-  ccf_prewhitened_plot(x = dif_cond, 
+  ccf_preblanqueadas(x = dif_cond, 
                        y = dif_exp, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
@@ -1782,69 +1675,6 @@ Se presentan gráficos que permitieron analizar la posible existencia de relacio
 no estacionariedad de las series. Es muy común que variables económicas como tasas de interés, precios, etc, sean no estacionarias (Tsay, 2010). Por tal motivo se asumió que todas las variables buscadas tienen una raiz unitaria. Además, el propio *Ag Barometer Austral* tampoco es estacionario como se probó en la @sec-univ_arg. En consecuencia, a la hora de intentar medir la asociación entre la confianza de los productores y estas variables, se podría estar obteniendo un alto valor de correlación, no porque las variables estén asociadas, sino debido a la fuerte estructura de autocorrelación de las series (Cryer y Chan, 2008). Para no obtener estas correlaciones espurias, se realizó el proceso de pre-blanqueo previo a cada gráfico de dispersión en todas las figuras.
 
 
-
-
-
-<!-- primero creo fc q una vez q le pasas el data de la y(t) vs x(t-1), cada grafico le hace el preblanqueo a la x y usa esa misma transformacion para la y, asi con todas las x. evitamos correlaciones espurias!! -->
-
-
-```{r}
-# CREACION DE FUNCION CORRELACIONES
-
-correlaciones_preblanqueadas <- function(df, y_col, x_cols) {
-  library(forecast)
-  library(tidyverse)
-  
-  lista_preblanqueada <- list()
-  y_original <- df[[y_col]]
-  
-  for (col in x_cols) {
-    x <- df[[col]]
-    validos <- complete.cases(x, y_original)
-    
-    # Ajustar ARIMA a X y filtrar Y
-    fit_x <- auto.arima(x[validos], seasonal = TRUE, ic = "aicc")
-    x_whitened <- residuals(fit_x)
-    
-    fit_y <- Arima(y_original[validos], model = fit_x)
-    y_whitened <- residuals(fit_y)
-    
-    lista_preblanqueada[[col]] <- tibble(
-      Fecha = df$Fecha[validos],
-      variable = col,
-      x_pre = x_whitened,
-      y_pre = y_whitened
-    )
-  }
-  
-  d_pre_long <- bind_rows(lista_preblanqueada)
-  
-  # Calcular correlaciones
-  df_cor_pre <- d_pre_long |>
-    group_by(variable) |>
-    summarise(r = cor(x_pre, y_pre, method = "pearson")) |>
-    arrange(r) |>
-    mutate(variable = factor(variable, levels = variable))
-  
-  # Generar gráfico
-  p <- d_pre_long |>
-    left_join(df_cor_pre, by = "variable") |>
-    mutate(label = paste0(variable, "\nr = ", round(r, 2)),
-           label = reorder(label, -r)) |>
-    ggplot(aes(x = x_pre, y = y_pre)) +
-    geom_point(alpha = 1, color = "black", size = 1.5) +
-    geom_smooth(method = "lm", se = FALSE, color = "red", linewidth = 0.8) +
-    facet_wrap(~label, scales = "free", ncol = 4) +
-    labs(
-      y = paste0(y_col),
-      caption = "r: coeficiente de correlación de Pearson estimado"
-    ) +
-    theme_bw(base_size = 10) +
-    theme(axis.title.x = element_blank())
-    
-  return(list(datos = d_pre_long, correlaciones = df_cor_pre, grafico = p))
-}
-```
 
 
 
@@ -2031,6 +1861,8 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 ```{r}
 #| label: fig-vars_economicas_arg
 #| fig-cap: "Correlaciones entre el *Ag Barometer Austral* y otras variables económicas pre-blanqueadas"
+#| fig-width: 6
+#| fig-height: 6
 
 ## Scatter AgB(t) vs covariables(t-1)
 
@@ -2120,76 +1952,39 @@ Dado que aún no se habían identificado factores asociados al *Ag Barometer*, l
 
 
 
+
+
+
 ```{r}
 #| label: fig-elecciones_arg
 #| fig-cap: "Evolución del *Ag Barometer Austral* y resultados de las elecciones presidenciales argentinas"
 #| fig-height: 4.5
 #| fig-width: 6.3
 
-# 1. Definimos los 8 hitos con un solo color para las líneas
-hitos <- data.frame(
-  Bimestre = yearmonth(c(
-    "2019 Oct", 
-    "2023 Nov"
-  )),
-  Tag = as.character(1:2),
-  Y_pos = rep(155, 2)
-)
-
-leyenda_hitos <- paste(
-  "Ganador de cada elección presidencial:",
-  "1: Alberto Fernández (Partido Frente de Todos)",
-  "2: Javier Milei (Partido La Libertad Avanza) | Ballotage",
-  sep = "\n"
-)
-
-# 3. Gráfico
-d_arg |> 
-  ggplot() +
-  aes(x = Bimestre, y = `Ag Barometer Austral`) +
-  
-  # Línea de referencia horizontal (100)
-  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
-  
-  # Líneas verticales del mismo color (un gris sobrio para no recargar)
-  geom_vline(data = hitos, aes(xintercept = Bimestre), 
-             color = "gray50", linetype = "dashed", linewidth = 0.6) +
-  
-  # Serie principal
-  geom_line(color = '#6D9DC5') +
-  geom_point(color = '#6D9DC5', size = 1) +
-  
-  # Números arriba de cada línea vertical
-  geom_text_repel(
-    data = hitos, 
-    aes(x = Bimestre, y = Y_pos, label = Tag),
-    fontface = "bold", 
-    color = "gray20",
-    size = 3.5,
-   # direction = "x", 
-    point.padding = 0.1,
-    box.padding = 0.2,
-    segment.color = NA
-  ) +
-  
-  # Escalas de ejes
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  
-  # Títulos y nota explicativa abajo
-  labs(
-    x = "Tiempo", 
-    y = "Ag Barometer Austral",
-    caption = leyenda_hitos
-  ) +
-  
-  theme_bw() +
-  theme(
-    panel.grid.minor = element_blank(),
-    plot.caption = element_text(hjust = 0, size = 8.5, color = "gray20", lineheight = 1.2),
-    plot.caption.position = "plot"
+# info sobre las elecciones de arg
+elecciones_arg <- data.frame(
+  Bimestre = yearmonth(c("2019 Oct", "2023 Nov")),
+  Tag = c("1", "2"),
+  Descripcion = c(
+    "Alberto Fernández (Partido Frente de Todos)",
+    "Javier Milei (Partido La Libertad Avanza) | Ballotage"
   )
+)
+
+# graf
+graficar_elecciones(
+  data = d_arg,
+  elecciones_df = elecciones_arg,
+  ancho_sombreado = 3, 
+  tiempo_col = Bimestre, # col tiempo q defini en elecciones_df
+  serie = `Ag Barometer Austral`, # serie q quiero graf del data
+  color_serie = "#6D9DC5"         
+)
 ```
+
+
+
+
 
 ```{r}
 #| label: fig-elecciones_usa
@@ -2197,73 +1992,29 @@ d_arg |>
 #| fig-height: 4.5
 #| fig-width: 6.3
 
-
-# 1. Definición de los 5 hitos electorales en EE.UU. (2015 - 2026)
-hitos_eeuu <- data.frame(
-  Fecha = yearmonth(c(
-    "2016 Nov", 
-    "2020 Nov", 
-    "2024 Nov"
-  )),
-  Tag = as.character(1:3),
-  Y_pos = rep(175, 3) 
-)
-
-# 2. Explicación limpia de cada resultado electoral
-leyenda_hitos_eeuu <- paste(
-  "Ganador de cada elección presidencial:",
-  "1: Donald Trump (Partido Republicano)",
-  "3: Joe Biden (Partido Demócrata)",
-  "5: Donald Trump (Partido Republicano)",
-  sep = "\n"
-)
-
-# 3. Gráfico
-d_eeuu |>
-  ggplot() +
-  aes(x = Fecha, y = `Ag Economy Barometer`) +
-  
-  # Línea de referencia en 100
-  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
-  
-  # Líneas verticales neutras (gris)
-  geom_vline(data = hitos_eeuu, aes(xintercept = Fecha), 
-             color = "gray50", linetype = "dashed", linewidth = 0.6) +
-  
-  # Serie principal en rojo
-  geom_line(color = "#BF211E") +
-  geom_point(color = "#BF211E", size = 1) +
-  
-  # Números de hito (1 al 5)
-  geom_text_repel(
-    data = hitos_eeuu, 
-    aes(x = Fecha, y = Y_pos, label = Tag),
-    fontface = "bold", 
-    color = "gray20",
-    size = 3.8,
-    direction = "x", 
-    point.padding = 0.1,
-    box.padding = 0.2,
-    segment.color = NA
-  ) +
-  
-  # Configuración de ejes
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  
-  # Títulos y nota con resultados electorales
-  labs(
-    x = "Tiempo",
-    y = "Ag Economy Barometer",
-    caption = leyenda_hitos_eeuu
-  ) +
-  
-  theme_bw() +
-  theme(
-    panel.grid.minor = element_blank(),
-    plot.caption = element_text(hjust = 0, size = 8.5, color = "gray20", lineheight = 1.2),
-    plot.caption.position = "plot"
+# hitos iniciales para el PDF
+elecciones_eeuu <- data.frame(
+  Fecha = yearmonth(c("2016 Nov", 
+                         "2020 Nov", 
+                         "2024 Nov")),
+  Tag = c("1", "2", "3"),
+  Descripcion = c(
+    "Donald Trump (Partido Republicano)",
+    "Joe Biden (Partido Demócrata)",
+    "Donald Trump (Partido Republicano)"
   )
+)
+
+# graf
+graficar_elecciones(
+  data = d_eeuu,
+  elecciones_df = elecciones_eeuu,
+  ancho_sombreado = 3, 
+  tiempo_col = Fecha,
+  serie = `Ag Economy Barometer`,
+  color_serie = "#BF211E"         
+)
+
 ```
 
 
@@ -2292,85 +2043,31 @@ Puede destacarse también una diferencia entre la confianza de ambos países. Lo
 ```{r}
 #| label: fig-eventos_globales
 #| fig-cap: "Evolución de los *Barometers* y otros eventos globales/bélicos"
-#| fig-height: 5.5
+#| fig-height: 5
 #| fig-width: 6
 
-hitos_belicos <- data.frame(
-  Fecha = yearmonth(c(
-    "2020 Apr",
-    "2022 Feb"
-  )),
-  Tag = as.character(1:2), # 1 hasta numero de rayas
-  Y_pos = rep(180, 2)
-)
-
-leyenda_belica <- paste(
-  "Hitos globales/bélicos:",
-  "1: Covid 19",
-  "2: Invasión rusa a Ucrania",
-  sep = "\n"
-)
-
-# 3. Gráfico comparativo Arg vs EE.UU.
-d |> 
-  as_tibble() |> 
-  tidyr::pivot_longer(
-    cols = c(`Ag Barometer Austral`, `Ag Economy Barometer`), 
-    names_to = "Índice", 
-    values_to = "valor"
-  ) |> 
-  tidyr::drop_na(valor) |> 
-  ggplot(aes(x = Fecha, y = valor, color = Índice, group = Índice)) +
-  
-  # Línea de referencia en 100
-  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
-  
-  # Líneas verticales neutras
-  geom_vline(data = hitos_belicos, aes(xintercept = Fecha), 
-             color = "gray40", linetype = "dashed", linewidth = 0.6, inherit.aes = FALSE) +
-  
-  # Series de tiempo principales
-  geom_line() +
-  geom_point(size = 1) +
-  
-  # Números indicadores (direction = "y" para que NO invierta los números en el eje X)
-  geom_text_repel(
-    data = hitos_belicos, 
-    aes(x = Fecha, y = Y_pos, label = Tag),
-    fontface = "bold", 
-    color = "gray10",
-    size = 3.8,
-#    direction = "y",
-    point.padding = 0.1,
-    box.padding = 0.2,
-    segment.color = NA,
-    inherit.aes = FALSE
-  ) +
-  
-  # Escalas y colores
-  scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
-  scale_y_continuous(breaks = scales::breaks_width(20)) +
-  scale_color_manual(values = c(
-    "Ag Barometer Austral" = "#6D9DC5",        
-    "Ag Economy Barometer" = "#BF211E" 
-  )) +
-  
-  # Títulos y leyenda explicativa
-  labs(
-    x = "Tiempo", 
-    y = "Ag Barometer",
-    caption = leyenda_belica
-  ) +
-  
-  theme_bw() +
-  theme(
-    panel.grid.minor = element_blank(),
-    legend.title = element_blank(),
-    legend.position = "bottom",
-    plot.caption = element_text(hjust = 0, size = 8, color = "gray20", lineheight = 1.2),
-    plot.caption.position = "plot"
+# hitos
+hitos_globales <- data.frame(
+  Fecha = yearmonth(c("2020 Apr", "2022 Feb")),
+  Tag = c("1", "2"),
+  Descripcion = c(
+    "Covid 19",
+    "Invasión rusa a Ucrania"
   )
+)
+
+# graf
+graficar_hitos_globales(
+  data = d,
+  hitos_df = hitos_globales,
+  ancho_sombreado = 3,
+  tiempo_col = Fecha
+)
 ```
+
+
+
+
 
 
 A partir de la información disponible hasta el momento, plasmada en la @fig-eventos_globales, y mediante inspección gráfica no parecen presentarse cambios notorios en el *Ag Barometer* en torno a los hitos considerados. Esto sugiere que eventos de esta índole no afectarían las percepciones de los productores agropecuarios.
@@ -2392,7 +2089,7 @@ A partir de la información disponible hasta el momento, plasmada en la @fig-eve
 
 
 
-Acorde a lo mencionado, a la hora de estudiar la relación entre dos series estimando la FCC, éstas deberían ser estacionarias. En caso de no serlo, para evitar correlaciones espurias, se realiza el pre-blanqueo sobre el par en cuestión previamente a la estimación. En este contexto, al investigar la relación entre las series locales en la @sec-ccfs_arg fue importante estudiar si estas tres son estacionarias o no. Este análisis ya fue presentado para el *Ag Barometer Austral* en la @sec-univ_arg, por lo que el interés de este apartado es presentar qué ocurre para las Condiciones presentes y Expectativas futuras. A continuación se muestran resultados que permitieron analizar esta característica.
+Acorde a lo mencionado, a la hora de estudiar la relación entre dos series estimando la FCC, éstas deberían ser estacionarias. En caso de no serlo, para evitar correlaciones espurias, se realiza el pre-blanqueo sobre el par en cuestión previamente a la estimación. En este contexto, al investigar la relación entre las series locales en la @sec-ccfs_arg fue importante estudiar si estas tres son estacionarias o no. Este análisis ya fue presentado para el *Ag Barometer Austral* en la @sec-univ_arg, por lo que el interés de este apartado es presentar qué ocurre para las Condiciones presentes y Expectativas futuras. A continuación se muestran resultados[^hipotesis2] que permitieron analizar esta característica.
 
 
 
@@ -2502,11 +2199,15 @@ pv_exparg_dif1_ljung <- d_arg |>
 
 
 
+
+
+
+
 ```{r}
 #| label: tbl-carcs_indices_arg
-#| tbl-cap: "Pruebas sobre las Condiciones presentes y Expectativas futuras argentinas"
+#| tbl-cap: "Resultados de las pruebas sobre las Condiciones presentes y Expectativas futuras argentinas al 5% de significación"
 
-# vector con los 5 pvalues de cond p y los 5 de expec fut.
+# Vector con los 5 p-values de cond p y los 5 de expec fut.
 p_values_arg <- c(
   # Condiciones presentes
   pv_condarg_adf,        # ADF
@@ -2519,17 +2220,23 @@ p_values_arg <- c(
   pv_exparg_adf,         # ADF
   pv_exparg_kpss,        # KPSS
   pv_exparg_dif1_adf,    # ADF (primera dif.)
-  pv_exparg_dif1_kpss,   # KPSS (primera dif.)
+  pv_exparg_dif1_kpss,    # KPSS (primera dif.)
   pv_exparg_dif1_ljung   # Ljung-Box (K = 20)
 )
 
-# armo tabla
+# Armo tabla agregando el cálculo con tu función
 tibble(
   Variable = c(
-    "Condiciones presentes", "", 
-    "Condiciones presentes, primera dif.", "", "", 
-    "Expectativas futuras", "", 
-    "Expectativas futuras, primera dif.", "", ""
+    "Condiciones presentes", 
+    "Condiciones presentes", 
+    "Condiciones presentes diferenciada", 
+    "Condiciones presentes diferenciada", 
+    "Condiciones presentes diferenciada", 
+    "Expectativas futuras", 
+    "Expectativas futuras", 
+    "Expectativas futuras diferenciada", 
+    "Expectativas futuras diferenciada", 
+    "Expectativas futuras diferenciada"
   ),
   Test = c(
     "ADF", "KPSS", 
@@ -2539,16 +2246,29 @@ tibble(
   ),
   `p-value` = p_values_arg
 )  |> 
-  kable(align = "llc") |> 
-  row_spec(5, extra_css = "border-bottom: 1px solid black;") 
+  mutate(
+    Resultado = mapply(
+      resultado_test, 
+      test = case_when(
+        grepl("ADF", Test, ignore.case = TRUE) ~ "adf",
+        grepl("KPSS", Test, ignore.case = TRUE) ~ "kpss",
+        grepl("Ljung", Test, ignore.case = TRUE) ~ "ljung"
+      ), 
+      pvalue = `p-value`
+    )
+  ) |> 
+  kable(align = "llcc") |> 
+  row_spec(5, extra_css = "border-bottom: 1px solid black;")
 ```
 
+[^hipotesis2]: La hipótesis nula del test ADF es $H_0)$ La serie no es estacionaria (tiene una raíz unitaria), la del test KPSS es $H_0)$ La serie es estacionaria y la del test Ljung-Box es $H_0)$ Los primeros 20 coeficientes de FAC son nulos.
 
 
-A partir de los resultados de la @tbl-carcs_indices_arg y en base a la evidencia muestral, se concluye con un 5% de nivel de significacion, que la primera diferencia de las Condiciones presentes es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la serie Expectativas futuras no es estacionaria y los primeros 20 coeficientes de la FAC de su primera diferencia son nulos.
+
+A partir de los resultados de la @tbl-carcs_indices_arg y en base a la evidencia muestral, se concluye con un 5% de nivel de significación, que la primera diferencia de las Condiciones presentes es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la serie Expectativas futuras no es estacionaria y los primeros 20 coeficientes de la FAC de su primera diferencia son nulos.
 
 
-Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que es estacionaria, se la considero como no estacionaria por presentar tendencia en el periodo que comprende desde principios de 2023 hasta fines de 2024 (@fig-indices_arg).
+Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que es estacionaria, se la consideró como no estacionaria por presentar tendencia en el peróodo que comprende desde principios de 2023 hasta fines de 2024 (@fig-indices_arg).
 
 
 <!-- acf dif1 exp fut arg -->
@@ -2580,20 +2300,21 @@ pacf_expec_arg_dif1 <- d_arg |>
 acf_expec_arg_dif1 + pacf_expec_arg_dif1
 ```
 
-Por otro lado, ante la discrepancia de los resultados para las Expectativas futuras diferenciadas, el test ADF conduce a que no son estacionarias y el KPSS si, teniendo en cuenta su FACM y FACPM (@fig-acf_expec_arg_dif1) se observa que ninguno de sus rezagos es significativo, sugiriendo que esta serie sigue un ruido blanco. Teniendo en cuenta esto, esta serie fue considerada estacionaria.
+
+Por otro lado, ante la discrepancia de los resultados para las Expectativas futuras diferenciadas, el test ADF conduce a que no son estacionarias y el KPSS sí, teniendo en cuenta su FACM y FACPM (@fig-acf_expec_arg_dif1) se observa que ninguno de sus rezagos es significativo, sugiriendo que esta serie sigue un ruido blanco, con lo cual fue considerada estacionaria.
  
 
-Teniendo en cuenta todos estos aspectos, se considero a ambas series en niveles como no estacionarias, siendo necesario diferenciarlas para lograr la estacionariedad. 
+Teniendo en cuenta todos estos aspectos, se consideró a ambas series en niveles como no estacionarias, siendo necesario diferenciarlas para lograr la estacionariedad. 
 
 
 
 
 
-## Características de los otros índices estadounidenses {#sec-carcs_indices_usa}
+## Características de los otros índices norteamericanos {#sec-carcs_indices_usa}
 
 
 
-Al igual que en el caso argentino, para inspeccionar la relación entre los índices norteamericanos, fue necesario estudiar si las Condiciones presentes y Expectativas futuras son estacionarias o no.
+Al igual que en el caso argentino, para inspeccionar la relación entre los índices estadounidenses, fue necesario estudiar si las Condiciones presentes y Expectativas futuras son estacionarias o no.
 
 
 ```{r}
@@ -2714,7 +2435,7 @@ pv_expeeuu_dif1_ljung <- d_eeuu |>     # segunda vez q calculo esto en arg
 
 ```{r}
 #| label: tbl-carcs_indices_usa
-#| tbl-cap: "Pruebas sobre las Condiciones presentes y Expectativas futuras norteamericanas"
+#| tbl-cap: "Resultados de las pruebas sobre las Condiciones presentes y Expectativas futuras norteamericanas al 5% de significación"
 #| tbl-pos: "H"
 
 # vector con los 5 pvalues de cond p y los 5 de expec fut.
@@ -2737,10 +2458,16 @@ p_values_eeuu <- c(
 # armo tabla
 tibble(
   Variable = c(
-    "Condiciones presentes", "", 
-    "Condiciones presentes, primera dif.", "", "", 
-    "Expectativas futuras", "", 
-    "Expectativas futuras, primera dif.", "", ""
+    "Condiciones presentes", 
+    "Condiciones presentes", 
+    "Condiciones presentes diferenciada", 
+    "Condiciones presentes diferenciada", 
+    "Condiciones presentes diferenciada", 
+    "Expectativas futuras", 
+    "Expectativas futuras", 
+    "Expectativas futuras diferenciada", 
+    "Expectativas futuras diferenciada", 
+    "Expectativas futuras diferenciada"
   ),
   Test = c(
     "ADF", "KPSS", 
@@ -2750,13 +2477,24 @@ tibble(
   ),
   `p-value` = p_values_eeuu
 )  |> 
-  kable(align = "llc") |> 
-  row_spec(5, extra_css = "border-bottom: 1px solid black;") 
+  mutate(
+    Resultado = mapply(
+      resultado_test, 
+      test = case_when(
+        grepl("ADF", Test, ignore.case = TRUE) ~ "adf",
+        grepl("KPSS", Test, ignore.case = TRUE) ~ "kpss",
+        grepl("Ljung", Test, ignore.case = TRUE) ~ "ljung"
+      ), 
+      pvalue = `p-value`
+    )
+  ) |> 
+  kable(align = "llcc") |> 
+  row_spec(5, extra_css = "border-bottom: 1px solid black;")
   
 ```
 
 
-En base a la evidencia muestral y los resultados de la @tbl-carcs_indices_usa, se concluye que tanto para las Condiciones presentes como para las Expectativas futuras la primera diferencia es estacionaria y que los primeros 20 coeficientes de las FAC son nulos. Sin embargo, para estas mismas series en niveles, los p-values conducen a resultados que ameritaron mas analisis. 
+En base a la evidencia muestral y los resultados[^hipotesis2] de la @tbl-carcs_indices_usa, se concluye que tanto para las Condiciones presentes como para las Expectativas futuras la primera diferencia es estacionaria y que los primeros 20 coeficientes de las FAC son nulos. Sin embargo, para estas mismas series en niveles, los p-values conducen a resultados que ameritaron mas analisis. 
 
 
 En primer lugar, se obtiene mediante el test ADF y KPSS que la serie de las Condiciones presentes es estacionaria.
@@ -2854,15 +2592,20 @@ https://finance.yahoo.com/
 
 https://www.argentina.gob.ar/economia/agricultura/agricultura
 
-<!-- falta tesina lucia tamplin!, tiene otra forma de citarse -->
 
 Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016). *Time series analysis: Forecasting and control* ($5^a$ ed.). Wiley.
 
 Cryer, J. D., & Chan, K.-S. (2008). *Time series analysis: With applications in R* ($2^a$ ed.). Springer.
 
+Enders, W. (2014). *Applied econometric time series*. ($4^a$ ed.). John Wiley & Sons.
+
 Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* ($3^a$ ed.). OTexts. https://otexts.com/fpp3/
 
 Lütkepohl, H., & Krätzig, M. (Eds.). (2004). *Applied Time Series Econometrics*. Cambridge University Press.
+
+Peña, D. (2010). *Análisis de series temporales*. Alianza Editoral
+
+Tamplín, L. (2025). *Evaluación de Métodos de Imputación de Datos Faltantes en Series Temporales Univariadas*. Tesis de grado de Licenciatura en Estadística. Universidad Nacional de Rosario. Rosario, Argentina.
 
 Tsay, R. S. (2010). *Analysis of financial time series* ($3^a$ ed.). John Wiley & Sons.
 

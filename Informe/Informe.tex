@@ -537,8 +537,8 @@
   de las series provistas como imputación de valores faltantes,
   eliminación de valores, homogeneización de nombres de variables, etc.
 
-  \subsection{Tratamiento sobre las series
-  provistas}\label{tratamiento-sobre-las-series-provistas}
+  \subsection{Tratamiento sobre las series de las
+  universidades}\label{tratamiento-sobre-las-series-de-las-universidades}
 
   Antes de decidir qué procesos aplicar sobre las series de Argentina,
   fue necesario identificar algunos atributos de estos datos, que se
@@ -607,62 +607,65 @@
   Estos dos aspectos producen observaciones separadas por un mes (como
   octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos
   meses (acorde a lo planificado) y que otras estén separadas por tres
-  meses (como enero 2020 y abril 2020).
+  meses (como enero 2020 y abril 2020). Es otras palabras, las series
+  argentinas son de periodicidad irregular.
 
-  Se propuso para las tres series imputar los valores que faltan para
-  las fechas de marzo 2020, mayo 2020.
+  Sin embargo, con el fin de responder a los objetivos de esta práctica
+  profesional, fue necesario emplear varios recursos que requieren que
+  las series bajo estudio sean de periodicidad regular. Por lo tanto se
+  propuso, en primer lugar, imputar los valores que faltan para las tres
+  series en las fechas de marzo y mayo 2020.
 
-  Para poder elegir un método de imputación apropiado para el caso se
-  analizaron los atributos principales de las series.
+  Se imputaron cada una de las tres series con los métodos de
+  interpolación lineal, interpolación de Stine y el filtro de Kalman
+  presentados por Tamplín (2025). A continuación se muestran los
+  resultados.
 
-  \begin{figure}
+  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{4.5cm}>{\centering\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{3.2cm}}
 
-  \centering{
+  \caption{\label{tbl-agba_imputacion_3mets}Imputación de las series
+  argentinas según los tres métodos}
 
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-2-1.pdf}}
+  \tabularnewline
 
-  }
+  \toprule
+  Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
+  \midrule
+  \endfirsthead
+  \multicolumn{4}{@{}l}{(continuación)}\\
+  \toprule
+  Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
+  \midrule
+  \endhead
 
-  \caption{\label{fig-2}FACM de la primera diferencia de cada serie
-  local}
+  \endfoot
+  \bottomrule
+  \endlastfoot
+   & Interpolacion lineal & 52.5000 & 50.5000\\
+  \nopagebreak
+   & Interpolacion Stine & 52.5000 & 50.5000\\
+  \nopagebreak
+  \multirow{-3}{4.5cm}{\raggedright\arraybackslash Ag Barometer Austral} & Filtro de Kalman & 53.6642 & 52.3904\\
+  \cmidrule{1-4}\pagebreak[0]
+   & Interpolacion lineal & 48.0000 & 51.0000\\
+  \nopagebreak
+   & Interpolacion Stine & 48.0000 & 51.0000\\
+  \nopagebreak
+  \multirow{-3}{4.5cm}{\raggedright\arraybackslash Condiciones presentes} & Filtro de Kalman & 49.0874 & 52.1107\\
+  \cmidrule{1-4}\pagebreak[0]
+   & Interpolacion lineal & 55.0000 & 49.5000\\
+  \nopagebreak
+   & Interpolacion Stine & 55.0000 & 49.5000\\
+  \nopagebreak
+  \multirow{-3}{4.5cm}{\raggedright\arraybackslash Expectativas futuras} & Filtro de Kalman & 55.5112 & 51.1437\\*
 
-  \end{figure}%
+  \end{longtable}
 
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-3-1.pdf}}
-
-  }
-
-  \caption{\label{fig-3}FACPM de la primera diferencia de cada serie
-  local}
-
-  \end{figure}%
-
-  Es común que las series económicas sigan el patrón de un paseo
-  aleatorio (Hyndman \& Athanasopoulos, 2021). Por esta razón se analizó
-  si la primera diferencia de cada serie es un ruido blanco.
-
-  La mayoría de los bastones de las FACM de la Figura~\ref{fig-2} son no
-  significativos. Hay unos pocos que sí lo son porque los coeficientes
-  estimados superan el valor crítico (línea punteada azul). Sin embargo,
-  la relevancia práctica de cada uno de estos últimos es dudosa ya que
-  toman valores menores o iguales a 0.4, en valor absoluto. Observar qué
-  ocurre con cada bastón individualmente no conduce a conclusiones
-  claras, entonces se utilizó un recurso que contemple a todos los
-  primeros bastones de manera conjunta: el test de Ljung-Box. Se
-  concluye con un nivel de significación del 5\% y en base a la
-  evidencia muestral que los primeros veinte coeficientes de la FAC de
-  las diferencias de las series \emph{Ag Barometer Austral}, Condiciones
-  presentes y Expectativas futuras son nulos, es decir, que estas tres
-  series son paseos aleatorios. (\(p-value=\) 0.9339, \(p-value=\)
-  0.9443 y \(p-value=\) 0.8711 respectivamente)
-
-  Dadas las características de estas series, se decidió imputar estos
-  dos valores mediante \emph{interpolación lineal}, uno de los métodos
-  comparados por Tamplín (2025).
+  Para cada serie y cada fecha, los valores imputados mediante
+  cualquiera de los tres métodos, son similares
+  (Tabla~\ref{tbl-agba_imputacion_3mets}). Por tal motivo se decidió
+  imputar con el método de imputación lineal ya que es el más sencillo
+  en cuanto a metodología.
 
   \begin{figure}
 
@@ -672,8 +675,8 @@
 
   }
 
-  \caption{\label{fig-indices_arg}Series locales en el período noviembre
-  2018 - enero 2026}
+  \caption{\label{fig-indices_arg}Evolución de las series argentinas en
+  el período noviembre 2018 - enero 2026}
 
   \end{figure}%
 
@@ -1405,11 +1408,12 @@
     para estimar la FCC como para poder realizar la prueba es necesario
     que las dos series tengan la misma longitud y periodicidad. En este
     sentido, sólo se utilizaron 44 datos estadounidenses los cuales
-    representan un 34.92\% de la totalidad.} y se concluye en base a la
-  evidencia muestral que los \emph{Barometers} no están cointegrados
-  (\(p-value > 0.1000\)). Considerando los resultados de estos dos
-  recursos empleados, se concluyó que la confianza de los productores
-  argentinos no está asociada a la de los productores norteamericanos.
+    representan un 34.92\% de la totalidad.} (Enders, ) y se concluye en
+  base a la evidencia muestral que los \emph{Barometers} no están
+  cointegrados (\(p-value > 0.1000\)). Considerando los resultados de
+  estos dos recursos empleados, se concluyó que la confianza de los
+  productores argentinos no está asociada a la de los productores
+  norteamericanos.
 
   \subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
 
@@ -1768,36 +1772,41 @@
   \emph{Ag Barometer Austral} en la Sección~\ref{sec-univ_arg}, por lo
   que el interés de este apartado es presentar qué ocurre para las
   Condiciones presentes y Expectativas futuras. A continuación se
-  muestran resultados que permitieron analizar esta característica.
+  muestran resultados\footnote{La hipótesis nula del test ADF es
+    \(H_0)\) La serie no es estacionaria (tiene una raiz unitaria), la
+    del test KPSS es \(H_0)\) La serie es estacionaria y la del test
+    Ljung-Box es \(H_0)\) Los primeros 20 coeficientes de FAC son nulos.}
+  que permitieron analizar esta característica.
 
-  \begin{longtable}[t]{llc}
+  \begin{longtable}[t]{llcc}
 
-  \caption{\label{tbl-carcs_indices_arg}Pruebas sobre las Condiciones
-  presentes y Expectativas futuras argentinas}
+  \caption{\label{tbl-carcs_indices_arg}Resultados de las pruebas sobre
+  las Condiciones presentes y Expectativas futuras argentinas al 5\% de
+  significación}
 
   \tabularnewline
 
   \toprule
-  Variable & Test & p-value\\
+  Variable & Test & p-value & Resultado\\
   \midrule
-  Condiciones presentes & ADF & 0.4448\\
-   & KPSS & \vphantom{2} 0.1000\\
-  Condiciones presentes, primera dif. & ADF & 0.0405\\
-   & KPSS & \vphantom{1} 0.1000\\
-   & Ljung-Box & 0.0604\\
+  Condiciones presentes & ADF & 0.4448 & No Estac.\\
+  Condiciones presentes & KPSS & 0.1000 & Estacionaria\\
+  Condiciones presentes diferenciada & ADF & 0.0405 & Estacionaria\\
+  Condiciones presentes diferenciada & KPSS & 0.1000 & Estacionaria\\
+  Condiciones presentes diferenciada & Ljung-Box & 0.0604 & Ruido blanco\\
   \addlinespace
-  Expectativas futuras & ADF & 0.0512\\
-   & KPSS & 0.0149\\
-  Expectativas futuras, primera dif. & ADF & 0.0861\\
-   & KPSS & 0.1000\\
-   & Ljung-Box & 0.8984\\
+  Expectativas futuras & ADF & 0.0512 & No Estac.\\
+  Expectativas futuras & KPSS & 0.0149 & No Estac.\\
+  Expectativas futuras diferenciada & ADF & 0.0861 & No Estac.\\
+  Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
+  Expectativas futuras diferenciada & Ljung-Box & 0.8984 & Ruido blanco\\
   \bottomrule
 
   \end{longtable}
 
   A partir de los resultados de la Tabla~\ref{tbl-carcs_indices_arg} y
   en base a la evidencia muestral, se concluye con un 5\% de nivel de
-  significacion, que la primera diferencia de las Condiciones presentes
+  significación, que la primera diferencia de las Condiciones presentes
   es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la
   serie Expectativas futuras no es estacionaria y los primeros 20
   coeficientes de la FAC de su primera diferencia son nulos.
@@ -1806,8 +1815,8 @@
   las Expectativas futuras, los tests realizados conducen a conclusiones
   contradictorias. En el caso de las Condiciones presentes en niveles,
   aunque por el test ADF se llega a que dicha serie no es estacionaria y
-  mediante el de KPSS se concluye que es estacionaria, se la considero
-  como no estacionaria por presentar tendencia en el periodo que
+  mediante el de KPSS se concluye que es estacionaria, se la consideró
+  como no estacionaria por presentar tendencia en el peróodo que
   comprende desde principios de 2023 hasta fines de 2024
   (Figura~\ref{fig-indices_arg}).
 
@@ -1826,13 +1835,12 @@
 
   Por otro lado, ante la discrepancia de los resultados para las
   Expectativas futuras diferenciadas, el test ADF conduce a que no son
-  estacionarias y el KPSS si, teniendo en cuenta su FACM y FACPM
+  estacionarias y el KPSS sí, teniendo en cuenta su FACM y FACPM
   (Figura~\ref{fig-acf_expec_arg_dif1}) se observa que ninguno de sus
   rezagos es significativo, sugiriendo que esta serie sigue un ruido
-  blanco. Teniendo en cuenta esto, esta serie fue considerada
-  estacionaria.
+  blanco, con lo cual fue considerada estacionaria.
 
-  Teniendo en cuenta todos estos aspectos, se considero a ambas series
+  Teniendo en cuenta todos estos aspectos, se consideró a ambas series
   en niveles como no estacionarias, siendo necesario diferenciarlas para
   lograr la estacionariedad.
 
@@ -1845,37 +1853,42 @@
 
   \needspace{16\baselineskip}
 
-  \begin{longtable}[t]{llc}
+  \begin{longtable}[t]{llcc}
 
-  \caption{\label{tbl-carcs_indices_usa}Pruebas sobre las Condiciones
-  presentes y Expectativas futuras norteamericanas}
+  \caption{\label{tbl-carcs_indices_usa}Resultados de las pruebas sobre
+  las Condiciones presentes y Expectativas futuras norteamericanas al
+  5\% de significación}
 
   \tabularnewline
 
   \toprule
-  Variable & Test & p-value\\
+  Variable & Test & p-value & Resultado\\
   \midrule
-  Condiciones presentes & ADF & 0.0388\\
-   & KPSS & \vphantom{3} 0.1000\\
-  Condiciones presentes, primera dif. & ADF & 0.0100\\
-   & KPSS & \vphantom{2} 0.1000\\
-   & Ljung-Box & 0.5395\\
+  Condiciones presentes & ADF & 0.0388 & Estacionaria\\
+  Condiciones presentes & KPSS & 0.1000 & Estacionaria\\
+  Condiciones presentes diferenciada & ADF & 0.0100 & Estacionaria\\
+  Condiciones presentes diferenciada & KPSS & 0.1000 & Estacionaria\\
+  Condiciones presentes diferenciada & Ljung-Box & 0.5395 & Ruido blanco\\
   \addlinespace
-  Expectativas futuras & ADF & 0.0857\\
-   & KPSS & \vphantom{1} 0.1000\\
-  Expectativas futuras, primera dif. & ADF & 0.0100\\
-   & KPSS & 0.1000\\
-   & Ljung-Box & 0.4870\\
+  Expectativas futuras & ADF & 0.0857 & No Estac.\\
+  Expectativas futuras & KPSS & 0.1000 & Estacionaria\\
+  Expectativas futuras diferenciada & ADF & 0.0100 & Estacionaria\\
+  Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
+  Expectativas futuras diferenciada & Ljung-Box & 0.4870 & Ruido blanco\\
   \bottomrule
 
   \end{longtable}
 
   En base a la evidencia muestral y los resultados de la
-  \textbf{?@tbl-caracs\_indices\_usa}, se concluye que tanto para las
-  Condiciones presentes como para las Expectativas futuras la primera
-  diferencia es estacionaria y que los primeros 20 coeficientes de las
-  FAC son nulos. Sin embargo, para estas mismas series en niveles, los
-  p-values conducen a resultados que ameritaron mas analisis.
+  Tabla~\ref{tbl-carcs_indices_usa}\footnote{La hipótesis nula del test
+    ADF es \(H_0)\) La serie no es estacionaria (tiene una raiz
+    unitaria), la del test KPSS es \(H_0)\) La serie es estacionaria y
+    la del test Ljung-Box es \(H_0)\) Los primeros 20 coeficientes de
+    FAC son nulos.}, se concluye que tanto para las Condiciones
+  presentes como para las Expectativas futuras la primera diferencia es
+  estacionaria y que los primeros 20 coeficientes de las FAC son nulos.
+  Sin embargo, para estas mismas series en niveles, los p-values
+  conducen a resultados que ameritaron mas analisis.
 
   En primer lugar, se obtiene mediante el test ADF y KPSS que la serie
   de las Condiciones presentes es estacionaria.
@@ -1936,12 +1949,23 @@
   Cryer, J. D., \& Chan, K.-S. (2008). \emph{Time series analysis: With
   applications in R} (\(2^a\) ed.). Springer.
 
+  Enders, W. (2014). \emph{Applied econometric time series}. (\(4^a\)
+  ed.). John Wiley \& Sons.
+
   Hyndman, R. J., \& Athanasopoulos, G. (2021). \emph{Forecasting:
   Principles and practice} (\(3^a\) ed.). OTexts.
   https://otexts.com/fpp3/
 
   Lütkepohl, H., \& Krätzig, M. (Eds.). (2004). \emph{Applied Time
   Series Econometrics}. Cambridge University Press.
+
+  Peña, D. (2010). \emph{Análisis de series temporales}. Alianza
+  Editoral
+
+  Tamplín, L. (2025). \emph{Evaluación de Métodos de Imputación de Datos
+  Faltantes en Series Temporales Univariadas}. Tesis de grado de
+  Licenciatura en Estadística. Universidad Nacional de Rosario. Rosario,
+  Argentina.
 
   Tsay, R. S. (2010). \emph{Analysis of financial time series} (\(3^a\)
   ed.). John Wiley \& Sons.
