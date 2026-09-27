@@ -195,6 +195,69 @@
   \pagestyle{fancy}
   \rhead{}
 
+  \section*{Agradecimientos}\label{agradecimientos}
+
+  \newpage
+
+  \section*{Resumen}\label{resumen}
+
+  El sector agropecuario es clave en el desarrollo de las sociedades,
+  especialmente en las no desarrolladas. Su relevancia varía según el
+  país, esto motiva comparar la confianza de los productores entre
+  economías. El \emph{Ag Barometer Austral} mide la confianza del
+  productor argentino (Universidad Austral, desde 2018) y el \emph{Ag
+  Economy Barometer} la del productor norteamericano (Universidad
+  \emph{Purdue}, desde 2015). Este trabajo tuvo como objetivo comparar,
+  desde una perspectiva exploratoria, la evolución temporal de ambos
+  índices y estudiar qué factores están asociados a la confianza de los
+  productores.
+
+  Principalmente su desarrollo fue realizado en base a los índices de
+  confianza relevados por las universidades. Asimismo, se hizo uso de
+  variables económicas de sitios como el Banco Mundial, la Reserva
+  Federal de Estados Unidos y la Bolsa de Comercio de Rosario.
+
+  Para cumplir con los objetivos, se imputaron valores faltantes y se
+  creó un conjunto de datos que reuniera la información de Argentina, de
+  Estados Unidos y las variables económicas. Posteriormente se realizó
+  un análisis exploratorio univariado de los índices para identificar
+  qué características tiene cada uno, ya sea estacionariedad, tendencia,
+  estacionalidad, volatilidad, etc. Para llevarlo a cabo se presentaron
+  diversas figuras y tests. Asimismo, se aplicaron técnicas de
+  correlación cruzada y análisis de rezagos para estudiar si estos
+  indicadores están relacionados y para analizar, a modo de análisis
+  cuantitativo, si están asociados a variables económicas. A su vez, a
+  modo de análisis cualitativo se investigó de forma gráfica si ciertos
+  acontecimientos, como resultados electorales, Covid-19 o conflictos
+  bélicos, alteran la confianza de los productores.
+
+  En el análisis univariado se encontró que las series exhiben cambios
+  repentinos, no presentarían variancia constante, ni pauta estacional,
+  no son estacionarias y siguen el patrón de paseo aleatorio. En el
+  análisis bivariado se obtuvieron tres resultados. El primero es que la
+  confianza de productores argentinos no guarda relación con la de los
+  norteamericanos. El segundo es que, en ambos países, las percepciones
+  de los productores no estarían asociadas a ningún factor económico. El
+  tercero es que, los años en los que se registran los cambios abruptos
+  y una mayor volatilidad en las percepciones coinciden con los períodos
+  de elecciones presidenciales, lo que sugiere que la confianza de los
+  productores se encontraría alterada por factores de índole política en
+  ambos países.
+
+  Dado que los resultados presentados se sustentan principalmente en
+  técnicas exploratorias, sería interesante en futuras líneas de
+  investigación incorporar métodos analíticos que aporten mayor solidez
+  a las conclusiones.
+
+  \textbf{Palabras clave:} \emph{Ag Barometer}, productores, series
+  temporales, asociaciones, variables económicas, elecciones
+  presidenciales.
+
+  \emph{\textbf{Keywords:} Ag Barometer, farmers, time series,
+  associations, economic variables, presidential elections}.
+
+  \newpage
+
   \tableofcontents
 
   \newpage
@@ -202,23 +265,27 @@
 
   \section{Introducción}\label{introducciuxf3n}
 
-  El sector agropecuario, que comprende actividades como la agricultura
-  y la ganadería, se dedica a la obtención de materias primas; utilizada
-  tanto para exportación como para consumo interno, además de generar
-  empleo, con su consiguiente impacto positivo en sociedad. Es decir, el
-  sector agropecuario es de gran relevancia para el desarrollo económico
-  y social de la República Argentina.
+  Todo lo que hoy la raza humana ingiere se deriva, en su mayoría, de la
+  agricultura o de la ganadería, es decir, del sector agropecuario. Su
+  crecimiento incrementa las productividades, disminuye los precios de
+  los alimentos, aumenta el empleo agrícola y controla la inflación,
+  todo esto contribuye al progreso de la sociedad. Por estas razones, el
+  sector agropecuario es fundamental para sociedades consideradas no
+  desarrolladas (Bula, 2020). En este sentido, si bien el sector es
+  importante, en cada país se desenvuelve en distintas condiciones
+  debido a diferencias en sus entornos económicos, financieros y
+  climáticos. Por tal motivo, resulta de interés disponer de datos que
+  permitan realizar comparaciones de distintas economías.
 
-  Dada la importancia del sector, el Centro de Agronegocios y Alimentos
-  (CEAg) de la Universidad Austral sede Rosario desarrolla un índice
-  denominado \emph{Ag Barometer Austral} que mide la confianza de los
-  productores agropecuarios argentinos. Se desarrolla de manera
-  bimestral a partir de encuestas estructuradas a productores
-  representativos del sector, permitiendo analizar la evolución de sus
-  percepciones sobre la situación actual, expectativas futuras e
-  intenciones de inversión a través del tiempo. Este indicador es
-  desarrollado en colaboración metodológica con la Universidad de
-  \emph{Purdue} (Estados Unidos) desde 2018.
+  El Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral
+  sede Rosario desarrolla un índice denominado \emph{Ag Barometer
+  Austral} que mide la confianza de los productores agropecuarios
+  argentinos. Se desarrolla de manera bimestral a partir de encuestas
+  estructuradas a productores representativos del sector, permitiendo
+  analizar la evolución de sus percepciones sobre la situación actual,
+  expectativas futuras e intenciones de inversión a través del tiempo.
+  Este indicador es desarrollado en colaboración metodológica con la
+  Universidad de \emph{Purdue} (Estados Unidos) desde 2018.
 
   El mencionado CEAg es una entidad especializada y de alto nivel
   académico cuya misión es impulsar, desde la región, el fortalecimiento
@@ -238,9 +305,11 @@
   agrupecuarios, lo que permite realizar comparaciones entre economías
   con diferentes niveles de estabilidad macroeconómica e institucional.
 
-  En este contexto, el propósito general de este informe es presentar un
-  análisis comparativo de los índices de confianza agropecuaria de
-  Argentina y Estados Unidos (\emph{Ag Barometer}).
+  En este contexto, el propósito general de este trabajo es presentar,
+  desde un enfoque exploratorio, un análisis comparativo de la confianza
+  agropecuaria de Argentina y Estados Unidos (\emph{Ag Barometer}),
+  estudiando los aspectos de su evolución temporal, la posible relación
+  entre ambos índices y los fenómenos a los que está asociado.
 
   El presente documento representa un resumen del trabajo realizado en
   el CEAg entre los meses Agosto y Octubre de 2026, bajo el concepto del
@@ -271,7 +340,7 @@
   \item
     Realizar la recolección, integración y depuración de las bases de
     datos correspondientes al \emph{Ag Barometer Austral} y al \emph{Ag
-    Economy Barometer}, generando series temporales comparables.
+    Economy Barometer}.
   \item
     Confeccionar una base de datos que contenga información de series
     económicas para analizar su relación con los índices bajo estudio.
@@ -288,14 +357,14 @@
     técnicas como correlación cruzada y análisis de rezagos, con el fin
     de identificar posibles vínculos, sincronización o divergencias
     entre ambos contextos, promoviendo una mirada comparativa a nivel
-    internacional.
+    internacional de manera exploratoria.
   \item
-    Identificar y analizar el impacto de eventos relevantes ---tales
-    como cambios en políticas económicas, variaciones en tasas de
-    interés, precios internacionales, crisis sanitarias o eventos
-    climáticos--- sobre la evolución de los índices, comprendiendo el
-    efecto de factores macroeconómicos, políticos y productivos sobre
-    las expectativas y decisiones de los productores agropecuarios.
+    Identificar y analizar el impacto de eventos relevantes tales como
+    cambios en políticas económicas, variaciones en tasas de interés,
+    precios internacionales o crisis sanitarias sobre la evolución de
+    los índices, comprendiendo el efecto de factores macroeconómicos,
+    políticos y productivos sobre las expectativas y decisiones de los
+    productores agropecuarios.
   \item
     Desarrollar una aplicación interactiva que permita visualizar y
     explorar los principales resultados obtenidos, facilitando el acceso
@@ -310,8 +379,6 @@
     herramientas de la estadística con conceptos de economía y
     agronegocios.
   \end{itemize}
-
-  \newpage
 
   \newpage
 
@@ -793,7 +860,7 @@
     Índice de Actividad de la Cadena Agropecuaria
   \item
     Eventos: Resultados de elecciones presidenciales, hechos bélicos y
-    pandemia Covid 19
+    pandemia Covid-19
   \end{itemize}
 
   Estas variables incorporadas fueron propuestas por los especialistas y
@@ -928,8 +995,9 @@
   bastones significativos. Esto sugiere que la serie no sería ruido
   blanco.
 
-  Se realiza el test de Ljung-Box para analizar si el \emph{Ag Barometer
-  Austral} se comporta como un ruido blanco.
+  Se realiza el test de Ljung-Box (Box et al., 2016, p.~289) para
+  analizar si el \emph{Ag Barometer Austral} se comporta como un ruido
+  blanco.
 
   \begin{longtable}[t]{ccc}
 
@@ -1090,31 +1158,30 @@
   temporales y variancia no constante a lo largo de los años, pueden
   interpretarse como indicios de no estacionariedad del \emph{Ag
   Barometer Austral}. Siguiendo esta línea de análisis, se realizaron
-  los tests \emph{Augmented Dickey-Fuller} (ADF) (Peña, 2010) y
+  los tests \emph{Augmented Dickey-Fuller} (ADF) (Peña, 2010, p.~269) y
   \emph{Kwiatkowski, Phillips, Schmidt y Shin} (KPSS)
-  (Lütkepohl-Krätzig, 2004). Se concluye en base a la evidencia muestral
-  que la serie de las percepciones del sector agropecuario argentino no
-  es estacionaria, al 5\% de nivel de significación (\(p-value=\)
-  0.1108, \(p-value=\) 0.0141)\footnote{El test ADF evalúa la hipótesis
-    nula ``\(H_0)\) La serie no es estacionaria'' mientras que el test
-    KPSS prueba ``\(H_0)\) La serie es estacionaria''. Por lo que se
-    concluye a un 5\% de nivel de significación que la serie no es
-    estacionaria si para el test ADF se obtiene un \(p-value>0.05\) y
-    para el KPSS un \(p-value \leq 0.05\).}.
+  (Lütkepohl-Krätzig, 2004, p.~63). Se concluye en base a la evidencia
+  muestral que la serie de las percepciones del sector agropecuario
+  argentino no es estacionaria, al 5\% de nivel de significación
+  (\(p-value=\) 0.1108, \(p-value=\) 0.0141)\footnote{El test ADF evalúa
+    la hipótesis nula ``\(H_0)\) La serie no es estacionaria'' mientras
+    que el test KPSS prueba ``\(H_0)\) La serie es estacionaria''. Por
+    lo que se concluye a un 5\% de nivel de significación que la serie
+    no es estacionaria si para el test ADF se obtiene un
+    \(p-value>0.05\) y para el KPSS un \(p-value \leq 0.05\).}.
 
   Con el fin de obtener más características, también se decidió analizar
   la primera diferencia. Ninguno de los rezagos en la
   Figura~\ref{fig-acf_agba_dif1} es significativo, esto sugiere que la
   primera diferencia de la serie sería ruido blanco. Para presentar
   conclusiones más allá de lo heurístico, se realizaron los tests de
-  ADF, KPSS y Ljung-Box (Box, 2016) sobre la serie diferenciada.
-  Obteniéndose, al 5\% de nivel de significación a partir de la
-  evidencia muestral, que la serie diferenciada es estacionaria
-  (\(p-value=\) 0.0253, \(p-value=\) 0.1000) y que los primeros 20
-  coeficientes de su FAC son nulos (\(p-value=\) 0.4647). Estos
-  resultados conducen a que la serie diferenciada sigue un ruido blanco
-  y que consecuentemente el \emph{Ag Barometer Austral} sigue el patrón
-  de paseo aleatorio.
+  ADF, KPSS y Ljung-Box sobre la serie diferenciada. Obteniéndose, al
+  5\% de nivel de significación a partir de la evidencia muestral, que
+  la serie diferenciada es estacionaria (\(p-value=\) 0.0253,
+  \(p-value=\) 0.1000) y que los primeros 20 coeficientes de su FAC son
+  nulos (\(p-value=\) 0.4647). Estos resultados conducen a que la serie
+  diferenciada sigue un ruido blanco y que consecuentemente el \emph{Ag
+  Barometer Austral} sigue el patrón de paseo aleatorio.
 
   \subsection{\texorpdfstring{Análisis descriptivo univariado del
   \emph{Ag Economy
@@ -1408,12 +1475,12 @@
     para estimar la FCC como para poder realizar la prueba es necesario
     que las dos series tengan la misma longitud y periodicidad. En este
     sentido, sólo se utilizaron 44 datos estadounidenses los cuales
-    representan un 34.92\% de la totalidad.} (Enders, ) y se concluye en
-  base a la evidencia muestral que los \emph{Barometers} no están
-  cointegrados (\(p-value > 0.1000\)). Considerando los resultados de
-  estos dos recursos empleados, se concluyó que la confianza de los
-  productores argentinos no está asociada a la de los productores
-  norteamericanos.
+    representan un 34.92\% de la totalidad.} (Enders, 2014, secc. 6.1) y
+  se concluye en base a la evidencia muestral que los \emph{Barometers}
+  no están cointegrados (\(p-value > 0.1000\)). Considerando los
+  resultados de estos dos recursos empleados, se concluyó que la
+  confianza de los productores argentinos no está asociada a la de los
+  productores norteamericanos.
 
   \subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
 
@@ -1478,10 +1545,10 @@
   concluir que las tres evolucionan juntas.
 
   \subsubsection{Análisis de los índices
-  estadounidenses}\label{ccfs_usa}
+  norteamericanos}\label{ccfs_usa}
 
   Análogamente al caso local, se estudió la relación entre los
-  indicadores norteamericanos estimando la FCC. Para no incurrir en
+  indicadores estadounidenses estimando la FCC. Para no incurrir en
   correlaciones infladas por las fuertes estructuras de
   autocorrelación\footnote{La no estacionariedad del \emph{Ag Economy
     Barometer} fue probada en la Sección~\ref{sec-univ_usa} y la de las
@@ -1655,7 +1722,7 @@
   Barometer}, la investigación no podía darse por concluida. Por esta
   razón, se revisó la situación con los expertos. Éstos sostienen que el
   índice bajo estudio probablemente esté vinculado a acontecimientos
-  políticos, bélicos y/o globales como la pandemia de Covid 19. Se
+  políticos, bélicos y/o globales como la pandemia de Covid-19. Se
   presentan dichas posibles relaciones.
 
   \begin{figure}
@@ -1748,12 +1815,22 @@
 
   \end{figure}%
 
-  A partir de la información disponible hasta el momento, plasmada en la
-  Figura~\ref{fig-eventos_globales}, y mediante inspección gráfica no
-  parecen presentarse cambios notorios en el \emph{Ag Barometer} en
-  torno a los hitos considerados. Esto sugiere que eventos de esta
-  índole no afectarían las percepciones de los productores
-  agropecuarios.
+  A partir de la inspección gráfica (Figura~\ref{fig-eventos_globales}),
+  el \emph{Ag Barometer} no parece verse afectado por la invasión rusa a
+  Ucrania. Sin embargo, sobre la base de esta visualización, no parece
+  que ocurra lo mismo cuando se analiza el comienzo de la pandemia. En
+  el caso de Estados Unidos, la confianza muestra una disminución
+  notable alrededor de este acontecimiento. No obstante, a nivel local,
+  la confianza ya registraba valores pesimistas desde antes del 2020,
+  posiblemente debido al resultado electoral de 2019
+  (Figura~\ref{fig-elecciones_arg}). Esta proximidad temporal entre
+  ambos hitos dificulta analizar, mediante un análisis meramente
+  gráfico, si la pandemia podría haber tenido un efecto en el \emph{Ag
+  Barometer Austral}.
+
+  \newpage
+
+  \section{Discusión}\label{discusiuxf3n}
 
   \newpage
 
@@ -1773,7 +1850,7 @@
   que el interés de este apartado es presentar qué ocurre para las
   Condiciones presentes y Expectativas futuras. A continuación se
   muestran resultados\footnote{La hipótesis nula del test ADF es
-    \(H_0)\) La serie no es estacionaria (tiene una raiz unitaria), la
+    \(H_0)\) La serie no es estacionaria (tiene una raíz unitaria), la
     del test KPSS es \(H_0)\) La serie es estacionaria y la del test
     Ljung-Box es \(H_0)\) Los primeros 20 coeficientes de FAC son nulos.}
   que permitieron analizar esta característica.
@@ -1845,10 +1922,10 @@
   lograr la estacionariedad.
 
   \subsection{Características de los otros índices
-  estadounidenses}\label{sec-carcs_indices_usa}
+  norteamericanos}\label{sec-carcs_indices_usa}
 
   Al igual que en el caso argentino, para inspeccionar la relación entre
-  los índices norteamericanos, fue necesario estudiar si las Condiciones
+  los índices estadounidenses, fue necesario estudiar si las Condiciones
   presentes y Expectativas futuras son estacionarias o no.
 
   \needspace{16\baselineskip}
@@ -1879,16 +1956,16 @@
 
   \end{longtable}
 
-  En base a la evidencia muestral y los resultados de la
-  Tabla~\ref{tbl-carcs_indices_usa}\footnote{La hipótesis nula del test
-    ADF es \(H_0)\) La serie no es estacionaria (tiene una raiz
-    unitaria), la del test KPSS es \(H_0)\) La serie es estacionaria y
-    la del test Ljung-Box es \(H_0)\) Los primeros 20 coeficientes de
-    FAC son nulos.}, se concluye que tanto para las Condiciones
-  presentes como para las Expectativas futuras la primera diferencia es
-  estacionaria y que los primeros 20 coeficientes de las FAC son nulos.
-  Sin embargo, para estas mismas series en niveles, los p-values
-  conducen a resultados que ameritaron mas analisis.
+  En base a la evidencia muestral y los resultados\footnote{La hipótesis
+    nula del test ADF es \(H_0)\) La serie no es estacionaria (tiene una
+    raíz unitaria), la del test KPSS es \(H_0)\) La serie es
+    estacionaria y la del test Ljung-Box es \(H_0)\) Los primeros 20
+    coeficientes de FAC son nulos.} de la
+  Tabla~\ref{tbl-carcs_indices_usa}, se concluye que tanto para las
+  Condiciones presentes como para las Expectativas futuras la primera
+  diferencia es estacionaria y que los primeros 20 coeficientes de las
+  FAC son nulos. Sin embargo, para estas mismas series en niveles, los
+  p-values conducen a resultados que ameritaron mas analisis.
 
   En primer lugar, se obtiene mediante el test ADF y KPSS que la serie
   de las Condiciones presentes es estacionaria.
@@ -1945,6 +2022,10 @@
   Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016).
   \emph{Time series analysis: Forecasting and control} (\(5^a\) ed.).
   Wiley.
+
+  Bula, A. (2020). \emph{Importancia de la agricultura en el desarrollo
+  socio-económico}. Puente Académico N° 16, Observatorio Económico
+  Social, Universidad Nacional de Rosario (UNR).
 
   Cryer, J. D., \& Chan, K.-S. (2008). \emph{Time series analysis: With
   applications in R} (\(2^a\) ed.). Springer.
