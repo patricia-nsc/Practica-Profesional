@@ -300,7 +300,7 @@ Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
 
 
 
-Si bien los dos índices, *Ag Barometer Austral* y *Ag Economy Barometer*, comparten el objetivo de medir la confianza de los productores de cada país, presentan similitudes y diferencias. Por ejemplo, una diferencia entre ellos es la extensión de sus series temporales: la primera observación del *Ag Economy Barometer* corresponde a octubre de 2015, mientras que la del *Ag Barometer Austral* corresponde a octubre de 2018. Esto evidencia que el estudio de medir el sentimiento de los productores comenzó orginalmente en la Universidad de *Purdue*.
+Si bien los dos índices, *Ag Barometer Austral* y *Ag Economy Barometer*, comparten el objetivo de medir la confianza de los productores de cada país, presentan similitudes y diferencias. Por ejemplo, una diferencia entre ellos es la extensión de sus series temporales: la primera observación del *Ag Economy Barometer* corresponde a octubre de 2015, mientras que la del *Ag Barometer Austral* corresponde a octubre de 2018. Esto evidencia que el estudio de medir el sentimiento de los productores comenzó originalmente en la Universidad de *Purdue*.
 
 
 
@@ -1014,7 +1014,7 @@ pv_agba_dif1_ljung <- d_arg |>     # segunda vez q calculo esto en arg
 
 
 
-A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig-agba, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023, la confianza en Argentina fue pesimista con valores similares de condiciones presentes y expectativas futuras (@fig-indices_arg). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
+
 
 A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig-agba, se observa que, si bien la serie de las percepciones no parecería presentar patrones como un ciclo o pauta estacional, un hecho que amerita ser destacado es la repentina y aparente baja que ocurrió en 2019. También se puede apreciar que, aproximadamente durante el período 2020-2023, la confianza en Argentina fue pesimista y en todo el 2023 hasta mediados de 2024 la confianza fue creciendo. En el período de pesimismo de la confianza del productor argentino, los indicadores de Condiciones presentes y Expectativas futuras también tuvieron valores similares (@fig-indices_arg). En cambio, en el resto del período, cuando la confianza fue optimista, se observa que los productores sostienen mayores expectativas a futuro respecto de sus condiciones actuales. 
 
@@ -1361,7 +1361,7 @@ Con el fin de ahondar más en las características presentes en esta serie, tamb
 
 ## Análisis bivariado
 
-Superada la etapa de análisis univariado, se aborda el estudio bivariado. Este apartado presenta un estudio comparativo entre las percepciones de ambos países y muestra la relación del *Ag Barometer* con las condiciones presentes, expecticvas futuras, diversas variables económicas y eventos clave.
+Superada la etapa de análisis univariado, se aborda el estudio bivariado. Este apartado presenta un estudio comparativo entre las percepciones de ambos países y muestra la relación del *Ag Barometer* con las condiciones presentes, expectivas futuras, diversas variables económicas y eventos clave.
 
 
 
@@ -1696,7 +1696,7 @@ Estudiadas las relaciones entre los índices de las universidades, el interés s
 
 
 
-Se presentan gráficos que permitieron analizar la posible existencia de relaciones. Éstos tienen dos particularidades. La primera es que cada punto representa el *Ag Barometer* de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación porque tanto el relevamiento del *Ag Barometer* como la publicación de los precios ocurren a principios de cada mes, de tal manera que los productores responen en base a los precios del mes anterior. Por ende, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de septiembre para relevar el *Ag Barometer* de ese mes, la información de precios más reciente con la que cuentan es la de los precios de agosto, ya que los datos de septiembre todavía no fueron publicados. La segunda particularidad está vinculada a la 
+Se presentan gráficos que permitieron analizar la posible existencia de relaciones. Éstos tienen dos particularidades. La primera es que cada punto representa el *Ag Barometer* de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación porque tanto el relevamiento del *Ag Barometer* como la publicación de los precios ocurren a principios de cada mes, de tal manera que los productores responden en base a los precios del mes anterior. Por ende, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de septiembre para relevar el *Ag Barometer* de ese mes, la información de precios más reciente con la que cuentan es la de los precios de agosto, ya que los datos de septiembre todavía no fueron publicados. La segunda particularidad está vinculada a la 
 no estacionariedad de las series. Es muy común que variables económicas como tasas de interés, precios, etc, sean no estacionarias (Tsay, 2010). Por tal motivo se asumió que todas las variables buscadas tienen una raiz unitaria. Además, el propio *Ag Barometer Austral* tampoco es estacionario como se probó en la @sec-univ_arg. En consecuencia, a la hora de intentar medir la asociación entre la confianza de los productores y estas variables, se podría estar obteniendo un alto valor de correlación, no porque las variables estén asociadas, sino debido a la fuerte estructura de autocorrelación de las series (Cryer y Chan, 2008). Para no obtener estas correlaciones espurias, se realizó el proceso de pre-blanqueo previo a cada gráfico de dispersión en todas las figuras.
 
 
@@ -2319,7 +2319,7 @@ tibble(
 A partir de los resultados de la @tbl-carcs_indices_arg y en base a la evidencia muestral, se concluye con un 5% de nivel de significación, que la primera diferencia de las Condiciones presentes es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la serie Expectativas futuras no es estacionaria y los primeros 20 coeficientes de la FAC de su primera diferencia son nulos.
 
 
-Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que es estacionaria, se la consideró como no estacionaria por presentar tendencia en el peróodo que comprende desde principios de 2023 hasta fines de 2024 (@fig-indices_arg).
+Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que es estacionaria, se la consideró como no estacionaria por presentar tendencia en el período que comprende desde principios de 2023 hasta fines de 2024 (@fig-indices_arg).
 
 
 <!-- acf dif1 exp fut arg -->

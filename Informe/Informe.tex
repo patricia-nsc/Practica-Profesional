@@ -192,1918 +192,1953 @@
   
 \begin{document}
 
-  \pagestyle{fancy}
-  \rhead{}
 
-  \section*{Agradecimientos}\label{agradecimientos}
+% ====================== PORTADA ======================
 
-  \newpage
 
-  \section*{Resumen}\label{resumen}
 
-  El sector agropecuario es clave en el desarrollo de las sociedades,
-  especialmente en las no desarrolladas. Su relevancia varía según el
-  país, esto motiva comparar la confianza de los productores entre
-  economías. El \emph{Ag Barometer Austral} mide la confianza del
-  productor argentino (Universidad Austral, desde 2018) y el \emph{Ag
-  Economy Barometer} la del productor norteamericano (Universidad
-  \emph{Purdue}, desde 2015). Este trabajo tuvo como objetivo comparar,
-  desde una perspectiva exploratoria, la evolución temporal de ambos
-  índices y estudiar qué factores están asociados a la confianza de los
-  productores.
+\begin{titlepage}
 
-  Principalmente su desarrollo fue realizado en base a los índices de
-  confianza relevados por las universidades. Asimismo, se hizo uso de
-  variables económicas de sitios como el Banco Mundial, la Reserva
-  Federal de Estados Unidos y la Bolsa de Comercio de Rosario.
-
-  Para cumplir con los objetivos, se imputaron valores faltantes y se
-  creó un conjunto de datos que reuniera la información de Argentina, de
-  Estados Unidos y las variables económicas. Posteriormente se realizó
-  un análisis exploratorio univariado de los índices para identificar
-  qué características tiene cada uno, ya sea estacionariedad, tendencia,
-  estacionalidad, volatilidad, etc. Para llevarlo a cabo se presentaron
-  diversas figuras y tests. Asimismo, se aplicaron técnicas de
-  correlación cruzada y análisis de rezagos para estudiar si estos
-  indicadores están relacionados y para analizar, a modo de análisis
-  cuantitativo, si están asociados a variables económicas. A su vez, a
-  modo de análisis cualitativo se investigó de forma gráfica si ciertos
-  acontecimientos, como resultados electorales, Covid-19 o conflictos
-  bélicos, alteran la confianza de los productores.
-
-  En el análisis univariado se encontró que las series exhiben cambios
-  repentinos, no presentarían variancia constante, ni pauta estacional,
-  no son estacionarias y siguen el patrón de paseo aleatorio. En el
-  análisis bivariado se obtuvieron tres resultados. El primero es que la
-  confianza de productores argentinos no guarda relación con la de los
-  norteamericanos. El segundo es que, en ambos países, las percepciones
-  de los productores no estarían asociadas a ningún factor económico. El
-  tercero es que, los años en los que se registran los cambios abruptos
-  y una mayor volatilidad en las percepciones coinciden con los períodos
-  de elecciones presidenciales, lo que sugiere que la confianza de los
-  productores se encontraría alterada por factores de índole política en
-  ambos países.
-
-  Dado que los resultados presentados se sustentan principalmente en
-  técnicas exploratorias, sería interesante en futuras líneas de
-  investigación incorporar métodos analíticos que aporten mayor solidez
-  a las conclusiones.
-
-  \textbf{Palabras clave:} \emph{Ag Barometer}, productores, series
-  temporales, asociaciones, variables económicas, elecciones
-  presidenciales.
-
-  \emph{\textbf{Keywords:} Ag Barometer, farmers, time series,
-  associations, economic variables, presidential elections}.
-
-  \newpage
-
-  \tableofcontents
-
-  \newpage
-  \rhead{\nouppercase{\leftmark}}
-
-  \section{Introducción}\label{introducciuxf3n}
-
-  Todo lo que hoy la raza humana ingiere se deriva, en su mayoría, de la
-  agricultura o de la ganadería, es decir, del sector agropecuario. Su
-  crecimiento incrementa las productividades, disminuye los precios de
-  los alimentos, aumenta el empleo agrícola y controla la inflación,
-  todo esto contribuye al progreso de la sociedad. Por estas razones, el
-  sector agropecuario es fundamental para sociedades consideradas no
-  desarrolladas (Bula, 2020). En este sentido, si bien el sector es
-  importante, en cada país se desenvuelve en distintas condiciones
-  debido a diferencias en sus entornos económicos, financieros y
-  climáticos. Por tal motivo, resulta de interés disponer de datos que
-  permitan realizar comparaciones de distintas economías.
-
-  El Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral
-  sede Rosario desarrolla un índice denominado \emph{Ag Barometer
-  Austral} que mide la confianza de los productores agropecuarios
-  argentinos. Se desarrolla de manera bimestral a partir de encuestas
-  estructuradas a productores representativos del sector, permitiendo
-  analizar la evolución de sus percepciones sobre la situación actual,
-  expectativas futuras e intenciones de inversión a través del tiempo.
-  Este indicador es desarrollado en colaboración metodológica con la
-  Universidad de \emph{Purdue} (Estados Unidos) desde 2018.
-
-  El mencionado CEAg es una entidad especializada y de alto nivel
-  académico cuya misión es impulsar, desde la región, el fortalecimiento
-  de las cadenas de valor agroalimentarias e instituciones relacionadas,
-  como un motor de desarrollo humano, económico y social de largo plazo
-  para la Argentina, a través de la formación y de la investigación
-  aplicada. La iniciativa promueve, desde un ámbito universitario, la
-  capacidad de los sectores agroindustriales de crear y liderar las
-  oportunidades y tendencias relacionadas con los agronegocios y
-  alimentos, desde nuestro país, para la región y el mundo.
-
-  A nivel internacional se reporta un índice similar conocido como
-  \emph{Ag Economy Barometer}. Es elaborado por la Universidad de
-  \emph{Purdue} desde 2015 y mide mensualmente la confianza de los
-  productores estadounidenses. Representa un referente global en la
-  medición de las percepciones y expectativas de los productores
-  agrupecuarios, lo que permite realizar comparaciones entre economías
-  con diferentes niveles de estabilidad macroeconómica e institucional.
-
-  En este contexto, el propósito general de este trabajo es presentar,
-  desde un enfoque exploratorio, un análisis comparativo de la confianza
-  agropecuaria de Argentina y Estados Unidos (\emph{Ag Barometer}),
-  estudiando los aspectos de su evolución temporal, la posible relación
-  entre ambos índices y los fenómenos a los que está asociado.
-
-  El presente documento representa un resumen del trabajo realizado en
-  el CEAg entre los meses Agosto y Octubre de 2026, bajo el concepto del
-  desarrollo de una práctica profesional para terminar la carrera de
-  Licenciatura en Estadística de la Facultad de Ciencias Económicas y
-  Estadística de la Universidad Nacional de Rosario.
-
-  \newpage
-
-  \section{Objetivos}\label{objetivos}
-
-  \subsection{Objetivo general}\label{objetivo-general}
-
-  En línea con lo expuesto, la finalidad de esta investigación es
-  analizar y comparar la dinámica temporal del \emph{Ag Barometer
-  Austral} y del \emph{Ag Economy Barometer}, identificando patrones
-  comunes y diferencias entre ambos indicadores, y explorando su
-  relación con variables económicas, productivas y acontecimientos
-  relevantes de los contextos argentino y estadounidense.
-
-  \subsection{Tareas específicas de la práctica
-  profesional}\label{tareas-especuxedficas-de-la-pruxe1ctica-profesional}
-
-  Se determinan las siguientes tareas:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Realizar la recolección, integración y depuración de las bases de
-    datos correspondientes al \emph{Ag Barometer Austral} y al \emph{Ag
-    Economy Barometer}.
-  \item
-    Confeccionar una base de datos que contenga información de series
-    económicas para analizar su relación con los índices bajo estudio.
-  \item
-    Desarrollar un análisis exploratorio de las series de tiempo,
-    incluyendo el estudio de tendencia, estacionalidad, volatilidad y
-    comportamiento general de los índices.
-  \item
-    Analizar la dinámica temporal de los indicadores, identificando
-    patrones, tendencias, estacionalidad y posibles cambios
-    estructurales.
-  \item
-    Analizar la relación entre ambas series temporales, mediante
-    técnicas como correlación cruzada y análisis de rezagos, con el fin
-    de identificar posibles vínculos, sincronización o divergencias
-    entre ambos contextos, promoviendo una mirada comparativa a nivel
-    internacional de manera exploratoria.
-  \item
-    Identificar y analizar el impacto de eventos relevantes tales como
-    cambios en políticas económicas, variaciones en tasas de interés,
-    precios internacionales o crisis sanitarias sobre la evolución de
-    los índices, comprendiendo el efecto de factores macroeconómicos,
-    políticos y productivos sobre las expectativas y decisiones de los
-    productores agropecuarios.
-  \item
-    Desarrollar una aplicación interactiva que permita visualizar y
-    explorar los principales resultados obtenidos, facilitando el acceso
-    a la información y su interpretación por parte de usuarios técnicos
-    y no especializados.
-  \item
-    Participar en la elaboración de un informe final detallado, que
-    documente la metodología utilizada, los resultados obtenidos y las
-    principales conclusiones del análisis.
-  \item
-    Integrar el trabajo en un enfoque interdisciplinario, articulando
-    herramientas de la estadística con conceptos de economía y
-    agronegocios.
-  \end{itemize}
-
-  \newpage
-
-  \section{Materiales}\label{materiales}
-
-  El objetivo de esta sección es mostrar las características de los
-  índices en estudio tales como la definición de población, qué método
-  se utiliza para seleccionar la muestra, especificaciones sobre el
-  trabajo de campo, qué preguntas se realizan en cada edición y cómo se
-  utilizan estas últimas para construir los indicadores.
-
-  \subsection{\texorpdfstring{Características del \emph{Ag Barometer
-  Austral}}{Características del Ag Barometer Austral}}\label{caracteruxedsticas-del-ag-barometer-austral}
-
-  La población está conformada por productores de la Pampa Húmeda
-  abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa
-  Fe; cuyo valor bruto de producción es mayor o igual a USD 200,000;
-  donde un 45\% producen soja, un 21\% maíz, un 16\% ganadería vacuna,
-  un 7\% trigo, un 7\% tambo y un 4\% girasol. Estas últimas categorías
-  no son mutuamente excluyentes porque cada productor podría dedicarse a
-  más de una actividad, por lo que los porcentajes mencionados
-  representan mínimos. Se entiende por productores agropecuarios a
-  personas físicas o jurídicas cuya actividad principal sea la
-  producción de soja, trigo, maíz, etc. en tierras propias y/o
-  arrendadas (sin excluir que realicen otras actividades).
-
-  Se realizó un muestreo estratificado de productores teniendo en cuenta
-  datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
-  productores en cuanto a su producción:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    50\% de los encuestados con un valor bruto de producción entre USD
-    200,000 y USD 399,000 al año
-  \item
-    30\% de los encuestados con valor bruto de producción entre USD
-    414,000 y USD 999,999 al año
-  \item
-    20\% de los encuestados con un valor bruto de producción mayor o
-    igual a USD 1,000,000 al año.
-  \end{itemize}
-
-  En cuanto al trabajo de campo, la encuesta es realizada a 406
-  productores por teléfono insumiendo alrededor de tres semanas. El
-  relevamiento se realiza en los meses de enero, marzo, mayo, julio,
-  septiembre y noviembre. Éstos últimos se denominan ``meses impares''
-  en este documento.
-
-  En dicho relevamiento se formulan las siguientes cinco preguntas
-  dicotómicas (de respuesta ``Sí'' / ``No'') fijas:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \(Q_1\): ¿Ud. diría que su operación actualmente está mejor, peor o
-    igual financieramente con respecto a un año atrás?
-  \item
-    \(Q_2\): Mirando hacia adelante: de acá a un año ¿considera que su
-    explotación estará mejor, peor o igual financieramente?
-  \item
-    \(Q_3\): Pensando ahora en la economía agropecuaria en general
-    ¿considera que los próximos meses serán: buenos tiempos hablando
-    financieramente o malos tiempos?
-  \item
-    \(Q_4\): Mirando hacia adelante ¿qué situación diría que es más
-    probable, el sector agropecuario argentino en los próximos 5 años,
-    tendrá mayormente buenos tiempos o mayormente malos tiempos?
-  \item
-    \(Q_5\): Pensando en inversiones importantes -- como maquinaria,
-    compra de tierras, cabezas de ganado, capacidad de almacenamiento,
-    bioenergía- en general ¿Ud. considera que hoy es un buen momento o
-    mal momento para realizar inversiones?
-  \end{itemize}
-
-  En todas las ediciones del \emph{Ag Barometer Austral} se añaden
-  alrededor de seis preguntas que reflejan percepciones referidas a
-  temas coyunturales / estacionales que impactan al sector agropecuario
-  argentino. Éstas varían según los temas de interés del momento.
-
-  Finalizada la etapa de recolección, se procede a la construcción de
-  los índices. El primer paso del cálculo del \emph{Ag Barometer
-  Austral} es obtener una medida para cada una de las cinco preguntas
-  fijas. Se calcula como el porcentaje de respuestas favorables
-  (``Sí''), menos el porcentaje de respuestas desfavorables (``No''),
-  más 100. Esto da a cada medida un rango de posibles puntajes de 0 a
-  200. Cuando todas las respuestas son ``Sí'', el índice es 200. Cuando
-  todas las respuestas son ``No'', el índice es 0.
-
-  El valor final del \emph{Ag Barometer Austral} es el promedio simple
-  de las medidas de las cinco preguntas individuales donde el 100 indica
-  un punto neutro. Valores por encima de 100 expresan percepciones
-  positivas y valores por debajo de 100 expresan percepciones negativas.
-
-  Se hace uso de las respuestas recolectadas para construir otros dos
-  índices: ``Condiciones presentes'' y ``Expectativas futuras'' a fines
-  de capturar, también, cómo cambia la percepción netamente actual y la
-  puramente futura de los productores a través del tiempo. Se calculan
-  igual que el \emph{Ag Barometer Austral} sólo teniendo en cuenta
-  algunas de las preguntas.
-
-  \begin{table}
-
-  \caption{\label{tbl-preguntas_agb}Preguntas utilizadas para el cálculo de cada índice}
-
-  \centering{
-
-  \centering
-
-
-  \begin{tabular}{lll}
-  \toprule
-  Índice & Preguntas para su cálculo & Qué representa \\
-  \midrule
-  $Ag$ $Barometer$ & $Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$ & Percepciones actuales y futuras \\
-  Condiciones presentes & $Q_1$, $Q_5$ & Percepciones actuales \\
-  Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
-  \bottomrule
-  \end{tabular}
-
-  }
-
-  \end{table}%
-
-  \subsection{\texorpdfstring{Características del \emph{Ag Economy
-  Barometer}}{Características del Ag Economy Barometer}}\label{caracteruxedsticas-del-ag-economy-barometer}
-
-  Si bien los dos índices, \emph{Ag Barometer Austral} y \emph{Ag
-  Economy Barometer}, comparten el objetivo de medir la confianza de los
-  productores de cada país, presentan similitudes y diferencias. Por
-  ejemplo, una diferencia entre ellos es la extensión de sus series
-  temporales: la primera observación del \emph{Ag Economy Barometer}
-  corresponde a octubre de 2015, mientras que la del \emph{Ag Barometer
-  Austral} corresponde a octubre de 2018. Esto evidencia que el estudio
-  de medir el sentimiento de los productores comenzó orginalmente en la
-  Universidad de \emph{Purdue}.
-
-  En el caso del índice estadounidense, la población está compuesta por
-  productores cuyo valor bruto de producción es mayor o igual a USD
-  500,000; donde un 53\% producen soja, un 14\% maíz, un 3\% algodón, un
-  19\% ganadería vacuna, un 5\% tambo y un 6\% ganadería porcina. Al
-  igual que en el caso del \emph{Ag Barometer Austral} estos porcentajes
-  representan mínimos.
-
-  Para la selección de los productores se aplicó un muestreo
-  estratificado en base a los datos censales del \emph{United States
-  Department of Agriculture} (USDA). Se detallan los estratos definidos
-  según el volumen de producción anual:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    49\% de los encuestados con un valor bruto de producción entre USD
-    500,000 y USD 999,999
-  \item
-    36\% de los encuestados con valor bruto de producción entre USD
-    1,000,000 y USD 2,499,000
-  \item
-    15\% de los encuestados con un valor bruto de producción mayor o
-    igual a USD 2,500,000.
-  \end{itemize}
-
-  Respecto al trabajo de campo, la encuesta se realiza por vía
-  telefónica a una muestra de 400 productores y se demora
-  aproximadamente una semana. El relevamiento se realiza de manera
-  mensual, es decir, en los doce meses del año.
-
-  Cada mes se entrevista a los productores realizándoles las mismas
-  cinco preguntas fijas ya detalladas.
-
-  Recabadas las respuestas, el primer paso para calcular el \emph{Ag
-  Economy Barometer} es el mismo que para elaborar el \emph{Ag Barometer
-  Austral}: obtener la medida para cada una de las cinco preguntas
-  fijas. Sin embargo, cambia la forma en que se obtiene el valor final
-  del índice estadounidense. El \emph{Ag Economy Barometer} se obtiene
-  sumando las cinco medidas de cada una de las cinco preguntas fijas y
-  se divide esa suma por el promedio del período base (octubre 2015 a
-  marzo 2016).
-
-  Es decir que el valor del \emph{Ag Economy Barometer} para un mes
-  dado, se calcula siempre en relación con el período base. El valor 100
-  implica que no hubo cambios respecto del período base. Un valor
-  superior a 100 indica un aumento en el \emph{sentiment}, o la
-  confianza, de los productores en comparación con el período base;
-  mientras que un valor inferior a 100 indica que el \emph{sentiment} de
-  los productores disminuyó en relación con dicho período.
-
-  En Estados Unidos también se calculan los indicadores Condiciones
-  presentes y Expectativas futuras, utilizando la misma forma de cálculo
-  que para el \emph{Ag Economy Barometer}, cada uno a partir de las
-  preguntas de la Tabla~\ref{tbl-preguntas_agb}.
-
-  En la Universidad de \emph{Purdue} también construyen, aparte de los
-  tres índices ya mencionados, el indicador ``Inversión del capital
-  agrícola'' en base a la quinta pregunta (\(Q_5\)). Sin embargo no fue
-  tenido en cuenta en el trabajo por no ser relevado a nivel local.
-
-  \subsection{Los datos}\label{los-datos}
-
-  Para facilitar la visualización de las semejanzas y diferencias entre
-  estos dos índices, se muestra un resumen que permite comparar sus
-  características:
-
-  \input{Tablas/tabla_materiales_comparacion.tex}
-
-  A partir de lo presentado en la Tabla \ref{tbl-comparacion}, puede
-  observarse que la cantidad de índices en estudio es seis, tres para
-  cada país: \emph{Ag Barometer}, Condiciones presentes y Expectativas
-  futuras. Considerando la base de datos de cada universidad, en total
-  se dispone de siete variables: los seis índices mencionados y una
-  variable adicional que indica la fecha de cada observación.
-
-  \newpage
-
-  \section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
-
-  El fin de este apartado es plasmar el camino que se siguió para armar
-  una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne
-  las series de Argentina, de Estados Unidos y otras sugeridas por los
-  especialistas que fueron buscadas en diversas fuentes para poder
-  responder a ciertos objetivos de esta práctica profesional.
-  Previamente a la unificación se aplicaron procesamientos sobre algunas
-  de las series provistas como imputación de valores faltantes,
-  eliminación de valores, homogeneización de nombres de variables, etc.
-
-  \subsection{Tratamiento sobre las series de las
-  universidades}\label{tratamiento-sobre-las-series-de-las-universidades}
-
-  Antes de decidir qué procesos aplicar sobre las series de Argentina,
-  fue necesario identificar algunos atributos de estos datos, que se
-  presentan a continuación.
-
-  \begin{longtable}[t]{ccccccccc}
-
-  \caption{\label{tbl-agba_sin_imputar}\emph{Ag Barometer Austral} en el
-  período octubre 2018 - enero 2026}
-
-  \tabularnewline
-
-  \toprule
-  Año & ene & mar & abr & may & jul & sept & oct & nov\\
-  \midrule
-  \endfirsthead
-  \multicolumn{9}{@{}l}{(continuación)}\\
-  \toprule
-  Año & ene & mar & abr & may & jul & sept & oct & nov\\
-  \midrule
-  \endhead
-
-  \endfoot
-  \bottomrule
-  \endlastfoot
-  2018 &  &  &  &  &  &  & 100 & 95\\
-  2019 & 106 & 103 &  & 117 & 137 & 74 &  & 64\\
-  2020 & 52 &  & 53 &  & 48 & 69 &  & 78\\
-  2021 & 79 & 90 &  & 79 & 69 & 79 &  & 79\\
-  2022 & 90 & 90 &  & 98 & 76 & 83 &  & 67\\
-  \addlinespace
-  2023 & 68 & 69 &  & 84 & 89 & 100 &  & 117\\
-  2024 & 119 & 129 &  & 139 & 139 & 132 &  & 149\\
-  2025 & 117 & 137 &  & 130 & 127 & 124 &  & 159\\
-  2026 & 158 &  &  &  &  &  &  & \\*
-
-  \end{longtable}
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-indices_arg_sin_imputar-1.pdf}}
-
-  }
-
-  \caption{\label{fig-indices_arg_sin_imputar}Evolución de los índices
-  argentinos en el período octubre 2018 - enero 2026}
-
-  \end{figure}%
-
-  Se aprecian dos características en estos datos. La primera es que los
-  valores que corresponden a marzo 2020 y mayo 2020 son faltantes, como
-  se puede ver en la Tabla~\ref{tbl-agba_sin_imputar} y en la
-  Figura~\ref{fig-indices_arg_sin_imputar}. La segunda característica es
-  que, a pesar de que los investigadores hayan planificado generar
-  observaciones en los meses impares, hay dos observaciones que no
-  cumplen esto. La primera de éstas ocurrió en octubre 2018
-  (Tabla~\ref{tbl-agba_sin_imputar}). Esto se debe a que los
-  investigadores quisieron hacer una llamada ``observación piloto'' pero
-  luego continuaron con su plan de proporcionar datos sólo en los meses
-  impares. El segundo dato de este estilo corresponde a abril 2020
-  (Tabla~\ref{tbl-agba_sin_imputar}) el cual fue relevado para compensar
-  los faltantes de marzo y mayo.
-
-  Estos dos aspectos producen observaciones separadas por un mes (como
-  octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos
-  meses (acorde a lo planificado) y que otras estén separadas por tres
-  meses (como enero 2020 y abril 2020). Es otras palabras, las series
-  argentinas son de periodicidad irregular.
-
-  Sin embargo, con el fin de responder a los objetivos de esta práctica
-  profesional, fue necesario emplear varios recursos que requieren que
-  las series bajo estudio sean de periodicidad regular. Por lo tanto se
-  propuso, en primer lugar, imputar los valores que faltan para las tres
-  series en las fechas de marzo y mayo 2020.
-
-  Se imputaron cada una de las tres series con los métodos de
-  interpolación lineal, interpolación de Stine y el filtro de Kalman
-  presentados por Tamplín (2025). A continuación se muestran los
-  resultados.
-
-  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{4.5cm}>{\centering\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{3.2cm}}
-
-  \caption{\label{tbl-agba_imputacion_3mets}Imputación de las series
-  argentinas según los tres métodos}
-
-  \tabularnewline
-
-  \toprule
-  Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
-  \midrule
-  \endfirsthead
-  \multicolumn{4}{@{}l}{(continuación)}\\
-  \toprule
-  Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
-  \midrule
-  \endhead
-
-  \endfoot
-  \bottomrule
-  \endlastfoot
-   & Interpolacion lineal & 52.5000 & 50.5000\\
-  \nopagebreak
-   & Interpolacion Stine & 52.5000 & 50.5000\\
-  \nopagebreak
-  \multirow{-3}{4.5cm}{\raggedright\arraybackslash Ag Barometer Austral} & Filtro de Kalman & 53.6642 & 52.3904\\
-  \cmidrule{1-4}\pagebreak[0]
-   & Interpolacion lineal & 48.0000 & 51.0000\\
-  \nopagebreak
-   & Interpolacion Stine & 48.0000 & 51.0000\\
-  \nopagebreak
-  \multirow{-3}{4.5cm}{\raggedright\arraybackslash Condiciones presentes} & Filtro de Kalman & 49.0874 & 52.1107\\
-  \cmidrule{1-4}\pagebreak[0]
-   & Interpolacion lineal & 55.0000 & 49.5000\\
-  \nopagebreak
-   & Interpolacion Stine & 55.0000 & 49.5000\\
-  \nopagebreak
-  \multirow{-3}{4.5cm}{\raggedright\arraybackslash Expectativas futuras} & Filtro de Kalman & 55.5112 & 51.1437\\*
-
-  \end{longtable}
-
-  Para cada serie y cada fecha, los valores imputados mediante
-  cualquiera de los tres métodos, son similares
-  (Tabla~\ref{tbl-agba_imputacion_3mets}). Por tal motivo se decidió
-  imputar con el método de imputación lineal ya que es el más sencillo
-  en cuanto a metodología.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-indices_arg-1.pdf}}
-
-  }
-
-  \caption{\label{fig-indices_arg}Evolución de las series argentinas en
-  el período noviembre 2018 - enero 2026}
-
-  \end{figure}%
-
-  Las observaciones de octubre 2018 y abril 2020, las cuales sólo
-  representan un 4.54\% de la totalidad de los datos, fueron
-  consideradas a la hora de imputar pero no se las tuvo en cuenta en el
-  resto del trabajo para lograr que las tres series tengan periodicidad
-  regular.
-
-  Luego de este tratamiento se logran tres series de periodicidad
-  bimestral, de 44 observaciones cada una para el período noviembre 2018
-  - enero 2026.
-
-  De igual manera se planeó proceder a nivel internacional. A los fines
-  de decidir qué procesos realizar sobre las series de Estados Unidos,
-  en caso de ser requiridos, fue necesario primero identificar qué
-  características poseen estos datos. Por tal motivo se muestran, a
-  continuación, las series estadounidenses.
-
-  \begin{longtable}[t]{ccccccccccccc}
-
-  \caption{\label{tbl-ageb}\emph{Ag Economy Barometer} en el período
-  octubre 2015 - marzo 2026}
-
-  \tabularnewline
-
-  \toprule
-  Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
-  \midrule
-  \endfirsthead
-  \multicolumn{13}{@{}l}{(continuación)}\\
-  \toprule
-  Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
-  \midrule
-  \endhead
-
-  \endfoot
-  \bottomrule
-  \endlastfoot
-  2015 &  &  &  &  &  &  &  &  &  & 116 & 97 & 107\\
-  2016 & 98 & 96 & 85 & 106 & 97 & 104 & 112 & 95 & 101 & 92 & 116 & 132\\
-  2017 & 153 & 134 & 124 & 130 & 130 & 131 & 139 & 132 & 132 & 135 & 128 & 126\\
-  2018 & 135 & 140 & 135 & 125 & 141 & 143 & 117 & 129 & 114 & 136 & 134 & 127\\
-  2019 & 143 & 136 & 133 & 115 & 101 & 126 & 153 & 124 & 121 & 136 & 153 & 150\\
-  \addlinespace
-  2020 & 167 & 168 & 121 & 96 & 103 & 117 & 118 & 144 & 156 & 183 & 167 & 174\\
-  2021 & 167 & 165 & 177 & 178 & 158 & 137 & 134 & 138 & 124 & 121 & 116 & 125\\
-  2022 & 119 & 125 & 113 & 121 & 99 & 97 & 103 & 117 & 112 & 102 & 102 & 126\\
-  2023 & 130 & 125 & 117 & 123 & 104 & 121 & 123 & 115 & 106 & 110 & 115 & 114\\
-  2024 & 106 & 111 & 114 & 99 & 108 & 105 & 113 & 100 & 88 & 115 & 145 & 136\\
-  \addlinespace
-  2025 & 141 & 152 & 140 & 148 & 158 & 146 & 135 & 125 & 126 & 129 & 139 & 136\\
-  2026 & 113 & 116 & 127 &  &  &  &  &  &  &  &  & \\*
-
-  \end{longtable}
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-indices_usa-1.pdf}}
-
-  }
-
-  \caption{\label{fig-indices_usa}Evolución de los índices
-  norteamericanos en el período octubre 2015 - marzo 2026}
-
-  \end{figure}%
-
-  En las series de la Figura~\ref{fig-indices_usa} no se observan
-  discontinuidades, es decir que en el caso de Estados Unidos no hay
-  valores faltantes. En la Tabla~\ref{tbl-ageb}, tomando como ejemplo al
-  \emph{Ag Economy Barometer}, efectivamente se puede apreciar que los
-  datos están completos. Según lo presentado en la sección anterior, los
-  norteamericanos realizan el relevamiento en todos los meses (Tabla
-  \ref{tbl-comparacion}), o equivalentemente, las series son de
-  periodicidad mensual. Esto no da lugar a que haya observaciones en
-  meses que no van acorde a lo planificado, como ocurría en octubre 2018
-  y abril 2020 en el caso local.
-
-  Considerando estos aspectos, queda de manifiesto que no es necesario
-  emplear recursos, como imputación o eliminación de valores, para
-  lograr series de periodicidad regular. El trabajo realizado con estas
-  series se redujo, entonces, a tareas sencillas propias del manejo de
-  datos. Se creó una variable que indique la fecha de cada observación
-  para que ambas bases de datos tuvieran las mismas columnas y poder
-  unir los conjuntos de datos.
-
-  \subsection{Búsqueda de variables
-  económicas}\label{buxfasqueda-de-variables-econuxf3micas}
-
-  Además de las variables ya consideradas en la base, resultó necesario
-  incorporar otras con el fin de estudiar qué fenómenos podrían estar
-  vinculados con el \emph{Ag Barometer}. Estas otras que debían
-  agregarse fueron sugeridas por los especialistas y están relacionadas
-  a:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Precios de la producción: Precio internacional de la soja, maíz,
-    trigo, sorgo, carne vacuna, porcina y aviar
-  \item
-    Insumos: Precio internacional de la urea, petróleo y gas natural
-  \item
-    Tasas de interés de referencia internacional: \emph{Federal Funds
-    Rate}, tasa de interés (\%) del bono de tesoro de EE.UU a dos y diez
-    años
-  \item
-    Índices Bursátiles: \emph{Dow Jones} y Nasdaq
-  \item
-    Indicadores de confianza/actividad: Índice de confianza del
-    consumidor relevado por la Universidad Di Tella y la de Michigan,
-    Índice de Actividad de la Cadena Agropecuaria
-  \item
-    Eventos: Resultados de elecciones presidenciales, hechos bélicos y
-    pandemia Covid-19
-  \end{itemize}
-
-  Estas variables incorporadas fueron propuestas por los especialistas y
-  buscadas en diversas fuentes. A continuación, se detallan sus
-  características y su procedencia.
-
-  \begin{ThreePartTable}
-  \begin{TableNotes}
-  \item \textit{Nota: } 
-  \item WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.
-  \end{TableNotes}
-
-  \begin{longtable}[t]{>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{7.5cm}>{\raggedright\arraybackslash}p{5cm}}
-
-  \caption{\label{tbl-covs_economicas}Descripción de las variables
-  sugeridas por los especialistas}
-
-  \tabularnewline
-
-  \toprule
-  Variable & Descripción & Fuente\\
-  \midrule
-  \endfirsthead
-  \multicolumn{3}{@{}l}{(continuación)}\\
-  \toprule
-  Variable & Descripción & Fuente\\
-  \midrule
-  \endhead
-
-  \endfoot
-  \bottomrule
-  \insertTableNotes
-  \endlastfoot
-  \cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de la observación} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  Petroleo Brent & Precio del petróleo Brent & Banco Mundial (Pink Sheet)\\
-  \cellcolor{gray!10}{Petroleo WTI} & \cellcolor{gray!10}{Precio del petróleo WTI} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  Gas Natural EEUU & Precio del Gas Natural EEUU & Banco Mundial (Pink Sheet)\\
-  \cellcolor{gray!10}{Gas Natural Europa} & \cellcolor{gray!10}{Precio del Gas Natural Europa} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  \addlinespace
-  Soja & Precio de la Soja & Banco Mundial (Pink Sheet)\\
-  \cellcolor{gray!10}{Maiz} & \cellcolor{gray!10}{Precio del Maíz} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  Sorgo & Precio del Sorgo & Banco Mundial (Pink Sheet)\\
-  \cellcolor{gray!10}{Trigo SRW} & \cellcolor{gray!10}{Precio del Trigo SRW} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  Trigo HRW & Precio del Trigo HRW & Banco Mundial (Pink Sheet)\\
-  \addlinespace
-  \cellcolor{gray!10}{Carne} & \cellcolor{gray!10}{Precio de la carne vacuna} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  Pollo & Precio del pollo & Banco Mundial (Pink Sheet)\\
-  \cellcolor{gray!10}{Urea} & \cellcolor{gray!10}{Precio de la Urea} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
-  Cerdo & Precio de la carne porcina & FRED\\
-  \cellcolor{gray!10}{FEFundsRate} & \cellcolor{gray!10}{Tasa de fondos federales de EEUU} & \cellcolor{gray!10}{FRED}\\
-  \addlinespace
-  Bono 2 & Rendimiento (\%) del bono del Tesoro de EEUU a 2 años & FRED\\
-  \cellcolor{gray!10}{Bono 10} & \cellcolor{gray!10}{Rendimiento (\%) del bono del Tesoro de EEUU a 10 años} & \cellcolor{gray!10}{FRED}\\
-  ICC Di Tella & Índice de Confianza del Consumidor hecho en UTDT & Centro de Investigación en Finanzas de la UTDT\\
-  \cellcolor{gray!10}{ICC Michigan} & \cellcolor{gray!10}{Índice de Confianza del Consumidor en UM} & \cellcolor{gray!10}{FRED}\\
-  NASDAQ & Evolución precio acciones de empresas tecnológicas EEUU & FRED\\
-  \addlinespace
-  \cellcolor{gray!10}{Dow Jones} & \cellcolor{gray!10}{Rendimiento de las 30 mayores empresas de EEUU} & \cellcolor{gray!10}{Yahoo Finance}\\
-  IACA & Índice de Actividad de la Cadena Agropecuaria & Bolsa de Comercio de Rosario\\*
-
-  \end{longtable}
-
-  \end{ThreePartTable}
-
-  \subsection{Base de datos construida}\label{base-de-datos-construida}
-
-  Una vez que se obtuvieron todas las series de las universidades junto
-  con las buscadas de forma independiente y realizadas las tareas
-  inherentes al manejo de datos, se construyó la base de datos
-  \texttt{base\_construida.xlsx}, con el software R, que permitió
-  realizar el análisis.
-
-  La mencionada base cuenta con 126 observaciones y 28 variables, una
-  corresponde a la fecha de cada observación, seis son los índices bajo
-  estudio relevados por las universidades y las 21 restantes son las
-  sugeridas por los especialistas. Excepto la fecha que es cualitativa
-  ordinal, el resto de las variables son cuantitativas continuas.
-
-  \newpage
-
-  \section{Aplicación}\label{aplicaciuxf3n}
-
-  Una vez dispuestos los datos en una misma base, con el fin de conocer
-  las características de los índices se decidió comenzar esta práctica
-  profesional, presentando un análisis exploratorio de los datos de las
-  universidades que constó de tres partes. En la primera se realizó un
-  análisis univariado del \emph{Ag Barometer Austral} y del \emph{Ag
-  Economy Barometer}, en la segunda se llevó a cabo un análisis
-  bivariado en el que se analizó la relación entre ciertos pares
-  considerando las seis series de interés. Finalmente en la tercera
-  parte, se estudió la posible relación del \emph{Ag Barometer} con las
-  variables y eventos propuestos por economistas anteriormente
-  presentadas.
-
-  \subsection{\texorpdfstring{Análisis descriptivo univariado del
-  \emph{Ag Barometer
-  Austral}}{Análisis descriptivo univariado del Ag Barometer Austral}}\label{sec-univ_arg}
-
-  Se ofrece una primera impresión del \emph{Ag Barometer Austral}, su
-  FACM y su FACPM.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-agba-1.pdf}}
-
-  }
-
-  \caption{\label{fig-agba}Evolución del \emph{Ag Barometer Austral} en
-  el período noviembre 2018 - enero 2026}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_agba-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_agba}FACM y FACPM del \emph{Ag Barometer
-  Austral}}
-
-  \end{figure}%
-
-  En primer lugar, fue necesario inspeccionar la dinámica temporal de
-  estos datos. Los bastones de la FACM de la Figura~\ref{fig-acf_agba}
-  parecen presentar un decaimiento exponencial donde la estimación del
-  primer coeficiente es casi 0.8. Alrededor del rezago 24, también hay
-  bastones significativos. Esto sugiere que la serie no sería ruido
-  blanco.
-
-  Se realiza el test de Ljung-Box (Box et al., 2016, p.~289) para
-  analizar si el \emph{Ag Barometer Austral} se comporta como un ruido
-  blanco.
-
-  \begin{longtable}[t]{ccc}
-
-  \caption{\label{tbl-pvalue_arg_rb}Pruebas Ljung-Box sobre el \emph{Ag
-  Barometer Austral} en el período noviembre 2018 - enero 2026}
-
-  \tabularnewline
-
-  \toprule
-  Rezago & Estadística & p-value\\
-  \midrule
-  6 & 93.4377 & <0.001\\
-  12 & 103.5929 & <0.001\\
-  18 & 107.1535 & <0.001\\
-  24 & 147.0830 & <0.001\\
-  \bottomrule
-
-  \end{longtable}
-
-  Con un nivel de significación del 5\% y en base a la evidencia
-  muestral, se rechaza la hipótesis nula de ausencia de autocorrelación,
-  para los cuatro rezagos considerados (\(p-value < 0.001\),
-  Tabla~\ref{tbl-pvalue_arg_rb}). Consecuentemente, la serie presenta
-  dependencia temporal y no puede modelarse como ruido blanco. Esto
-  justifica continuar con el análisis de su estructura temporal.
-
-  De esta manera, se muestran más gráficos para identificar más aspectos
-  del \emph{Ag Barometer Austral} y luego se presentan todas las
-  conclusiones.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_prom-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_prom}Evolución del \emph{Ag Barometer Austral}
-  medio desde 2018 hasta 2026}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-fideos_agba-1.pdf}}
-
-  }
-
-  \caption{\label{fig-fideos_agba}Comportamiento anual del \emph{Ag
-  Barometer Austral}}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-subseries_agba-1.pdf}}
-
-  }
-
-  \caption{\label{fig-subseries_agba}Comportamiento mensual del \emph{Ag
-  Barometer Austral}}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-boxplot_arg-1.pdf}}
-
-  }
-
-  \caption{\label{fig-boxplot_arg}Distribución del \emph{Ag Barometer
-  Austral} por año}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_agba_dif1-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_agba_dif1}FACM y FACPM de la primera
-  diferencia del \emph{Ag Barometer Austral}}
-
-  \end{figure}%
-
-  A simple vista, viendo los valores que toma el \emph{Ag Barometer
-  Austral} en la Figura~\ref{fig-agba}, se observa que, si bien la serie
-  de las percepciones no parecería presentar patrones como un ciclo o
-  pauta estacional, un hecho que amerita ser destacado es la repentina y
-  aparente baja que ocurrió en 2019. También se puede apreciar que,
-  aproximadamente durante el período 2020-2023, la confianza en
-  Argentina fue pesimista con valores similares de condiciones presentes
-  y expectativas futuras (Figura~\ref{fig-indices_arg}). En cambio, en
-  el resto del período, cuando la confianza fue optimista, se observa
-  que los productores sostienen mayores expectativas a futuro respecto
-  de sus condiciones actuales.
-
-  A simple vista, viendo los valores que toma el \emph{Ag Barometer
-  Austral} en la Figura~\ref{fig-agba}, se observa que, si bien la serie
-  de las percepciones no parecería presentar patrones como un ciclo o
-  pauta estacional, un hecho que amerita ser destacado es la repentina y
-  aparente baja que ocurrió en 2019. También se puede apreciar que,
-  aproximadamente durante el período 2020-2023, la confianza en
-  Argentina fue pesimista y en todo el 2023 hasta mediados de 2024 la
-  confianza fue creciendo. En el período de pesimismo de la confianza
-  del productor argentino, los indicadores de Condiciones presentes y
-  Expectativas futuras también tuvieron valores similares
-  (Figura~\ref{fig-indices_arg}). En cambio, en el resto del período,
-  cuando la confianza fue optimista, se observa que los productores
-  sostienen mayores expectativas a futuro respecto de sus condiciones
-  actuales.
-
-  En gran parte del período de relevamiento, a partir del 2020, el
-  \emph{Ag Barometer Austral} medio, Figura~\ref{fig-acf_prom}, parece
-  ir aumentado a medida que pasa el tiempo, empezando por una confianza
-  media pesimista, evolucionando, y observándose un promedio optimista
-  al final del período.
-
-  En la Figura~\ref{fig-fideos_agba} se puede ver que hay años como el
-  2020, 2021, 2022 que la confianza es pesimista; hay otros años en que
-  el sentimiento es optimista como en el 2024 y en el 2025; en el 2019
-  la confianza aumentaba hasta un momento en el cual pasó drásticamente
-  de optimista a pesimista; se observa finalmente que en el 2023 las
-  percepciones presentan una tendencia a crecer. En la
-  Figura~\ref{fig-subseries_agba}, en todos los meses parecería ocurrir
-  que, el \emph{Ag Barometer Austral} medio oscila alrededor del valor
-  neutro 100 y que los valores presentan dispersiones similares. Todas
-  estas observaciones conllevarían a pensar que el comportamiento del
-  \emph{Ag Barometer Austral} parecería ser distinto en cada año y
-  similar en los seis meses. En consecuencia, no parece presentar un
-  patrón estacional.
-
-  Se pueden observar en la Figura~\ref{fig-boxplot_arg} dos
-  características sobre la serie. La primera es que, desde el 2020 en
-  adelante, el \emph{Ag Barometer Austral} mediano parece crecer con el
-  correr de los años. La segunda es que, sin considerar los años 2018 y
-  2026 por solo tener una observación, los valores de este índice no
-  parecen variar de manera similar en todos los años. En el 2021 las
-  observaciones no parecen variar mucho; los valores parecen tener
-  dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año
-  2019, seguido del 2023, es cuando las percepciones parecen presentar
-  mayor volatilidad. Esto querría decir que la variancia del sentimiento
-  no parece ser constante a través de los años, observándose en 2019 los
-  valores más dispersos. Fusionando estos dos aspectos, también podría
-  decirse que no parece haber relación entre la mediana y la variancia.
-
-  Características de la serie tales como la presencia de tendencias
-  temporales y variancia no constante a lo largo de los años, pueden
-  interpretarse como indicios de no estacionariedad del \emph{Ag
-  Barometer Austral}. Siguiendo esta línea de análisis, se realizaron
-  los tests \emph{Augmented Dickey-Fuller} (ADF) (Peña, 2010, p.~269) y
-  \emph{Kwiatkowski, Phillips, Schmidt y Shin} (KPSS)
-  (Lütkepohl-Krätzig, 2004, p.~63). Se concluye en base a la evidencia
-  muestral que la serie de las percepciones del sector agropecuario
-  argentino no es estacionaria, al 5\% de nivel de significación
-  (\(p-value=\) 0.1108, \(p-value=\) 0.0141)\footnote{El test ADF evalúa
-    la hipótesis nula ``\(H_0)\) La serie no es estacionaria'' mientras
-    que el test KPSS prueba ``\(H_0)\) La serie es estacionaria''. Por
-    lo que se concluye a un 5\% de nivel de significación que la serie
-    no es estacionaria si para el test ADF se obtiene un
-    \(p-value>0.05\) y para el KPSS un \(p-value \leq 0.05\).}.
-
-  Con el fin de obtener más características, también se decidió analizar
-  la primera diferencia. Ninguno de los rezagos en la
-  Figura~\ref{fig-acf_agba_dif1} es significativo, esto sugiere que la
-  primera diferencia de la serie sería ruido blanco. Para presentar
-  conclusiones más allá de lo heurístico, se realizaron los tests de
-  ADF, KPSS y Ljung-Box sobre la serie diferenciada. Obteniéndose, al
-  5\% de nivel de significación a partir de la evidencia muestral, que
-  la serie diferenciada es estacionaria (\(p-value=\) 0.0253,
-  \(p-value=\) 0.1000) y que los primeros 20 coeficientes de su FAC son
-  nulos (\(p-value=\) 0.4647). Estos resultados conducen a que la serie
-  diferenciada sigue un ruido blanco y que consecuentemente el \emph{Ag
-  Barometer Austral} sigue el patrón de paseo aleatorio.
-
-  \subsection{\texorpdfstring{Análisis descriptivo univariado del
-  \emph{Ag Economy
-  Barometer}}{Análisis descriptivo univariado del Ag Economy Barometer}}\label{sec-univ_usa}
-
-  Para llevar a cabo este análisis, se comienza presentado la serie
-  junto a su FACM y FACMP.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ageb-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ageb}Evolución del \emph{Ag Economy Barometer} en
-  el período octubre 2015 - marzo 2026}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_ageb-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_ageb}FACM y FACPM del \emph{Ag Economy
-  Barometer}}
-
-  \end{figure}%
-
-  En cuanto a su estructura temporal, se puede observar que los bastones
-  de la FACM de la Figura~\ref{fig-acf_ageb} decaen de forma,
-  aparentemente, exponencial y que para retardos más elevados, alrededor
-  del 38 y del 58, algunos coeficientes también son significativos.
-  Considerando todo esto, se podría pensar que la serie presenta una
-  estructura de dependencia temporal. Sin embargo, al igual que en el
-  caso local, se realiza el test de Ljung-Box para probar si esta serie
-  se comporta como un ruido blanco.
-
-  \begin{longtable}[t]{ccc}
-
-  \caption{\label{tbl-pvalue_eeuu_rb}Pruebas Ljung-Box sobre el \emph{Ag
-  Economy Barometer} en el período octubre 2015 - marzo 2026}
-
-  \tabularnewline
-
-  \toprule
-  Rezago & Estadística & p-value\\
-  \midrule
-  6 & 191.7034 & <0.001\\
-  12 & 199.4993 & <0.001\\
-  18 & 202.5331 & <0.001\\
-  24 & 207.3438 & <0.001\\
-  \bottomrule
-
-  \end{longtable}
-
-  Con un nivel de significación del 5\% y en base a la evidencia
-  muestral, se rechaza la hipótesis nula de incorrelación para los
-  cuatro retardos considerados. Al menos uno de los coeficientes de la
-  FAC es no nulo, indicando que las percepciones de los productores a
-  través del tiempo, de alguna manera, están relacionadas
-  (\(p-value < 0.001\), Tabla~\ref{tbl-pvalue_eeuu_rb}).
-  Consecuentemente, tiene sentido analizar la serie objeto de la
-  presente sub-sección. De este modo, se presentan más herramientas que
-  permitan identificar características de estos datos.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ageb_prom-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ageb_prom}Evolución del \emph{Ag Economy
-  Barometer} medio desde 2015 hasta 2026}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-fideos_ageb-1.pdf}}
-
-  }
-
-  \caption{\label{fig-fideos_ageb}Comportamiento anual del \emph{Ag
-  Economy Barometer}}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-subseries_ageb-1.pdf}}
-
-  }
-
-  \caption{\label{fig-subseries_ageb}Comportamiento mensual del \emph{Ag
-  Economy Barometer}}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-boxplot_usa-1.pdf}}
-
-  }
-
-  \caption{\label{fig-boxplot_usa}Distribución del \emph{Ag Economy
-  Barometer} por año}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_ageb_dif1-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_ageb_dif1}FACM y FACPM de la primera
-  diferencia del \emph{Ag Economy Barometer}}
-
-  \end{figure}%
-
-  A primera vista en la Figura~\ref{fig-ageb}, la serie no exhibe
-  períodos de tendencia. Sin embargo, se observan cambios en las
-  percepciones en los años 2016, 2020 y 2024. Asimismo, el
-  comportamiento de los datos no parecería presentar patrones
-  repetitivos, ya sea anuales o de mayor frecuencia. En conjunto, estas
-  observaciones sugieren que la serie no presentaría componentes
-  tendencia, estacional ni cíclica. Si además se consideran las
-  condiciones presentes y expectativas futuras
-  (Figura~\ref{fig-indices_usa}), las tres series norteamericanas
-  parecen tomar valores similares en cada instante de tiempo, en todo el
-  período de relevamiento.
-
-  En promedio (Figura~\ref{fig-ageb_prom}), la confianza de los
-  norteamericanos aumentó en comparación con el período base, en todos
-  los años desde que comenzó el relevamiento. Por otro lado, otra
-  característica a destacar del \emph{Ag Economy Barometer} medio es que
-  tiene saltos, como el cambio entre el promedio del 2016 y el de 2017,
-  ocasionados por los cambios en la confianza observados en la
-  Figura~\ref{fig-ageb}.
-
-  El comportamiento del \emph{Ag Economy Barometer} no parece presentar
-  un patrón inter-anual que se repita todos los años
-  (Figura~\ref{fig-fideos_ageb}). Esto queda de manifiesto al comparar
-  algunas trayectorias anuales. Mientras que en 2016 el índice oscila en
-  torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego
-  alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles
-  elevados (aproximadamente 170 puntos), cae a su mínimo en abril y
-  escala hasta un máximo en octubre; en contraste, en 2021 comienza con
-  valores similares al 2020 pero alcanza su pico abril para luego
-  mantener una tendencia decreciente durante el resto del año.
-
-  En la Figura~\ref{fig-subseries_ageb}, se aprecia en todos los meses
-  que: la confianza promedio es de alrededor 130 puntos y que las
-  percepciones presentan variaciones similares. Estos dos últimos
-  aspectos conllevarían a concluir que el sentimiento de los
-  norteamericanos no parece tener una componente estacional.
-
-  El \emph{Ag Economy Barometer} mediano (Figura~\ref{fig-boxplot_usa})
-  parece seguir un patrón similar al promedio
-  (Figura~\ref{fig-ageb_prom}), su principal rasgo son los cambios
-  repentinos. En el período 2017-2020, la variancia aumenta a medida que
-  pasan los años. Fuera de ese período y salvo el 2021, la variabilidad
-  de las percepciones parece ser similar en el resto de los años. En el
-  2020, seguido del 2021, son los años en que las observaciones
-  resultaron más dispersas. En consecuencia, la variancia del \emph{Ag
-  Economy Barometer} no parece ser constante a través del tiempo. De
-  estos dos aspectos se desprende que las medidas de centralización no
-  tendrían relación con las de dispersión.
-
-  Se realizó el test ADF y se concluye con un nivel de significación del
-  5\% y en base a la evidencia muestral que el \emph{Ag Economy
-  Barometer} no es estacionario (\(p-value=\) 0.0712). Sin embargo, al
-  realizar el test KPSS con el mismo nivel de significación, se concluye
-  lo opuesto (\(p-value=\) 0.1000). Ante esta discrepancia, retomando
-  los hechos de que el primer coeficiente de la FACPM
-  (Figura~\ref{fig-acf_ageb}) tiene una estimación de aproximadamente
-  0.8 y de que hay varios bastones significativos alrededor del retardo
-  58, finalmente se consideró al \emph{Ag Economy Barometer} como no
-  estacionario.
-
-  Con el fin de ahondar más en las características presentes en esta
-  serie, también se analiza su primera diferencia a partir de la
-  Figura~\ref{fig-acf_ageb_dif1}. La mayoría de los bastones de la FACM
-  son, de manera individual, no significativos excepto por dos de ellos.
-  Estos últimos, a pesar de ser significativos, están asociados a
-  estimaciones alrededor de -0.2 dejando en duda su relevancia práctica.
-  Lo mismo ocurre con un rezago en la FACMP. Es decir, este criterio de
-  evaluar individualmente la significación de cada coeficiente no
-  conduce a conclusiones claras acerca de la estructura temporal de la
-  diferencia. Por tal motivo, se recurrió a otro tipo de recursos. Se
-  llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box sobre la serie
-  diferenciada, obteniéndose que ésta es estacionaria (\(p-value=\)
-  0.0100, \(p-value=\) 0.1000) y que los primeros 20 coeficientes de su
-  FAC son nulos (\(p-value=\) 0.7044), a partir de la evidencia muestral
-  con un 5\% de nivel de significación. Estos resultados conducen a que
-  la serie diferenciada sigue un ruido blanco y que consecuentemente el
-  \emph{Ag Economy Barometer} sigue el patrón de paseo aleatorio.
-
-  \subsection{Análisis bivariado}\label{anuxe1lisis-bivariado}
-
-  Superada la etapa de análisis univariado, se aborda el estudio
-  bivariado. Este apartado presenta un estudio comparativo entre las
-  percepciones de ambos países y muestra la relación del \emph{Ag
-  Barometer} con las condiciones presentes, expecticvas futuras,
-  diversas variables económicas y eventos clave.
-
-  A continuación se presentan herramientas que permitan comparar la
-  evolución del \emph{Ag Barometer Austral} y del \emph{Ag Economy
-  Barometer}.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ambos_agb-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ambos_agb}Evolución del \emph{Ag Barometer
-  Austral} y del \emph{Ag Economy Barometer} en el período octubre 2015
-  - marzo 2026}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-promedios_ambos_paises-1.pdf}}
-
-  }
-
-  \caption{\label{fig-promedios_ambos_paises}Evolución del \emph{Ag
-  Barometer} medio}
-
-  \end{figure}%
-
-  Visualizando las series de la Figura~\ref{fig-ambos_agb} y cómo van
-  evolucionando los promedios del \emph{Ag Barometer}
-  (Figura~\ref{fig-promedios_ambos_paises}), en el período 2023-2026,
-  podría dar la impresión de que el comportamiento de los indicadores
-  sería inverso, en el sentido de que si uno incrementa el otro
-  decrementa. Sin embargo, en el resto del período, las series no
-  parecen presentar algún patrón que las relacione. Teniendo en cuenta
-  estas características, en base a la inspección meramente gráfica
-  resulta ambiguo detectar si los \emph{Barometers} están relacionados.
-  Por tal motivo, se decidió recurrir a herramientas que permitan
-  estudiar sus estructuras de autocorrelación conjuntamente.
-
-  En primer lugar, se estimó la FCC entre estas dos series. Éstas fueron
-  previamente sometidas a un proceso de pre-blanqueo, a los fines de no
-  obtener correlaciones espurias, es decir, obtener correlaciones no
-  distorsionadas por la no estacionariedad\footnote{Se probó la no
-    estacionariedad del \emph{Ag Barometer Austral} y del \emph{Ag
-    Economy Barometer} en la Sección~\ref{sec-univ_arg} y en la
-    Sección~\ref{sec-univ_usa} respectivamente.} de las series.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg_usa-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_arg_usa}FCCM del \emph{Ag Barometer Austral} y
-  el \emph{Ag Economy Barometer} diferenciados en el período noviembre
-  2018 - enero 2026}
-
-  \end{figure}%
-
-  Todos los rezagos de la Figura~\ref{fig-ccf_arg_usa} son no
-  significativos, sugiriendo que ningún índice influye sobre el otro. En
-  segundo lugar, se realizó la prueba de Engle-Granger\footnote{Tanto
-    para estimar la FCC como para poder realizar la prueba es necesario
-    que las dos series tengan la misma longitud y periodicidad. En este
-    sentido, sólo se utilizaron 44 datos estadounidenses los cuales
-    representan un 34.92\% de la totalidad.} (Enders, 2014, secc. 6.1) y
-  se concluye en base a la evidencia muestral que los \emph{Barometers}
-  no están cointegrados (\(p-value > 0.1000\)). Considerando los
-  resultados de estos dos recursos empleados, se concluyó que la
-  confianza de los productores argentinos no está asociada a la de los
-  productores norteamericanos.
-
-  \subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
-
-  Descartada la relación entre las percepciones de Argentina y las de
-  Estados Unidos, se analizaron las asociaciones entre los índices
-  argentinos. Para esto, se estimaron las FCC entre pares de índices
-  locales. Estos últimos fueron pre-blanqueados para evitar que la no
-  estacionariedad\footnote{La no estacionariedad del \emph{Ag Barometer
-    Austral} fue probada en la Sección~\ref{sec-univ_arg} y la de las
-    series Condiciones presentes y Expectativas futuras de Argentina en
-    la Sección~\ref{sec-carcs_indices_arg}.} conduzca a correlaciones
-  espurias.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg1-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_arg1}FCCM del \emph{Ag Barometer Austral} y
-  las Condiciones presentes pre-blanqueadas}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg2-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_arg2}FCCM del \emph{Ag Barometer Austral} y
-  las Expectativas futuras pre-blanqueadas}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg3-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_arg3}FCCM de Condiciones presentes y las
-  Expectativas futuras argentinas pre-blanqueadas}
-
-  \end{figure}%
-
-  El \emph{Ag Barometer Austral} mantiene una relación contemporánea con
-  las condiciones presentes como se puede apreciar en la
-  Figura~\ref{fig-ccf_arg1}. Es decir, las percepciones de los
-  productores argentinos están asociadas con su situación actual.
-  Asimismo, se destaca una relación contemporánea moderada entre la
-  confianza y las Expectativas futuras (Figura~\ref{fig-ccf_arg2}), así
-  como entre las Condiciones presentes y las Expectativas
-  (Figura~\ref{fig-ccf_arg3}). El hecho de que las tres estimaciones de
-  las FCC en el retardo cero son significativas y positivas conlleva a
-  concluir que las tres evolucionan juntas.
-
-  \subsubsection{Análisis de los índices
-  norteamericanos}\label{ccfs_usa}
-
-  Análogamente al caso local, se estudió la relación entre los
-  indicadores estadounidenses estimando la FCC. Para no incurrir en
-  correlaciones infladas por las fuertes estructuras de
-  autocorrelación\footnote{La no estacionariedad del \emph{Ag Economy
-    Barometer} fue probada en la Sección~\ref{sec-univ_usa} y la de las
-    Condiciones presentes y Expectativas futuras de Estados Unidos en la
-    Sección~\ref{sec-carcs_indices_usa}.} de las series, se sometió
-  estas últimas a pre-blanqueo.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_usa1-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_usa1}FCCM del \emph{Ag Economy Barometer} y
-  las Condiciones presentes pre-blanqueados}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_usa2-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_usa2}FCCM del \emph{Ag Economy Barometer} y
-  las Expectativas futuras pre-blanqueadas}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_usa3-1.pdf}}
-
-  }
-
-  \caption{\label{fig-ccf_usa3}FCCM de Condiciones presentes y las
-  Expectativas futuras en Estados Unidos pre-blanqueadas}
-
-  \end{figure}%
-
-  Según la Figura~\ref{fig-ccf_usa1}, a medida que la confianza de los
-  productores norteamericanos aumenta (o disminuye), sus Condiciones
-  presentes también. De igual manera ocurre entre el \emph{Ag Economy
-  Barometer} con las Expectativas futuras (Figura~\ref{fig-ccf_usa2}) y
-  entre las Condiciones presentes con las Expectativas futuras
-  (Figura~\ref{fig-ccf_usa3}). En otras palabras, los tres índices
-  evolucionan juntos a través del tiempo.
-
-  Otro aspecto a destacar de las tres FCCM, es que en los tres casos el
-  único rezago significativo es el cero. Esto quiere decir que si bien
-  las tres series están relacionadas, las asociaciones sólo son
-  contemporáneas y no hay ningún índice que anticipe el comportamiento
-  futuro de otro.
-
-  \subsubsection{Análisis de variables
-  económicas}\label{anuxe1lisis-de-variables-econuxf3micas}
-
-  Estudiadas las relaciones entre los índices de las universidades, el
-  interés se centró en analizar a qué fenómenos el \emph{Ag Barometer}
-  podría estar relacionado. Con este propósito se consultó a economistas
-  de la Austral, quienes propusieron como primer conjunto de variables
-  candidatas a los precios internacionales (\emph{commodities}).
-
-  Se presentan gráficos que permitieron analizar la posible existencia
-  de relaciones. Éstos tienen dos particularidades. La primera es que
-  cada punto representa el \emph{Ag Barometer} de un cierto mes y la
-  variable en el mes anterior. Se decidió que esta es la forma que mejor
-  representa la posible relación porque tanto el relevamiento del
-  \emph{Ag Barometer} como la publicación de los precios ocurren a
-  principios de cada mes, de tal manera que los productores responen en
-  base a los precios del mes anterior. Por ende, la respuesta de los
-  productores de cierto mes podría estar relacionada con los precios del
-  mes anterior. Por ejemplo, si los productores son entrevistados a
-  principios de septiembre para relevar el \emph{Ag Barometer} de ese
-  mes, la información de precios más reciente con la que cuentan es la
-  de los precios de agosto, ya que los datos de septiembre todavía no
-  fueron publicados. La segunda particularidad está vinculada a la no
-  estacionariedad de las series. Es muy común que variables económicas
-  como tasas de interés, precios, etc, sean no estacionarias (Tsay,
-  2010). Por tal motivo se asumió que todas las variables buscadas
-  tienen una raiz unitaria. Además, el propio \emph{Ag Barometer
-  Austral} tampoco es estacionario como se probó en la
-  Sección~\ref{sec-univ_arg}. En consecuencia, a la hora de intentar
-  medir la asociación entre la confianza de los productores y estas
-  variables, se podría estar obteniendo un alto valor de correlación, no
-  porque las variables estén asociadas, sino debido a la fuerte
-  estructura de autocorrelación de las series (Cryer y Chan, 2008). Para
-  no obtener estas correlaciones espurias, se realizó el proceso de
-  pre-blanqueo previo a cada gráfico de dispersión en todas las figuras.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-commodities_arg-1.pdf}}
-
-  }
-
-  \caption{\label{fig-commodities_arg}Correlaciones entre el \emph{Ag
-  Barometer Austral} y \emph{commodities} pre-blanqueados}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-commodities_usa-1.pdf}}
-
-  }
-
-  \caption{\label{fig-commodities_usa}Correlaciones entre el \emph{Ag
-  Economy Barometer} y los \emph{commodities} pre-blanqueados}
-
-  \end{figure}%
-
-  Tal como puede observarse en la Figura~\ref{fig-commodities_arg} y en
-  la Figura~\ref{fig-commodities_usa}, las asociaciones con los precios
-  son débiles. Esto significa que el \emph{Ag Barometer} no está
-  relacionado a fenómenos vinculados a los precios de producción ni con
-  los insumos. Descartada esta posibilidad, los economistas propusieron
-  un segundo conjunto de variables económicas candidatas relacionadas
-  con el ámbito financiero y de actividad.
-
-  A continuación se presentan figuras con las mismas particularidades
-  anteriormente mencionadas.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-vars_economicas_arg-1.pdf}}
-
-  }
-
-  \caption{\label{fig-vars_economicas_arg}Correlaciones entre el
-  \emph{Ag Barometer Austral} y otras variables económicas
-  pre-blanqueadas}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-vars_economicas_usa-1.pdf}}
-
-  }
-
-  \caption{\label{fig-vars_economicas_usa}Correlaciones entre el
-  \emph{Ag Economy Barometer} y otras variables económicas
-  pre-blanqueadas}
-
-  \end{figure}%
-
-  En base a la inspección gráfica de la
-  Figura~\ref{fig-vars_economicas_arg} y la
-  Figura~\ref{fig-vars_economicas_usa}, se deduce que la confianza de
-  los productores tampoco estaría asociada a fenómenos vinculados a
-  tasas de interés, índices bursátiles ni de confianza/actividad.
-
-  \subsubsection{Análisis de eventos}\label{anuxe1lisis-de-eventos}
-
-  Dado que aún no se habían identificado factores asociados al \emph{Ag
-  Barometer}, la investigación no podía darse por concluida. Por esta
-  razón, se revisó la situación con los expertos. Éstos sostienen que el
-  índice bajo estudio probablemente esté vinculado a acontecimientos
-  políticos, bélicos y/o globales como la pandemia de Covid-19. Se
-  presentan dichas posibles relaciones.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-elecciones_arg-1.pdf}}
-
-  }
-
-  \caption{\label{fig-elecciones_arg}Evolución del \emph{Ag Barometer
-  Austral} y resultados de las elecciones presidenciales argentinas}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-elecciones_usa-1.pdf}}
-
-  }
-
-  \caption{\label{fig-elecciones_usa}Evolución del \emph{Ag Economy
-  Barometer} y resultados de la elecciones presidenciales
-  estadounidenses}
-
-  \end{figure}%
-
-  La información de la Figura~\ref{fig-elecciones_arg} y de la
-  Figura~\ref{fig-elecciones_usa} sugiere que tanto en Argentina como en
-  Estados Unidos, la confianza de los productores presentaría cambios
-  alrededor de los tiempos en que se publican los resultados de las
-  elecciones presidenciales. Se observan dos tipos de cambios en la
-  confianza de los productores:
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Los que ocurren antes de conocerse el resultado electoral
-    definitivo, como en el triunfo de Alberto Fernández en 2019, que
-    responden a encuestas o presunciones previas a la votación.
-  \item
-    Los que se dan inmediatamente después de conocerse el resultado a
-    causa de desenlaces inesperados. Tal es el caso de la victoria de
-    Donald Trump en 2016.
-  \end{itemize}
-
-  En Argentina, tanto el cambio repentino en la confianza de 2019 como
-  la tendencia creciente de 2023, mencionados en la
-  Sección~\ref{sec-univ_arg}, tuvieron lugar en torno a las fechas de
-  los resultados electorales (Figura~\ref{fig-elecciones_arg}), siendo
-  estos dos años aquellos en los que las percepciones se mostraron más
-  volátiles (Figura~\ref{fig-boxplot_arg}). De manera análoga, en
-  Estados Unidos se observó una tendencia creciente repentina y efímera
-  en 2020 (Figura~\ref{fig-ageb}), la cual tuvo lugar en las
-  proximidades de una elección presidencial
-  (Figura~\ref{fig-elecciones_usa}). Durante ese mismo año, los valores
-  de confianza de los productores exhibieron, aparentemente, una mayor
-  dispersión (Figura~\ref{fig-boxplot_usa}). Esta exploracion visual en
-  conjunto, sugiere que el \emph{Ag Barometer} se ve alterado por
-  efectos políticos.
-
-  Puede destacarse también una diferencia entre la confianza de ambos
-  países. Los cambios en Argentina no siguen el mismo comportamiento que
-  los de Estados Unidos. En este último se observa que, cuando hay
-  elecciones presidenciales de por medio, la confianza siempre sube
-  independientemente del partido que resulte ganador y que unos meses
-  después baja. Esto podría deberse a que los partidos estadounidenses
-  no son tan heterogéneos entre sí. En Argentina, en cambio, el
-  sentimiento puede subir o bajar según cuál sea el partido que triunfe.
-  Cuando ganó Alberto Fernández en 2019, se produjo la baja más abrupta
-  histórica de la serie, generando al año siguiente la confianza
-  promedio más baja de todo el período, y el pesimismo se sostuvo
-  durante todo su mandato (Figura~\ref{fig-acf_prom}). En cambio, al
-  ganar Javier Milei en 2023, la confianza comenzó a crecer, pasando del
-  pesimismo al optimismo. Esto podría explicarse por la heterogeneidad
-  ideológica entre los partidos políticos argentinos.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-eventos_globales-1.pdf}}
-
-  }
-
-  \caption{\label{fig-eventos_globales}Evolución de los
-  \emph{Barometers} y otros eventos globales/bélicos}
-
-  \end{figure}%
-
-  A partir de la inspección gráfica (Figura~\ref{fig-eventos_globales}),
-  el \emph{Ag Barometer} no parece verse afectado por la invasión rusa a
-  Ucrania. Sin embargo, sobre la base de esta visualización, no parece
-  que ocurra lo mismo cuando se analiza el comienzo de la pandemia. En
-  el caso de Estados Unidos, la confianza muestra una disminución
-  notable alrededor de este acontecimiento. No obstante, a nivel local,
-  la confianza ya registraba valores pesimistas desde antes del 2020,
-  posiblemente debido al resultado electoral de 2019
-  (Figura~\ref{fig-elecciones_arg}). Esta proximidad temporal entre
-  ambos hitos dificulta analizar, mediante un análisis meramente
-  gráfico, si la pandemia podría haber tenido un efecto en el \emph{Ag
-  Barometer Austral}.
-
-  \newpage
-
-  \section{Discusión}\label{discusiuxf3n}
-
-  En este informe se documentan los análisis que han sido realizados en
-  el Centro de Agronegocios y Alimentos de la Universidad Austral con el
-  fin de responder los objetivos planteados para esta práctica
-  profesional.
-
-  En primer lugar, se extiende un sincero agradecimiento a la
-  Universidad Austral por la valiosa oportunidad de realizar esta
-  práctica en el Centro. El contacto directo con los especialistas
-  habilitó el trabajo interdisciplinario y el aprendizaje de temas
-  relacionados a los agronegocios que no son abordados en el grado de
-  estadística. Además, la posibilidad de analizar datos reales cuyo
-  relevamiento es planificado y llevado a cabo por el Centro, y la
-  Universidad \emph{Purdue}, es considerada un privilegio.
-
-  Como punto de partida, se logró construir una base de datos que reúne
-  las series argentinas, las de Estados Unidos y múltiples variables
-  económicas sugeridas por los economistas de la Austral. Este proceso
-  requirió imputación de datos faltantes y trabajo relacionado a
-  programación.
-
-  A partir de la base, se llevó a cabo un análisis univariado de las
-  series temporales de la confianza de los productores agropecuarios de
-  Argentina y Estados Unidos. Asimismo, se realizó un análisis bivariado
-  para estudiar la posibilidad, mediante visualizaciones gráficas, de
-  que exista relación entre los índices de confianza de ambos países,
-  asociación con las condiciones presentes y expectativas futuras, y
-  relación entre el \emph{Ag Barometer} con las variables económicas y
-  ciertos acontecimientos.
-
-  Como principales resultados, en cuanto al análisis univariado, se
-  observó que las series no son estacionarias y siguen un patrón de
-  paseo aleatorio. Respecto al bivariado, primero se concluyó que la
-  confianza de los productores argentinos no guarda relación con la de
-  los norteamericanos. En segundo lugar, se observó que los tres índices
-  de cada país están relacionados entre sí de manera directa y
-  contemporánea, no obstante, ninguno anticipa a otro. Como tercer
-  resultado, las percepciones de los productores no estarían
-  relacionadas con factores económicos como precios, tasas de interés,
-  insumos, índices bursátiles o de actividad. Sin embargo, a partir de
-  la inspección gráfica, las percepciones parecen verse afectadas frente
-  a resultados de las elecciones presidenciales.
-
-  Por último, en cuanto a las limitaciones de este trabajo, es
-  importante señalar que las observaciones realizadas sobre la relación
-  entre el \emph{Ag Barometer} y las variables económicas o los eventos
-  considerados, se sustentan únicamente en un abordaje exploratorio y
-  visual. Dicha aproximación gráfica no sería suficiente para concluir
-  con rigor estadístico tales asociaciones sugeridas. En consecuencia,
-  para futuras líneas de investigación, sería interesante profundizar el
-  estudio mediante métodos estadísticos que vayan más allá de lo
-  heurístico, tales como la implementación de modelos dinámicos,
-  análisis de intervención, etc, que permitan modelar formalmente estos
-  impactos.
-
-  \newpage
-
-  \section{Anexo}\label{anexo}
-
-  \subsection{Características de los otros índices
-  locales}\label{sec-carcs_indices_arg}
-
-  Acorde a lo mencionado, a la hora de estudiar la relación entre dos
-  series estimando la FCC, éstas deberían ser estacionarias. En caso de
-  no serlo, para evitar correlaciones espurias, se realiza el
-  pre-blanqueo sobre el par en cuestión previamente a la estimación. En
-  este contexto, al investigar la relación entre las series locales en
-  la Sección~\ref{sec-ccfs_arg} fue importante estudiar si estas tres
-  son estacionarias o no. Este análisis ya fue presentado para el
-  \emph{Ag Barometer Austral} en la Sección~\ref{sec-univ_arg}, por lo
-  que el interés de este apartado es presentar qué ocurre para las
-  Condiciones presentes y Expectativas futuras. A continuación se
-  muestran resultados\footnote{La hipótesis nula del test ADF es
-    \(H_0)\) La serie no es estacionaria (tiene una raíz unitaria), la
-    del test KPSS es \(H_0)\) La serie es estacionaria y la del test
-    Ljung-Box es \(H_0)\) Los primeros 20 coeficientes de FAC son nulos.}
-  que permitieron analizar esta característica.
-
-  \begin{longtable}[t]{llcc}
-
-  \caption{\label{tbl-carcs_indices_arg}Resultados de las pruebas sobre
-  las Condiciones presentes y Expectativas futuras argentinas al 5\% de
-  significación}
-
-  \tabularnewline
-
-  \toprule
-  Variable & Test & p-value & Resultado\\
-  \midrule
-  Condiciones presentes & ADF & 0.4448 & No Estac.\\
-  Condiciones presentes & KPSS & 0.1000 & Estacionaria\\
-  Condiciones presentes diferenciada & ADF & 0.0405 & Estacionaria\\
-  Condiciones presentes diferenciada & KPSS & 0.1000 & Estacionaria\\
-  Condiciones presentes diferenciada & Ljung-Box & 0.0604 & Ruido blanco\\
-  \addlinespace
-  Expectativas futuras & ADF & 0.0512 & No Estac.\\
-  Expectativas futuras & KPSS & 0.0149 & No Estac.\\
-  Expectativas futuras diferenciada & ADF & 0.0861 & No Estac.\\
-  Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
-  Expectativas futuras diferenciada & Ljung-Box & 0.8984 & Ruido blanco\\
-  \bottomrule
-
-  \end{longtable}
-
-  A partir de los resultados de la Tabla~\ref{tbl-carcs_indices_arg} y
-  en base a la evidencia muestral, se concluye con un 5\% de nivel de
-  significación, que la primera diferencia de las Condiciones presentes
-  es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la
-  serie Expectativas futuras no es estacionaria y los primeros 20
-  coeficientes de la FAC de su primera diferencia son nulos.
-
-  Sin embargo para las Condiciones presentes y la primera diferencia de
-  las Expectativas futuras, los tests realizados conducen a conclusiones
-  contradictorias. En el caso de las Condiciones presentes en niveles,
-  aunque por el test ADF se llega a que dicha serie no es estacionaria y
-  mediante el de KPSS se concluye que es estacionaria, se la consideró
-  como no estacionaria por presentar tendencia en el peróodo que
-  comprende desde principios de 2023 hasta fines de 2024
-  (Figura~\ref{fig-indices_arg}).
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_expec_arg_dif1-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_expec_arg_dif1}FACM y FACPM de la primera
-  diferencia de las Expectativas futuras argentinas}
-
-  \end{figure}%
-
-  Por otro lado, ante la discrepancia de los resultados para las
-  Expectativas futuras diferenciadas, el test ADF conduce a que no son
-  estacionarias y el KPSS sí, teniendo en cuenta su FACM y FACPM
-  (Figura~\ref{fig-acf_expec_arg_dif1}) se observa que ninguno de sus
-  rezagos es significativo, sugiriendo que esta serie sigue un ruido
-  blanco, con lo cual fue considerada estacionaria.
-
-  Teniendo en cuenta todos estos aspectos, se consideró a ambas series
-  en niveles como no estacionarias, siendo necesario diferenciarlas para
-  lograr la estacionariedad.
-
-  \subsection{Características de los otros índices
-  norteamericanos}\label{sec-carcs_indices_usa}
-
-  Al igual que en el caso argentino, para inspeccionar la relación entre
-  los índices estadounidenses, fue necesario estudiar si las Condiciones
-  presentes y Expectativas futuras son estacionarias o no.
-
-  \needspace{16\baselineskip}
-
-  \begin{longtable}[t]{llcc}
-
-  \caption{\label{tbl-carcs_indices_usa}Resultados de las pruebas sobre
-  las Condiciones presentes y Expectativas futuras norteamericanas al
-  5\% de significación}
-
-  \tabularnewline
-
-  \toprule
-  Variable & Test & p-value & Resultado\\
-  \midrule
-  Condiciones presentes & ADF & 0.0388 & Estacionaria\\
-  Condiciones presentes & KPSS & 0.1000 & Estacionaria\\
-  Condiciones presentes diferenciada & ADF & 0.0100 & Estacionaria\\
-  Condiciones presentes diferenciada & KPSS & 0.1000 & Estacionaria\\
-  Condiciones presentes diferenciada & Ljung-Box & 0.5395 & Ruido blanco\\
-  \addlinespace
-  Expectativas futuras & ADF & 0.0857 & No Estac.\\
-  Expectativas futuras & KPSS & 0.1000 & Estacionaria\\
-  Expectativas futuras diferenciada & ADF & 0.0100 & Estacionaria\\
-  Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
-  Expectativas futuras diferenciada & Ljung-Box & 0.4870 & Ruido blanco\\
-  \bottomrule
-
-  \end{longtable}
-
-  En base a la evidencia muestral y los resultados\footnote{La hipótesis
-    nula del test ADF es \(H_0)\) La serie no es estacionaria (tiene una
-    raíz unitaria), la del test KPSS es \(H_0)\) La serie es
-    estacionaria y la del test Ljung-Box es \(H_0)\) Los primeros 20
-    coeficientes de FAC son nulos.} de la
-  Tabla~\ref{tbl-carcs_indices_usa}, se concluye que tanto para las
-  Condiciones presentes como para las Expectativas futuras la primera
-  diferencia es estacionaria y que los primeros 20 coeficientes de las
-  FAC son nulos. Sin embargo, para estas mismas series en niveles, los
-  p-values conducen a resultados que ameritaron mas analisis.
-
-  En primer lugar, se obtiene mediante el test ADF y KPSS que la serie
-  de las Condiciones presentes es estacionaria.
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_cond_eeuu-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_cond_eeuu}FACM y FACPM de las Condiciones
-  presentes de Estados Unidos}
-
-  \end{figure}%
-
-  \begin{figure}
-
-  \centering{
-
-  \pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_expec_eeuu-1.pdf}}
-
-  }
-
-  \caption{\label{fig-acf_expec_eeuu}FACM y FACPM de las Expectativas
-  futuras de Estados Unidos}
-
-  \end{figure}%
-
-  \subsection{Soporte computacional}\label{soporte-computacional}
-
-  Todo el código que permitió armar la base de datos, llevar a cabo
-  pruebas de hipótesis, desarrollar la aplicación, redactar el informe,
-  etc, fue realizado con R y se encuentra en el siguiente
-  \href{https://github.com/patricia-nsc/Practica-Profesional-Privado}{repositorio}.
-
-  \newpage
-
-  \section{Referencias}\label{referencias}
-
-  https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
-
-  https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
-
-  https://fred.stlouisfed.org/
-
-  https://www.bcr.com.ar/es
-
-  https://finance.yahoo.com/
-
-  https://www.argentina.gob.ar/economia/agricultura/agricultura
-
-  Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016).
-  \emph{Time series analysis: Forecasting and control} (\(5^a\) ed.).
-  Wiley.
-
-  Bula, A. (2020). \emph{Importancia de la agricultura en el desarrollo
-  socio-económico}. Puente Académico N° 16, Observatorio Económico
-  Social, Universidad Nacional de Rosario (UNR).
-
-  Cryer, J. D., \& Chan, K.-S. (2008). \emph{Time series analysis: With
-  applications in R} (\(2^a\) ed.). Springer.
-
-  Enders, W. (2014). \emph{Applied econometric time series}. (\(4^a\)
-  ed.). John Wiley \& Sons.
-
-  Hyndman, R. J., \& Athanasopoulos, G. (2021). \emph{Forecasting:
-  Principles and practice} (\(3^a\) ed.). OTexts.
-  https://otexts.com/fpp3/
-
-  Lütkepohl, H., \& Krätzig, M. (Eds.). (2004). \emph{Applied Time
-  Series Econometrics}. Cambridge University Press.
-
-  Peña, D. (2010). \emph{Análisis de series temporales}. Alianza
-  Editoral
-
-  Tamplín, L. (2025). \emph{Evaluación de Métodos de Imputación de Datos
-  Faltantes en Series Temporales Univariadas}. Tesis de grado de
-  Licenciatura en Estadística. Universidad Nacional de Rosario. Rosario,
-  Argentina.
-
-  Tsay, R. S. (2010). \emph{Analysis of financial time series} (\(3^a\)
-  ed.). John Wiley \& Sons.
+  \begin{center}
   
+  % --- encabezado ---
+  {\fontsize{20}{24}\selectfont Pr\'actica Profesional realizada en la Universidad Austral}
+  
+  \vspace{0.5cm}
+  
+  % --- logo austral ---
+  \includegraphics[width=0.8\textwidth]{logo_austral.jpg}
+  
+  \vspace{0.5cm}
+  
+  % --- titulo pp ---
+  {\fontsize{30}{36}\selectfont\bfseries ``Confianza agropecuaria en Argentina y Estados Unidos: un an\'alisis comparativo exploratorio de series temporales''}
+  
+  \vfill
+  
+  % --- fecha ---
+  {\fontsize{14}{17}\selectfont Febrero 2027}
+  
+  \end{center}
+  
+  \vfill
+  
+  % datos de autores (alineado a la izquierda) ---
+  {\fontsize{14}{17}\selectfont
+  \noindent\textbf{\underline{Alumna}:} Patricia Anal\'ia Nesci
+  
+  \vspace{0.2cm}
+  \noindent\textbf{\underline{Tutor en la Austral}:} Cand. Mag. Federico Andr\'es Borbiconi
+  
+  \vspace{0.2cm}
+  \noindent\textbf{\underline{Tutora en la Escuela de Estad\'istica}:} Mag. Fernanda M\'endez
+  }
+  
+  \vspace{1.2cm}
+  
+  % --- pie: carrera / facultad / universidad + logo UNR ---
+  \noindent
+  \begin{minipage}[c]{0.62\textwidth}
+  {\fontsize{14}{17}\selectfont
+  Licenciatura en Estad\'istica
+  
+  \vspace{0.2cm}
+  Facultad de Ciencias Econ\'omicas y Estad\'istica
+  
+  \vspace{0.2cm}
+  Universidad Nacional de Rosario
+  }
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[c]{0.3\textwidth}
+  \raggedleft
+  \includegraphics[width=3.3cm]{logo_unr.jpg}
+  \end{minipage}
+
+\end{titlepage}
+
+\restoregeometry
+  
+\pagestyle{fancy}
+\rhead{}
+
+\section*{Agradecimientos}\label{agradecimientos}
+
+\newpage
+
+\section*{Resumen}\label{resumen}
+
+El sector agropecuario es clave en el desarrollo de las sociedades,
+especialmente en las no desarrolladas. Su relevancia varía según el
+país, esto motiva comparar la confianza de los productores entre
+economías. El \emph{Ag Barometer Austral} mide la confianza del
+productor argentino (Universidad Austral, desde 2018) y el \emph{Ag
+Economy Barometer} la del productor norteamericano (Universidad
+\emph{Purdue}, desde 2015). Este trabajo tuvo como objetivo comparar,
+desde una perspectiva exploratoria, la evolución temporal de ambos
+índices y estudiar qué factores están asociados a la confianza de los
+productores.
+
+Principalmente su desarrollo fue realizado en base a los índices de
+confianza relevados por las universidades. Asimismo, se hizo uso de
+variables económicas de sitios como el Banco Mundial, la Reserva Federal
+de Estados Unidos y la Bolsa de Comercio de Rosario.
+
+Para cumplir con los objetivos, se imputaron valores faltantes y se creó
+un conjunto de datos que reuniera la información de Argentina, de
+Estados Unidos y las variables económicas. Posteriormente se realizó un
+análisis exploratorio univariado de los índices para identificar qué
+características tiene cada uno, ya sea estacionariedad, tendencia,
+estacionalidad, volatilidad, etc. Para llevarlo a cabo se presentaron
+diversas figuras y tests. Asimismo, se aplicaron técnicas de correlación
+cruzada y análisis de rezagos para estudiar si estos indicadores están
+relacionados y para analizar, a modo de análisis cuantitativo, si están
+asociados a variables económicas. A su vez, a modo de análisis
+cualitativo se investigó de forma gráfica si ciertos acontecimientos,
+como resultados electorales, Covid-19 o conflictos bélicos, alteran la
+confianza de los productores.
+
+En el análisis univariado se encontró que las series exhiben cambios
+repentinos, no presentarían variancia constante, ni pauta estacional, no
+son estacionarias y siguen el patrón de paseo aleatorio. En el análisis
+bivariado se obtuvieron tres resultados. El primero es que la confianza
+de productores argentinos no guarda relación con la de los
+norteamericanos. El segundo es que, en ambos países, las percepciones de
+los productores no estarían asociadas a ningún factor económico. El
+tercero es que, los años en los que se registran los cambios abruptos y
+una mayor volatilidad en las percepciones coinciden con los períodos de
+elecciones presidenciales, lo que sugiere que la confianza de los
+productores se encontraría alterada por factores de índole política en
+ambos países.
+
+Dado que los resultados presentados se sustentan principalmente en
+técnicas exploratorias, sería interesante en futuras líneas de
+investigación incorporar métodos analíticos que aporten mayor solidez a
+las conclusiones.
+
+\textbf{Palabras clave:} \emph{Ag Barometer}, productores, series
+temporales, asociaciones, variables económicas, elecciones
+presidenciales.
+
+\emph{\textbf{Keywords:} Ag Barometer, farmers, time series,
+associations, economic variables, presidential elections}.
+
+\newpage
+
+\tableofcontents
+
+\newpage
+\rhead{\nouppercase{\leftmark}}
+
+\section{Introducción}\label{introducciuxf3n}
+
+Todo lo que hoy la raza humana ingiere se deriva, en su mayoría, de la
+agricultura o de la ganadería, es decir, del sector agropecuario. Su
+crecimiento incrementa las productividades, disminuye los precios de los
+alimentos, aumenta el empleo agrícola y controla la inflación, todo esto
+contribuye al progreso de la sociedad. Por estas razones, el sector
+agropecuario es fundamental para sociedades consideradas no
+desarrolladas (Bula, 2020). En este sentido, si bien el sector es
+importante, en cada país se desenvuelve en distintas condiciones debido
+a diferencias en sus entornos económicos, financieros y climáticos. Por
+tal motivo, resulta de interés disponer de datos que permitan realizar
+comparaciones de distintas economías.
+
+El Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral
+sede Rosario desarrolla un índice denominado \emph{Ag Barometer Austral}
+que mide la confianza de los productores agropecuarios argentinos. Se
+desarrolla de manera bimestral a partir de encuestas estructuradas a
+productores representativos del sector, permitiendo analizar la
+evolución de sus percepciones sobre la situación actual, expectativas
+futuras e intenciones de inversión a través del tiempo. Este indicador
+es desarrollado en colaboración metodológica con la Universidad de
+\emph{Purdue} (Estados Unidos) desde 2018.
+
+El mencionado CEAg es una entidad especializada y de alto nivel
+académico cuya misión es impulsar, desde la región, el fortalecimiento
+de las cadenas de valor agroalimentarias e instituciones relacionadas,
+como un motor de desarrollo humano, económico y social de largo plazo
+para la Argentina, a través de la formación y de la investigación
+aplicada. La iniciativa promueve, desde un ámbito universitario, la
+capacidad de los sectores agroindustriales de crear y liderar las
+oportunidades y tendencias relacionadas con los agronegocios y
+alimentos, desde nuestro país, para la región y el mundo.
+
+A nivel internacional se reporta un índice similar conocido como
+\emph{Ag Economy Barometer}. Es elaborado por la Universidad de
+\emph{Purdue} desde 2015 y mide mensualmente la confianza de los
+productores estadounidenses. Representa un referente global en la
+medición de las percepciones y expectativas de los productores
+agrupecuarios, lo que permite realizar comparaciones entre economías con
+diferentes niveles de estabilidad macroeconómica e institucional.
+
+En este contexto, el propósito general de este trabajo es presentar,
+desde un enfoque exploratorio, un análisis comparativo de la confianza
+agropecuaria de Argentina y Estados Unidos (\emph{Ag Barometer}),
+estudiando los aspectos de su evolución temporal, la posible relación
+entre ambos índices y los fenómenos a los que está asociado.
+
+El presente documento representa un resumen del trabajo realizado en el
+CEAg entre los meses Agosto y Octubre de 2026, bajo el concepto del
+desarrollo de una práctica profesional para terminar la carrera de
+Licenciatura en Estadística de la Facultad de Ciencias Económicas y
+Estadística de la Universidad Nacional de Rosario.
+
+\newpage
+
+\section{Objetivos}\label{objetivos}
+
+\subsection{Objetivo general}\label{objetivo-general}
+
+En línea con lo expuesto, la finalidad de esta investigación es analizar
+y comparar la dinámica temporal del \emph{Ag Barometer Austral} y del
+\emph{Ag Economy Barometer}, identificando patrones comunes y
+diferencias entre ambos indicadores, y explorando su relación con
+variables económicas, productivas y acontecimientos relevantes de los
+contextos argentino y estadounidense.
+
+\subsection{Tareas específicas de la práctica
+profesional}\label{tareas-especuxedficas-de-la-pruxe1ctica-profesional}
+
+Se determinan las siguientes tareas:
+
+\begin{itemize}
+\tightlist
+\item
+  Realizar la recolección, integración y depuración de las bases de
+  datos correspondientes al \emph{Ag Barometer Austral} y al \emph{Ag
+  Economy Barometer}.
+\item
+  Confeccionar una base de datos que contenga información de series
+  económicas para analizar su relación con los índices bajo estudio.
+\item
+  Desarrollar un análisis exploratorio de las series de tiempo,
+  incluyendo el estudio de tendencia, estacionalidad, volatilidad y
+  comportamiento general de los índices.
+\item
+  Analizar la dinámica temporal de los indicadores, identificando
+  patrones, tendencias, estacionalidad y posibles cambios estructurales.
+\item
+  Analizar la relación entre ambas series temporales, mediante técnicas
+  como correlación cruzada y análisis de rezagos, con el fin de
+  identificar posibles vínculos, sincronización o divergencias entre
+  ambos contextos, promoviendo una mirada comparativa a nivel
+  internacional de manera exploratoria.
+\item
+  Identificar y analizar el impacto de eventos relevantes tales como
+  cambios en políticas económicas, variaciones en tasas de interés,
+  precios internacionales o crisis sanitarias sobre la evolución de los
+  índices, comprendiendo el efecto de factores macroeconómicos,
+  políticos y productivos sobre las expectativas y decisiones de los
+  productores agropecuarios.
+\item
+  Desarrollar una aplicación interactiva que permita visualizar y
+  explorar los principales resultados obtenidos, facilitando el acceso a
+  la información y su interpretación por parte de usuarios técnicos y no
+  especializados.
+\item
+  Participar en la elaboración de un informe final detallado, que
+  documente la metodología utilizada, los resultados obtenidos y las
+  principales conclusiones del análisis.
+\item
+  Integrar el trabajo en un enfoque interdisciplinario, articulando
+  herramientas de la estadística con conceptos de economía y
+  agronegocios.
+\end{itemize}
+
+\newpage
+
+\section{Materiales}\label{materiales}
+
+El objetivo de esta sección es mostrar las características de los
+índices en estudio tales como la definición de población, qué método se
+utiliza para seleccionar la muestra, especificaciones sobre el trabajo
+de campo, qué preguntas se realizan en cada edición y cómo se utilizan
+estas últimas para construir los indicadores.
+
+\subsection{\texorpdfstring{Características del \emph{Ag Barometer
+Austral}}{Características del Ag Barometer Austral}}\label{caracteruxedsticas-del-ag-barometer-austral}
+
+La población está conformada por productores de la Pampa Húmeda
+abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa
+Fe; cuyo valor bruto de producción es mayor o igual a USD 200,000; donde
+un 45\% producen soja, un 21\% maíz, un 16\% ganadería vacuna, un 7\%
+trigo, un 7\% tambo y un 4\% girasol. Estas últimas categorías no son
+mutuamente excluyentes porque cada productor podría dedicarse a más de
+una actividad, por lo que los porcentajes mencionados representan
+mínimos. Se entiende por productores agropecuarios a personas físicas o
+jurídicas cuya actividad principal sea la producción de soja, trigo,
+maíz, etc. en tierras propias y/o arrendadas (sin excluir que realicen
+otras actividades).
+
+Se realizó un muestreo estratificado de productores teniendo en cuenta
+datos del INDEC y \emph{Map of Ag}. Se detallan los estratos de
+productores en cuanto a su producción:
+
+\begin{itemize}
+\tightlist
+\item
+  50\% de los encuestados con un valor bruto de producción entre USD
+  200,000 y USD 399,000 al año
+\item
+  30\% de los encuestados con valor bruto de producción entre USD
+  414,000 y USD 999,999 al año
+\item
+  20\% de los encuestados con un valor bruto de producción mayor o igual
+  a USD 1,000,000 al año.
+\end{itemize}
+
+En cuanto al trabajo de campo, la encuesta es realizada a 406
+productores por teléfono insumiendo alrededor de tres semanas. El
+relevamiento se realiza en los meses de enero, marzo, mayo, julio,
+septiembre y noviembre. Éstos últimos se denominan ``meses impares'' en
+este documento.
+
+En dicho relevamiento se formulan las siguientes cinco preguntas
+dicotómicas (de respuesta ``Sí'' / ``No'') fijas:
+
+\begin{itemize}
+\tightlist
+\item
+  \(Q_1\): ¿Ud. diría que su operación actualmente está mejor, peor o
+  igual financieramente con respecto a un año atrás?
+\item
+  \(Q_2\): Mirando hacia adelante: de acá a un año ¿considera que su
+  explotación estará mejor, peor o igual financieramente?
+\item
+  \(Q_3\): Pensando ahora en la economía agropecuaria en general
+  ¿considera que los próximos meses serán: buenos tiempos hablando
+  financieramente o malos tiempos?
+\item
+  \(Q_4\): Mirando hacia adelante ¿qué situación diría que es más
+  probable, el sector agropecuario argentino en los próximos 5 años,
+  tendrá mayormente buenos tiempos o mayormente malos tiempos?
+\item
+  \(Q_5\): Pensando en inversiones importantes -- como maquinaria,
+  compra de tierras, cabezas de ganado, capacidad de almacenamiento,
+  bioenergía- en general ¿Ud. considera que hoy es un buen momento o mal
+  momento para realizar inversiones?
+\end{itemize}
+
+En todas las ediciones del \emph{Ag Barometer Austral} se añaden
+alrededor de seis preguntas que reflejan percepciones referidas a temas
+coyunturales / estacionales que impactan al sector agropecuario
+argentino. Éstas varían según los temas de interés del momento.
+
+Finalizada la etapa de recolección, se procede a la construcción de los
+índices. El primer paso del cálculo del \emph{Ag Barometer Austral} es
+obtener una medida para cada una de las cinco preguntas fijas. Se
+calcula como el porcentaje de respuestas favorables (``Sí''), menos el
+porcentaje de respuestas desfavorables (``No''), más 100. Esto da a cada
+medida un rango de posibles puntajes de 0 a 200. Cuando todas las
+respuestas son ``Sí'', el índice es 200. Cuando todas las respuestas son
+``No'', el índice es 0.
+
+El valor final del \emph{Ag Barometer Austral} es el promedio simple de
+las medidas de las cinco preguntas individuales donde el 100 indica un
+punto neutro. Valores por encima de 100 expresan percepciones positivas
+y valores por debajo de 100 expresan percepciones negativas.
+
+Se hace uso de las respuestas recolectadas para construir otros dos
+índices: ``Condiciones presentes'' y ``Expectativas futuras'' a fines de
+capturar, también, cómo cambia la percepción netamente actual y la
+puramente futura de los productores a través del tiempo. Se calculan
+igual que el \emph{Ag Barometer Austral} sólo teniendo en cuenta algunas
+de las preguntas.
+
+\begin{table}
+
+\caption{\label{tbl-preguntas_agb}Preguntas utilizadas para el cálculo de cada índice}
+
+\centering{
+
+\centering
+
+
+\begin{tabular}{lll}
+\toprule
+Índice & Preguntas para su cálculo & Qué representa \\
+\midrule
+$Ag$ $Barometer$ & $Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$ & Percepciones actuales y futuras \\
+Condiciones presentes & $Q_1$, $Q_5$ & Percepciones actuales \\
+Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsection{\texorpdfstring{Características del \emph{Ag Economy
+Barometer}}{Características del Ag Economy Barometer}}\label{caracteruxedsticas-del-ag-economy-barometer}
+
+Si bien los dos índices, \emph{Ag Barometer Austral} y \emph{Ag Economy
+Barometer}, comparten el objetivo de medir la confianza de los
+productores de cada país, presentan similitudes y diferencias. Por
+ejemplo, una diferencia entre ellos es la extensión de sus series
+temporales: la primera observación del \emph{Ag Economy Barometer}
+corresponde a octubre de 2015, mientras que la del \emph{Ag Barometer
+Austral} corresponde a octubre de 2018. Esto evidencia que el estudio de
+medir el sentimiento de los productores comenzó originalmente en la
+Universidad de \emph{Purdue}.
+
+En el caso del índice estadounidense, la población está compuesta por
+productores cuyo valor bruto de producción es mayor o igual a USD
+500,000; donde un 53\% producen soja, un 14\% maíz, un 3\% algodón, un
+19\% ganadería vacuna, un 5\% tambo y un 6\% ganadería porcina. Al igual
+que en el caso del \emph{Ag Barometer Austral} estos porcentajes
+representan mínimos.
+
+Para la selección de los productores se aplicó un muestreo estratificado
+en base a los datos censales del \emph{United States Department of
+Agriculture} (USDA). Se detallan los estratos definidos según el volumen
+de producción anual:
+
+\begin{itemize}
+\tightlist
+\item
+  49\% de los encuestados con un valor bruto de producción entre USD
+  500,000 y USD 999,999
+\item
+  36\% de los encuestados con valor bruto de producción entre USD
+  1,000,000 y USD 2,499,000
+\item
+  15\% de los encuestados con un valor bruto de producción mayor o igual
+  a USD 2,500,000.
+\end{itemize}
+
+Respecto al trabajo de campo, la encuesta se realiza por vía telefónica
+a una muestra de 400 productores y se demora aproximadamente una semana.
+El relevamiento se realiza de manera mensual, es decir, en los doce
+meses del año.
+
+Cada mes se entrevista a los productores realizándoles las mismas cinco
+preguntas fijas ya detalladas.
+
+Recabadas las respuestas, el primer paso para calcular el \emph{Ag
+Economy Barometer} es el mismo que para elaborar el \emph{Ag Barometer
+Austral}: obtener la medida para cada una de las cinco preguntas fijas.
+Sin embargo, cambia la forma en que se obtiene el valor final del índice
+estadounidense. El \emph{Ag Economy Barometer} se obtiene sumando las
+cinco medidas de cada una de las cinco preguntas fijas y se divide esa
+suma por el promedio del período base (octubre 2015 a marzo 2016).
+
+Es decir que el valor del \emph{Ag Economy Barometer} para un mes dado,
+se calcula siempre en relación con el período base. El valor 100 implica
+que no hubo cambios respecto del período base. Un valor superior a 100
+indica un aumento en el \emph{sentiment}, o la confianza, de los
+productores en comparación con el período base; mientras que un valor
+inferior a 100 indica que el \emph{sentiment} de los productores
+disminuyó en relación con dicho período.
+
+En Estados Unidos también se calculan los indicadores Condiciones
+presentes y Expectativas futuras, utilizando la misma forma de cálculo
+que para el \emph{Ag Economy Barometer}, cada uno a partir de las
+preguntas de la Tabla~\ref{tbl-preguntas_agb}.
+
+En la Universidad de \emph{Purdue} también construyen, aparte de los
+tres índices ya mencionados, el indicador ``Inversión del capital
+agrícola'' en base a la quinta pregunta (\(Q_5\)). Sin embargo no fue
+tenido en cuenta en el trabajo por no ser relevado a nivel local.
+
+\subsection{Los datos}\label{los-datos}
+
+Para facilitar la visualización de las semejanzas y diferencias entre
+estos dos índices, se muestra un resumen que permite comparar sus
+características:
+
+\input{Tablas/tabla_materiales_comparacion.tex}
+
+A partir de lo presentado en la Tabla \ref{tbl-comparacion}, puede
+observarse que la cantidad de índices en estudio es seis, tres para cada
+país: \emph{Ag Barometer}, Condiciones presentes y Expectativas futuras.
+Considerando la base de datos de cada universidad, en total se dispone
+de siete variables: los seis índices mencionados y una variable
+adicional que indica la fecha de cada observación.
+
+\newpage
+
+\section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
+
+El fin de este apartado es plasmar el camino que se siguió para armar
+una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne
+las series de Argentina, de Estados Unidos y otras sugeridas por los
+especialistas que fueron buscadas en diversas fuentes para poder
+responder a ciertos objetivos de esta práctica profesional. Previamente
+a la unificación se aplicaron procesamientos sobre algunas de las series
+provistas como imputación de valores faltantes, eliminación de valores,
+homogeneización de nombres de variables, etc.
+
+\subsection{Tratamiento sobre las series de las
+universidades}\label{tratamiento-sobre-las-series-de-las-universidades}
+
+Antes de decidir qué procesos aplicar sobre las series de Argentina, fue
+necesario identificar algunos atributos de estos datos, que se presentan
+a continuación.
+
+\begin{longtable}[t]{ccccccccc}
+
+\caption{\label{tbl-agba_sin_imputar}\emph{Ag Barometer Austral} en el
+período octubre 2018 - enero 2026}
+
+\tabularnewline
+
+\toprule
+Año & ene & mar & abr & may & jul & sept & oct & nov\\
+\midrule
+\endfirsthead
+\multicolumn{9}{@{}l}{(continuación)}\\
+\toprule
+Año & ene & mar & abr & may & jul & sept & oct & nov\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+2018 &  &  &  &  &  &  & 100 & 95\\
+2019 & 106 & 103 &  & 117 & 137 & 74 &  & 64\\
+2020 & 52 &  & 53 &  & 48 & 69 &  & 78\\
+2021 & 79 & 90 &  & 79 & 69 & 79 &  & 79\\
+2022 & 90 & 90 &  & 98 & 76 & 83 &  & 67\\
+\addlinespace
+2023 & 68 & 69 &  & 84 & 89 & 100 &  & 117\\
+2024 & 119 & 129 &  & 139 & 139 & 132 &  & 149\\
+2025 & 117 & 137 &  & 130 & 127 & 124 &  & 159\\
+2026 & 158 &  &  &  &  &  &  & \\*
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-indices_arg_sin_imputar-1.pdf}}
+
+}
+
+\caption{\label{fig-indices_arg_sin_imputar}Evolución de los índices
+argentinos en el período octubre 2018 - enero 2026}
+
+\end{figure}%
+
+Se aprecian dos características en estos datos. La primera es que los
+valores que corresponden a marzo 2020 y mayo 2020 son faltantes, como se
+puede ver en la Tabla~\ref{tbl-agba_sin_imputar} y en la
+Figura~\ref{fig-indices_arg_sin_imputar}. La segunda característica es
+que, a pesar de que los investigadores hayan planificado generar
+observaciones en los meses impares, hay dos observaciones que no cumplen
+esto. La primera de éstas ocurrió en octubre 2018
+(Tabla~\ref{tbl-agba_sin_imputar}). Esto se debe a que los
+investigadores quisieron hacer una llamada ``observación piloto'' pero
+luego continuaron con su plan de proporcionar datos sólo en los meses
+impares. El segundo dato de este estilo corresponde a abril 2020
+(Tabla~\ref{tbl-agba_sin_imputar}) el cual fue relevado para compensar
+los faltantes de marzo y mayo.
+
+Estos dos aspectos producen observaciones separadas por un mes (como
+octubre 2018 y noviembre 2018), que la mayoría estén separadas por dos
+meses (acorde a lo planificado) y que otras estén separadas por tres
+meses (como enero 2020 y abril 2020). Es otras palabras, las series
+argentinas son de periodicidad irregular.
+
+Sin embargo, con el fin de responder a los objetivos de esta práctica
+profesional, fue necesario emplear varios recursos que requieren que las
+series bajo estudio sean de periodicidad regular. Por lo tanto se
+propuso, en primer lugar, imputar los valores que faltan para las tres
+series en las fechas de marzo y mayo 2020.
+
+Se imputaron cada una de las tres series con los métodos de
+interpolación lineal, interpolación de Stine y el filtro de Kalman
+presentados por Tamplín (2025). A continuación se muestran los
+resultados.
+
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{4.5cm}>{\centering\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{3.2cm}}
+
+\caption{\label{tbl-agba_imputacion_3mets}Imputación de las series
+argentinas según los tres métodos}
+
+\tabularnewline
+
+\toprule
+Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
+\midrule
+\endfirsthead
+\multicolumn{4}{@{}l}{(continuación)}\\
+\toprule
+Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+ & Interpolacion lineal & 52.5000 & 50.5000\\
+\nopagebreak
+ & Interpolacion Stine & 52.5000 & 50.5000\\
+\nopagebreak
+\multirow{-3}{4.5cm}{\raggedright\arraybackslash Ag Barometer Austral} & Filtro de Kalman & 53.6642 & 52.3904\\
+\cmidrule{1-4}\pagebreak[0]
+ & Interpolacion lineal & 48.0000 & 51.0000\\
+\nopagebreak
+ & Interpolacion Stine & 48.0000 & 51.0000\\
+\nopagebreak
+\multirow{-3}{4.5cm}{\raggedright\arraybackslash Condiciones presentes} & Filtro de Kalman & 49.0874 & 52.1107\\
+\cmidrule{1-4}\pagebreak[0]
+ & Interpolacion lineal & 55.0000 & 49.5000\\
+\nopagebreak
+ & Interpolacion Stine & 55.0000 & 49.5000\\
+\nopagebreak
+\multirow{-3}{4.5cm}{\raggedright\arraybackslash Expectativas futuras} & Filtro de Kalman & 55.5112 & 51.1437\\*
+
+\end{longtable}
+
+Para cada serie y cada fecha, los valores imputados mediante cualquiera
+de los tres métodos, son similares
+(Tabla~\ref{tbl-agba_imputacion_3mets}). Por tal motivo se decidió
+imputar con el método de imputación lineal ya que es el más sencillo en
+cuanto a metodología.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-indices_arg-1.pdf}}
+
+}
+
+\caption{\label{fig-indices_arg}Evolución de las series argentinas en el
+período noviembre 2018 - enero 2026}
+
+\end{figure}%
+
+Las observaciones de octubre 2018 y abril 2020, las cuales sólo
+representan un 4.54\% de la totalidad de los datos, fueron consideradas
+a la hora de imputar pero no se las tuvo en cuenta en el resto del
+trabajo para lograr que las tres series tengan periodicidad regular.
+
+Luego de este tratamiento se logran tres series de periodicidad
+bimestral, de 44 observaciones cada una para el período noviembre 2018 -
+enero 2026.
+
+De igual manera se planeó proceder a nivel internacional. A los fines de
+decidir qué procesos realizar sobre las series de Estados Unidos, en
+caso de ser requiridos, fue necesario primero identificar qué
+características poseen estos datos. Por tal motivo se muestran, a
+continuación, las series estadounidenses.
+
+\begin{longtable}[t]{ccccccccccccc}
+
+\caption{\label{tbl-ageb}\emph{Ag Economy Barometer} en el período
+octubre 2015 - marzo 2026}
+
+\tabularnewline
+
+\toprule
+Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
+\midrule
+\endfirsthead
+\multicolumn{13}{@{}l}{(continuación)}\\
+\toprule
+Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\endlastfoot
+2015 &  &  &  &  &  &  &  &  &  & 116 & 97 & 107\\
+2016 & 98 & 96 & 85 & 106 & 97 & 104 & 112 & 95 & 101 & 92 & 116 & 132\\
+2017 & 153 & 134 & 124 & 130 & 130 & 131 & 139 & 132 & 132 & 135 & 128 & 126\\
+2018 & 135 & 140 & 135 & 125 & 141 & 143 & 117 & 129 & 114 & 136 & 134 & 127\\
+2019 & 143 & 136 & 133 & 115 & 101 & 126 & 153 & 124 & 121 & 136 & 153 & 150\\
+\addlinespace
+2020 & 167 & 168 & 121 & 96 & 103 & 117 & 118 & 144 & 156 & 183 & 167 & 174\\
+2021 & 167 & 165 & 177 & 178 & 158 & 137 & 134 & 138 & 124 & 121 & 116 & 125\\
+2022 & 119 & 125 & 113 & 121 & 99 & 97 & 103 & 117 & 112 & 102 & 102 & 126\\
+2023 & 130 & 125 & 117 & 123 & 104 & 121 & 123 & 115 & 106 & 110 & 115 & 114\\
+2024 & 106 & 111 & 114 & 99 & 108 & 105 & 113 & 100 & 88 & 115 & 145 & 136\\
+\addlinespace
+2025 & 141 & 152 & 140 & 148 & 158 & 146 & 135 & 125 & 126 & 129 & 139 & 136\\
+2026 & 113 & 116 & 127 &  &  &  &  &  &  &  &  & \\*
+
+\end{longtable}
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-indices_usa-1.pdf}}
+
+}
+
+\caption{\label{fig-indices_usa}Evolución de los índices norteamericanos
+en el período octubre 2015 - marzo 2026}
+
+\end{figure}%
+
+En las series de la Figura~\ref{fig-indices_usa} no se observan
+discontinuidades, es decir que en el caso de Estados Unidos no hay
+valores faltantes. En la Tabla~\ref{tbl-ageb}, tomando como ejemplo al
+\emph{Ag Economy Barometer}, efectivamente se puede apreciar que los
+datos están completos. Según lo presentado en la sección anterior, los
+norteamericanos realizan el relevamiento en todos los meses (Tabla
+\ref{tbl-comparacion}), o equivalentemente, las series son de
+periodicidad mensual. Esto no da lugar a que haya observaciones en meses
+que no van acorde a lo planificado, como ocurría en octubre 2018 y abril
+2020 en el caso local.
+
+Considerando estos aspectos, queda de manifiesto que no es necesario
+emplear recursos, como imputación o eliminación de valores, para lograr
+series de periodicidad regular. El trabajo realizado con estas series se
+redujo, entonces, a tareas sencillas propias del manejo de datos. Se
+creó una variable que indique la fecha de cada observación para que
+ambas bases de datos tuvieran las mismas columnas y poder unir los
+conjuntos de datos.
+
+\subsection{Búsqueda de variables
+económicas}\label{buxfasqueda-de-variables-econuxf3micas}
+
+Además de las variables ya consideradas en la base, resultó necesario
+incorporar otras con el fin de estudiar qué fenómenos podrían estar
+vinculados con el \emph{Ag Barometer}. Estas otras que debían agregarse
+fueron sugeridas por los especialistas y están relacionadas a:
+
+\begin{itemize}
+\tightlist
+\item
+  Precios de la producción: Precio internacional de la soja, maíz,
+  trigo, sorgo, carne vacuna, porcina y aviar
+\item
+  Insumos: Precio internacional de la urea, petróleo y gas natural
+\item
+  Tasas de interés de referencia internacional: \emph{Federal Funds
+  Rate}, tasa de interés (\%) del bono de tesoro de EE.UU a dos y diez
+  años
+\item
+  Índices Bursátiles: \emph{Dow Jones} y Nasdaq
+\item
+  Indicadores de confianza/actividad: Índice de confianza del consumidor
+  relevado por la Universidad Di Tella y la de Michigan, Índice de
+  Actividad de la Cadena Agropecuaria
+\item
+  Eventos: Resultados de elecciones presidenciales, hechos bélicos y
+  pandemia Covid-19
+\end{itemize}
+
+Estas variables incorporadas fueron propuestas por los especialistas y
+buscadas en diversas fuentes. A continuación, se detallan sus
+características y su procedencia.
+
+\begin{ThreePartTable}
+\begin{TableNotes}
+\item \textit{Nota: } 
+\item WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.
+\end{TableNotes}
+
+\begin{longtable}[t]{>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{7.5cm}>{\raggedright\arraybackslash}p{5cm}}
+
+\caption{\label{tbl-covs_economicas}Descripción de las variables
+sugeridas por los especialistas}
+
+\tabularnewline
+
+\toprule
+Variable & Descripción & Fuente\\
+\midrule
+\endfirsthead
+\multicolumn{3}{@{}l}{(continuación)}\\
+\toprule
+Variable & Descripción & Fuente\\
+\midrule
+\endhead
+
+\endfoot
+\bottomrule
+\insertTableNotes
+\endlastfoot
+\cellcolor{gray!10}{Fecha} & \cellcolor{gray!10}{Fecha de la observación} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+Petroleo Brent & Precio del petróleo Brent & Banco Mundial (Pink Sheet)\\
+\cellcolor{gray!10}{Petroleo WTI} & \cellcolor{gray!10}{Precio del petróleo WTI} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+Gas Natural EEUU & Precio del Gas Natural EEUU & Banco Mundial (Pink Sheet)\\
+\cellcolor{gray!10}{Gas Natural Europa} & \cellcolor{gray!10}{Precio del Gas Natural Europa} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+\addlinespace
+Soja & Precio de la Soja & Banco Mundial (Pink Sheet)\\
+\cellcolor{gray!10}{Maiz} & \cellcolor{gray!10}{Precio del Maíz} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+Sorgo & Precio del Sorgo & Banco Mundial (Pink Sheet)\\
+\cellcolor{gray!10}{Trigo SRW} & \cellcolor{gray!10}{Precio del Trigo SRW} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+Trigo HRW & Precio del Trigo HRW & Banco Mundial (Pink Sheet)\\
+\addlinespace
+\cellcolor{gray!10}{Carne} & \cellcolor{gray!10}{Precio de la carne vacuna} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+Pollo & Precio del pollo & Banco Mundial (Pink Sheet)\\
+\cellcolor{gray!10}{Urea} & \cellcolor{gray!10}{Precio de la Urea} & \cellcolor{gray!10}{Banco Mundial (Pink Sheet)}\\
+Cerdo & Precio de la carne porcina & FRED\\
+\cellcolor{gray!10}{FEFundsRate} & \cellcolor{gray!10}{Tasa de fondos federales de EEUU} & \cellcolor{gray!10}{FRED}\\
+\addlinespace
+Bono 2 & Rendimiento (\%) del bono del Tesoro de EEUU a 2 años & FRED\\
+\cellcolor{gray!10}{Bono 10} & \cellcolor{gray!10}{Rendimiento (\%) del bono del Tesoro de EEUU a 10 años} & \cellcolor{gray!10}{FRED}\\
+ICC Di Tella & Índice de Confianza del Consumidor hecho en UTDT & Centro de Investigación en Finanzas de la UTDT\\
+\cellcolor{gray!10}{ICC Michigan} & \cellcolor{gray!10}{Índice de Confianza del Consumidor en UM} & \cellcolor{gray!10}{FRED}\\
+NASDAQ & Evolución precio acciones de empresas tecnológicas EEUU & FRED\\
+\addlinespace
+\cellcolor{gray!10}{Dow Jones} & \cellcolor{gray!10}{Rendimiento de las 30 mayores empresas de EEUU} & \cellcolor{gray!10}{Yahoo Finance}\\
+IACA & Índice de Actividad de la Cadena Agropecuaria & Bolsa de Comercio de Rosario\\*
+
+\end{longtable}
+
+\end{ThreePartTable}
+
+\subsection{Base de datos construida}\label{base-de-datos-construida}
+
+Una vez que se obtuvieron todas las series de las universidades junto
+con las buscadas de forma independiente y realizadas las tareas
+inherentes al manejo de datos, se construyó la base de datos
+\texttt{base\_construida.xlsx}, con el software R, que permitió realizar
+el análisis.
+
+La mencionada base cuenta con 126 observaciones y 28 variables, una
+corresponde a la fecha de cada observación, seis son los índices bajo
+estudio relevados por las universidades y las 21 restantes son las
+sugeridas por los especialistas. Excepto la fecha que es cualitativa
+ordinal, el resto de las variables son cuantitativas continuas.
+
+\newpage
+
+\section{Aplicación}\label{aplicaciuxf3n}
+
+Una vez dispuestos los datos en una misma base, con el fin de conocer
+las características de los índices se decidió comenzar esta práctica
+profesional, presentando un análisis exploratorio de los datos de las
+universidades que constó de tres partes. En la primera se realizó un
+análisis univariado del \emph{Ag Barometer Austral} y del \emph{Ag
+Economy Barometer}, en la segunda se llevó a cabo un análisis bivariado
+en el que se analizó la relación entre ciertos pares considerando las
+seis series de interés. Finalmente en la tercera parte, se estudió la
+posible relación del \emph{Ag Barometer} con las variables y eventos
+propuestos por economistas anteriormente presentadas.
+
+\subsection{\texorpdfstring{Análisis descriptivo univariado del \emph{Ag
+Barometer
+Austral}}{Análisis descriptivo univariado del Ag Barometer Austral}}\label{sec-univ_arg}
+
+Se ofrece una primera impresión del \emph{Ag Barometer Austral}, su FACM
+y su FACPM.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-agba-1.pdf}}
+
+}
+
+\caption{\label{fig-agba}Evolución del \emph{Ag Barometer Austral} en el
+período noviembre 2018 - enero 2026}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_agba-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_agba}FACM y FACPM del \emph{Ag Barometer
+Austral}}
+
+\end{figure}%
+
+En primer lugar, fue necesario inspeccionar la dinámica temporal de
+estos datos. Los bastones de la FACM de la Figura~\ref{fig-acf_agba}
+parecen presentar un decaimiento exponencial donde la estimación del
+primer coeficiente es casi 0.8. Alrededor del rezago 24, también hay
+bastones significativos. Esto sugiere que la serie no sería ruido
+blanco.
+
+Se realiza el test de Ljung-Box (Box et al., 2016, p.~289) para analizar
+si el \emph{Ag Barometer Austral} se comporta como un ruido blanco.
+
+\begin{longtable}[t]{ccc}
+
+\caption{\label{tbl-pvalue_arg_rb}Pruebas Ljung-Box sobre el \emph{Ag
+Barometer Austral} en el período noviembre 2018 - enero 2026}
+
+\tabularnewline
+
+\toprule
+Rezago & Estadística & p-value\\
+\midrule
+6 & 93.4377 & <0.001\\
+12 & 103.5929 & <0.001\\
+18 & 107.1535 & <0.001\\
+24 & 147.0830 & <0.001\\
+\bottomrule
+
+\end{longtable}
+
+Con un nivel de significación del 5\% y en base a la evidencia muestral,
+se rechaza la hipótesis nula de ausencia de autocorrelación, para los
+cuatro rezagos considerados (\(p-value < 0.001\),
+Tabla~\ref{tbl-pvalue_arg_rb}). Consecuentemente, la serie presenta
+dependencia temporal y no puede modelarse como ruido blanco. Esto
+justifica continuar con el análisis de su estructura temporal.
+
+De esta manera, se muestran más gráficos para identificar más aspectos
+del \emph{Ag Barometer Austral} y luego se presentan todas las
+conclusiones.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_prom-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_prom}Evolución del \emph{Ag Barometer Austral}
+medio desde 2018 hasta 2026}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-fideos_agba-1.pdf}}
+
+}
+
+\caption{\label{fig-fideos_agba}Comportamiento anual del \emph{Ag
+Barometer Austral}}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-subseries_agba-1.pdf}}
+
+}
+
+\caption{\label{fig-subseries_agba}Comportamiento mensual del \emph{Ag
+Barometer Austral}}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-boxplot_arg-1.pdf}}
+
+}
+
+\caption{\label{fig-boxplot_arg}Distribución del \emph{Ag Barometer
+Austral} por año}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_agba_dif1-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_agba_dif1}FACM y FACPM de la primera diferencia
+del \emph{Ag Barometer Austral}}
+
+\end{figure}%
+
+A simple vista, viendo los valores que toma el \emph{Ag Barometer
+Austral} en la Figura~\ref{fig-agba}, se observa que, si bien la serie
+de las percepciones no parecería presentar patrones como un ciclo o
+pauta estacional, un hecho que amerita ser destacado es la repentina y
+aparente baja que ocurrió en 2019. También se puede apreciar que,
+aproximadamente durante el período 2020-2023, la confianza en Argentina
+fue pesimista y en todo el 2023 hasta mediados de 2024 la confianza fue
+creciendo. En el período de pesimismo de la confianza del productor
+argentino, los indicadores de Condiciones presentes y Expectativas
+futuras también tuvieron valores similares
+(Figura~\ref{fig-indices_arg}). En cambio, en el resto del período,
+cuando la confianza fue optimista, se observa que los productores
+sostienen mayores expectativas a futuro respecto de sus condiciones
+actuales.
+
+En gran parte del período de relevamiento, a partir del 2020, el
+\emph{Ag Barometer Austral} medio, Figura~\ref{fig-acf_prom}, parece ir
+aumentado a medida que pasa el tiempo, empezando por una confianza media
+pesimista, evolucionando, y observándose un promedio optimista al final
+del período.
+
+En la Figura~\ref{fig-fideos_agba} se puede ver que hay años como el
+2020, 2021, 2022 que la confianza es pesimista; hay otros años en que el
+sentimiento es optimista como en el 2024 y en el 2025; en el 2019 la
+confianza aumentaba hasta un momento en el cual pasó drásticamente de
+optimista a pesimista; se observa finalmente que en el 2023 las
+percepciones presentan una tendencia a crecer. En la
+Figura~\ref{fig-subseries_agba}, en todos los meses parecería ocurrir
+que, el \emph{Ag Barometer Austral} medio oscila alrededor del valor
+neutro 100 y que los valores presentan dispersiones similares. Todas
+estas observaciones conllevarían a pensar que el comportamiento del
+\emph{Ag Barometer Austral} parecería ser distinto en cada año y similar
+en los seis meses. En consecuencia, no parece presentar un patrón
+estacional.
+
+Se pueden observar en la Figura~\ref{fig-boxplot_arg} dos
+características sobre la serie. La primera es que, desde el 2020 en
+adelante, el \emph{Ag Barometer Austral} mediano parece crecer con el
+correr de los años. La segunda es que, sin considerar los años 2018 y
+2026 por solo tener una observación, los valores de este índice no
+parecen variar de manera similar en todos los años. En el 2021 las
+observaciones no parecen variar mucho; los valores parecen tener
+dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año
+2019, seguido del 2023, es cuando las percepciones parecen presentar
+mayor volatilidad. Esto querría decir que la variancia del sentimiento
+no parece ser constante a través de los años, observándose en 2019 los
+valores más dispersos. Fusionando estos dos aspectos, también podría
+decirse que no parece haber relación entre la mediana y la variancia.
+
+Características de la serie tales como la presencia de tendencias
+temporales y variancia no constante a lo largo de los años, pueden
+interpretarse como indicios de no estacionariedad del \emph{Ag Barometer
+Austral}. Siguiendo esta línea de análisis, se realizaron los tests
+\emph{Augmented Dickey-Fuller} (ADF) (Peña, 2010, p.~269) y
+\emph{Kwiatkowski, Phillips, Schmidt y Shin} (KPSS) (Lütkepohl-Krätzig,
+2004, p.~63). Se concluye en base a la evidencia muestral que la serie
+de las percepciones del sector agropecuario argentino no es
+estacionaria, al 5\% de nivel de significación (\(p-value=\) 0.1108,
+\(p-value=\) 0.0141)\footnote{El test ADF evalúa la hipótesis nula
+  ``\(H_0)\) La serie no es estacionaria'' mientras que el test KPSS
+  prueba ``\(H_0)\) La serie es estacionaria''. Por lo que se concluye a
+  un 5\% de nivel de significación que la serie no es estacionaria si
+  para el test ADF se obtiene un \(p-value>0.05\) y para el KPSS un
+  \(p-value \leq 0.05\).}.
+
+Con el fin de obtener más características, también se decidió analizar
+la primera diferencia. Ninguno de los rezagos en la
+Figura~\ref{fig-acf_agba_dif1} es significativo, esto sugiere que la
+primera diferencia de la serie sería ruido blanco. Para presentar
+conclusiones más allá de lo heurístico, se realizaron los tests de ADF,
+KPSS y Ljung-Box sobre la serie diferenciada. Obteniéndose, al 5\% de
+nivel de significación a partir de la evidencia muestral, que la serie
+diferenciada es estacionaria (\(p-value=\) 0.0253, \(p-value=\) 0.1000)
+y que los primeros 20 coeficientes de su FAC son nulos (\(p-value=\)
+0.4647). Estos resultados conducen a que la serie diferenciada sigue un
+ruido blanco y que consecuentemente el \emph{Ag Barometer Austral} sigue
+el patrón de paseo aleatorio.
+
+\subsection{\texorpdfstring{Análisis descriptivo univariado del \emph{Ag
+Economy
+Barometer}}{Análisis descriptivo univariado del Ag Economy Barometer}}\label{sec-univ_usa}
+
+Para llevar a cabo este análisis, se comienza presentado la serie junto
+a su FACM y FACMP.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ageb-1.pdf}}
+
+}
+
+\caption{\label{fig-ageb}Evolución del \emph{Ag Economy Barometer} en el
+período octubre 2015 - marzo 2026}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_ageb-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_ageb}FACM y FACPM del \emph{Ag Economy
+Barometer}}
+
+\end{figure}%
+
+En cuanto a su estructura temporal, se puede observar que los bastones
+de la FACM de la Figura~\ref{fig-acf_ageb} decaen de forma,
+aparentemente, exponencial y que para retardos más elevados, alrededor
+del 38 y del 58, algunos coeficientes también son significativos.
+Considerando todo esto, se podría pensar que la serie presenta una
+estructura de dependencia temporal. Sin embargo, al igual que en el caso
+local, se realiza el test de Ljung-Box para probar si esta serie se
+comporta como un ruido blanco.
+
+\begin{longtable}[t]{ccc}
+
+\caption{\label{tbl-pvalue_eeuu_rb}Pruebas Ljung-Box sobre el \emph{Ag
+Economy Barometer} en el período octubre 2015 - marzo 2026}
+
+\tabularnewline
+
+\toprule
+Rezago & Estadística & p-value\\
+\midrule
+6 & 191.7034 & <0.001\\
+12 & 199.4993 & <0.001\\
+18 & 202.5331 & <0.001\\
+24 & 207.3438 & <0.001\\
+\bottomrule
+
+\end{longtable}
+
+Con un nivel de significación del 5\% y en base a la evidencia muestral,
+se rechaza la hipótesis nula de incorrelación para los cuatro retardos
+considerados. Al menos uno de los coeficientes de la FAC es no nulo,
+indicando que las percepciones de los productores a través del tiempo,
+de alguna manera, están relacionadas (\(p-value < 0.001\),
+Tabla~\ref{tbl-pvalue_eeuu_rb}). Consecuentemente, tiene sentido
+analizar la serie objeto de la presente sub-sección. De este modo, se
+presentan más herramientas que permitan identificar características de
+estos datos.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ageb_prom-1.pdf}}
+
+}
+
+\caption{\label{fig-ageb_prom}Evolución del \emph{Ag Economy Barometer}
+medio desde 2015 hasta 2026}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-fideos_ageb-1.pdf}}
+
+}
+
+\caption{\label{fig-fideos_ageb}Comportamiento anual del \emph{Ag
+Economy Barometer}}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-subseries_ageb-1.pdf}}
+
+}
+
+\caption{\label{fig-subseries_ageb}Comportamiento mensual del \emph{Ag
+Economy Barometer}}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-boxplot_usa-1.pdf}}
+
+}
+
+\caption{\label{fig-boxplot_usa}Distribución del \emph{Ag Economy
+Barometer} por año}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_ageb_dif1-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_ageb_dif1}FACM y FACPM de la primera diferencia
+del \emph{Ag Economy Barometer}}
+
+\end{figure}%
+
+A primera vista en la Figura~\ref{fig-ageb}, la serie no exhibe períodos
+de tendencia. Sin embargo, se observan cambios en las percepciones en
+los años 2016, 2020 y 2024. Asimismo, el comportamiento de los datos no
+parecería presentar patrones repetitivos, ya sea anuales o de mayor
+frecuencia. En conjunto, estas observaciones sugieren que la serie no
+presentaría componentes tendencia, estacional ni cíclica. Si además se
+consideran las condiciones presentes y expectativas futuras
+(Figura~\ref{fig-indices_usa}), las tres series norteamericanas parecen
+tomar valores similares en cada instante de tiempo, en todo el período
+de relevamiento.
+
+En promedio (Figura~\ref{fig-ageb_prom}), la confianza de los
+norteamericanos aumentó en comparación con el período base, en todos los
+años desde que comenzó el relevamiento. Por otro lado, otra
+característica a destacar del \emph{Ag Economy Barometer} medio es que
+tiene saltos, como el cambio entre el promedio del 2016 y el de 2017,
+ocasionados por los cambios en la confianza observados en la
+Figura~\ref{fig-ageb}.
+
+El comportamiento del \emph{Ag Economy Barometer} no parece presentar un
+patrón inter-anual que se repita todos los años
+(Figura~\ref{fig-fideos_ageb}). Esto queda de manifiesto al comparar
+algunas trayectorias anuales. Mientras que en 2016 el índice oscila en
+torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego
+alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles
+elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala
+hasta un máximo en octubre; en contraste, en 2021 comienza con valores
+similares al 2020 pero alcanza su pico abril para luego mantener una
+tendencia decreciente durante el resto del año.
+
+En la Figura~\ref{fig-subseries_ageb}, se aprecia en todos los meses
+que: la confianza promedio es de alrededor 130 puntos y que las
+percepciones presentan variaciones similares. Estos dos últimos aspectos
+conllevarían a concluir que el sentimiento de los norteamericanos no
+parece tener una componente estacional.
+
+El \emph{Ag Economy Barometer} mediano (Figura~\ref{fig-boxplot_usa})
+parece seguir un patrón similar al promedio
+(Figura~\ref{fig-ageb_prom}), su principal rasgo son los cambios
+repentinos. En el período 2017-2020, la variancia aumenta a medida que
+pasan los años. Fuera de ese período y salvo el 2021, la variabilidad de
+las percepciones parece ser similar en el resto de los años. En el 2020,
+seguido del 2021, son los años en que las observaciones resultaron más
+dispersas. En consecuencia, la variancia del \emph{Ag Economy Barometer}
+no parece ser constante a través del tiempo. De estos dos aspectos se
+desprende que las medidas de centralización no tendrían relación con las
+de dispersión.
+
+Se realizó el test ADF y se concluye con un nivel de significación del
+5\% y en base a la evidencia muestral que el \emph{Ag Economy Barometer}
+no es estacionario (\(p-value=\) 0.0712). Sin embargo, al realizar el
+test KPSS con el mismo nivel de significación, se concluye lo opuesto
+(\(p-value=\) 0.1000). Ante esta discrepancia, retomando los hechos de
+que el primer coeficiente de la FACPM (Figura~\ref{fig-acf_ageb}) tiene
+una estimación de aproximadamente 0.8 y de que hay varios bastones
+significativos alrededor del retardo 58, finalmente se consideró al
+\emph{Ag Economy Barometer} como no estacionario.
+
+Con el fin de ahondar más en las características presentes en esta
+serie, también se analiza su primera diferencia a partir de la
+Figura~\ref{fig-acf_ageb_dif1}. La mayoría de los bastones de la FACM
+son, de manera individual, no significativos excepto por dos de ellos.
+Estos últimos, a pesar de ser significativos, están asociados a
+estimaciones alrededor de -0.2 dejando en duda su relevancia práctica.
+Lo mismo ocurre con un rezago en la FACMP. Es decir, este criterio de
+evaluar individualmente la significación de cada coeficiente no conduce
+a conclusiones claras acerca de la estructura temporal de la diferencia.
+Por tal motivo, se recurrió a otro tipo de recursos. Se llevaron a cabo
+las pruebas de ADF, KPSS y Ljung-Box sobre la serie diferenciada,
+obteniéndose que ésta es estacionaria (\(p-value=\) 0.0100, \(p-value=\)
+0.1000) y que los primeros 20 coeficientes de su FAC son nulos
+(\(p-value=\) 0.7044), a partir de la evidencia muestral con un 5\% de
+nivel de significación. Estos resultados conducen a que la serie
+diferenciada sigue un ruido blanco y que consecuentemente el \emph{Ag
+Economy Barometer} sigue el patrón de paseo aleatorio.
+
+\subsection{Análisis bivariado}\label{anuxe1lisis-bivariado}
+
+Superada la etapa de análisis univariado, se aborda el estudio
+bivariado. Este apartado presenta un estudio comparativo entre las
+percepciones de ambos países y muestra la relación del \emph{Ag
+Barometer} con las condiciones presentes, expectivas futuras, diversas
+variables económicas y eventos clave.
+
+A continuación se presentan herramientas que permitan comparar la
+evolución del \emph{Ag Barometer Austral} y del \emph{Ag Economy
+Barometer}.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ambos_agb-1.pdf}}
+
+}
+
+\caption{\label{fig-ambos_agb}Evolución del \emph{Ag Barometer Austral}
+y del \emph{Ag Economy Barometer} en el período octubre 2015 - marzo
+2026}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-promedios_ambos_paises-1.pdf}}
+
+}
+
+\caption{\label{fig-promedios_ambos_paises}Evolución del \emph{Ag
+Barometer} medio}
+
+\end{figure}%
+
+Visualizando las series de la Figura~\ref{fig-ambos_agb} y cómo van
+evolucionando los promedios del \emph{Ag Barometer}
+(Figura~\ref{fig-promedios_ambos_paises}), en el período 2023-2026,
+podría dar la impresión de que el comportamiento de los indicadores
+sería inverso, en el sentido de que si uno incrementa el otro
+decrementa. Sin embargo, en el resto del período, las series no parecen
+presentar algún patrón que las relacione. Teniendo en cuenta estas
+características, en base a la inspección meramente gráfica resulta
+ambiguo detectar si los \emph{Barometers} están relacionados. Por tal
+motivo, se decidió recurrir a herramientas que permitan estudiar sus
+estructuras de autocorrelación conjuntamente.
+
+En primer lugar, se estimó la FCC entre estas dos series. Éstas fueron
+previamente sometidas a un proceso de pre-blanqueo, a los fines de no
+obtener correlaciones espurias, es decir, obtener correlaciones no
+distorsionadas por la no estacionariedad\footnote{Se probó la no
+  estacionariedad del \emph{Ag Barometer Austral} y del \emph{Ag Economy
+  Barometer} en la Sección~\ref{sec-univ_arg} y en la
+  Sección~\ref{sec-univ_usa} respectivamente.} de las series.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg_usa-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_arg_usa}FCCM del \emph{Ag Barometer Austral} y
+el \emph{Ag Economy Barometer} diferenciados en el período noviembre
+2018 - enero 2026}
+
+\end{figure}%
+
+Todos los rezagos de la Figura~\ref{fig-ccf_arg_usa} son no
+significativos, sugiriendo que ningún índice influye sobre el otro. En
+segundo lugar, se realizó la prueba de Engle-Granger\footnote{Tanto para
+  estimar la FCC como para poder realizar la prueba es necesario que las
+  dos series tengan la misma longitud y periodicidad. En este sentido,
+  sólo se utilizaron 44 datos estadounidenses los cuales representan un
+  34.92\% de la totalidad.} (Enders, 2014, secc. 6.1) y se concluye en
+base a la evidencia muestral que los \emph{Barometers} no están
+cointegrados (\(p-value > 0.1000\)). Considerando los resultados de
+estos dos recursos empleados, se concluyó que la confianza de los
+productores argentinos no está asociada a la de los productores
+norteamericanos.
+
+\subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
+
+Descartada la relación entre las percepciones de Argentina y las de
+Estados Unidos, se analizaron las asociaciones entre los índices
+argentinos. Para esto, se estimaron las FCC entre pares de índices
+locales. Estos últimos fueron pre-blanqueados para evitar que la no
+estacionariedad\footnote{La no estacionariedad del \emph{Ag Barometer
+  Austral} fue probada en la Sección~\ref{sec-univ_arg} y la de las
+  series Condiciones presentes y Expectativas futuras de Argentina en la
+  Sección~\ref{sec-carcs_indices_arg}.} conduzca a correlaciones
+espurias.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg1-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_arg1}FCCM del \emph{Ag Barometer Austral} y las
+Condiciones presentes pre-blanqueadas}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg2-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_arg2}FCCM del \emph{Ag Barometer Austral} y las
+Expectativas futuras pre-blanqueadas}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_arg3-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_arg3}FCCM de Condiciones presentes y las
+Expectativas futuras argentinas pre-blanqueadas}
+
+\end{figure}%
+
+El \emph{Ag Barometer Austral} mantiene una relación contemporánea con
+las condiciones presentes como se puede apreciar en la
+Figura~\ref{fig-ccf_arg1}. Es decir, las percepciones de los productores
+argentinos están asociadas con su situación actual. Asimismo, se destaca
+una relación contemporánea moderada entre la confianza y las
+Expectativas futuras (Figura~\ref{fig-ccf_arg2}), así como entre las
+Condiciones presentes y las Expectativas (Figura~\ref{fig-ccf_arg3}). El
+hecho de que las tres estimaciones de las FCC en el retardo cero son
+significativas y positivas conlleva a concluir que las tres evolucionan
+juntas.
+
+\subsubsection{Análisis de los índices norteamericanos}\label{ccfs_usa}
+
+Análogamente al caso local, se estudió la relación entre los indicadores
+estadounidenses estimando la FCC. Para no incurrir en correlaciones
+infladas por las fuertes estructuras de autocorrelación\footnote{La no
+  estacionariedad del \emph{Ag Economy Barometer} fue probada en la
+  Sección~\ref{sec-univ_usa} y la de las Condiciones presentes y
+  Expectativas futuras de Estados Unidos en la
+  Sección~\ref{sec-carcs_indices_usa}.} de las series, se sometió estas
+últimas a pre-blanqueo.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_usa1-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_usa1}FCCM del \emph{Ag Economy Barometer} y las
+Condiciones presentes pre-blanqueados}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_usa2-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_usa2}FCCM del \emph{Ag Economy Barometer} y las
+Expectativas futuras pre-blanqueadas}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-ccf_usa3-1.pdf}}
+
+}
+
+\caption{\label{fig-ccf_usa3}FCCM de Condiciones presentes y las
+Expectativas futuras en Estados Unidos pre-blanqueadas}
+
+\end{figure}%
+
+Según la Figura~\ref{fig-ccf_usa1}, a medida que la confianza de los
+productores norteamericanos aumenta (o disminuye), sus Condiciones
+presentes también. De igual manera ocurre entre el \emph{Ag Economy
+Barometer} con las Expectativas futuras (Figura~\ref{fig-ccf_usa2}) y
+entre las Condiciones presentes con las Expectativas futuras
+(Figura~\ref{fig-ccf_usa3}). En otras palabras, los tres índices
+evolucionan juntos a través del tiempo.
+
+Otro aspecto a destacar de las tres FCCM, es que en los tres casos el
+único rezago significativo es el cero. Esto quiere decir que si bien las
+tres series están relacionadas, las asociaciones sólo son contemporáneas
+y no hay ningún índice que anticipe el comportamiento futuro de otro.
+
+\subsubsection{Análisis de variables
+económicas}\label{anuxe1lisis-de-variables-econuxf3micas}
+
+Estudiadas las relaciones entre los índices de las universidades, el
+interés se centró en analizar a qué fenómenos el \emph{Ag Barometer}
+podría estar relacionado. Con este propósito se consultó a economistas
+de la Austral, quienes propusieron como primer conjunto de variables
+candidatas a los precios internacionales (\emph{commodities}).
+
+Se presentan gráficos que permitieron analizar la posible existencia de
+relaciones. Éstos tienen dos particularidades. La primera es que cada
+punto representa el \emph{Ag Barometer} de un cierto mes y la variable
+en el mes anterior. Se decidió que esta es la forma que mejor representa
+la posible relación porque tanto el relevamiento del \emph{Ag Barometer}
+como la publicación de los precios ocurren a principios de cada mes, de
+tal manera que los productores responden en base a los precios del mes
+anterior. Por ende, la respuesta de los productores de cierto mes podría
+estar relacionada con los precios del mes anterior. Por ejemplo, si los
+productores son entrevistados a principios de septiembre para relevar el
+\emph{Ag Barometer} de ese mes, la información de precios más reciente
+con la que cuentan es la de los precios de agosto, ya que los datos de
+septiembre todavía no fueron publicados. La segunda particularidad está
+vinculada a la no estacionariedad de las series. Es muy común que
+variables económicas como tasas de interés, precios, etc, sean no
+estacionarias (Tsay, 2010). Por tal motivo se asumió que todas las
+variables buscadas tienen una raiz unitaria. Además, el propio \emph{Ag
+Barometer Austral} tampoco es estacionario como se probó en la
+Sección~\ref{sec-univ_arg}. En consecuencia, a la hora de intentar medir
+la asociación entre la confianza de los productores y estas variables,
+se podría estar obteniendo un alto valor de correlación, no porque las
+variables estén asociadas, sino debido a la fuerte estructura de
+autocorrelación de las series (Cryer y Chan, 2008). Para no obtener
+estas correlaciones espurias, se realizó el proceso de pre-blanqueo
+previo a cada gráfico de dispersión en todas las figuras.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-commodities_arg-1.pdf}}
+
+}
+
+\caption{\label{fig-commodities_arg}Correlaciones entre el \emph{Ag
+Barometer Austral} y \emph{commodities} pre-blanqueados}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-commodities_usa-1.pdf}}
+
+}
+
+\caption{\label{fig-commodities_usa}Correlaciones entre el \emph{Ag
+Economy Barometer} y los \emph{commodities} pre-blanqueados}
+
+\end{figure}%
+
+Tal como puede observarse en la Figura~\ref{fig-commodities_arg} y en la
+Figura~\ref{fig-commodities_usa}, las asociaciones con los precios son
+débiles. Esto significa que el \emph{Ag Barometer} no está relacionado a
+fenómenos vinculados a los precios de producción ni con los insumos.
+Descartada esta posibilidad, los economistas propusieron un segundo
+conjunto de variables económicas candidatas relacionadas con el ámbito
+financiero y de actividad.
+
+A continuación se presentan figuras con las mismas particularidades
+anteriormente mencionadas.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-vars_economicas_arg-1.pdf}}
+
+}
+
+\caption{\label{fig-vars_economicas_arg}Correlaciones entre el \emph{Ag
+Barometer Austral} y otras variables económicas pre-blanqueadas}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-vars_economicas_usa-1.pdf}}
+
+}
+
+\caption{\label{fig-vars_economicas_usa}Correlaciones entre el \emph{Ag
+Economy Barometer} y otras variables económicas pre-blanqueadas}
+
+\end{figure}%
+
+En base a la inspección gráfica de la
+Figura~\ref{fig-vars_economicas_arg} y la
+Figura~\ref{fig-vars_economicas_usa}, se deduce que la confianza de los
+productores tampoco estaría asociada a fenómenos vinculados a tasas de
+interés, índices bursátiles ni de confianza/actividad.
+
+\subsubsection{Análisis de eventos}\label{anuxe1lisis-de-eventos}
+
+Dado que aún no se habían identificado factores asociados al \emph{Ag
+Barometer}, la investigación no podía darse por concluida. Por esta
+razón, se revisó la situación con los expertos. Éstos sostienen que el
+índice bajo estudio probablemente esté vinculado a acontecimientos
+políticos, bélicos y/o globales como la pandemia de Covid-19. Se
+presentan dichas posibles relaciones.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-elecciones_arg-1.pdf}}
+
+}
+
+\caption{\label{fig-elecciones_arg}Evolución del \emph{Ag Barometer
+Austral} y resultados de las elecciones presidenciales argentinas}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-elecciones_usa-1.pdf}}
+
+}
+
+\caption{\label{fig-elecciones_usa}Evolución del \emph{Ag Economy
+Barometer} y resultados de la elecciones presidenciales estadounidenses}
+
+\end{figure}%
+
+La información de la Figura~\ref{fig-elecciones_arg} y de la
+Figura~\ref{fig-elecciones_usa} sugiere que tanto en Argentina como en
+Estados Unidos, la confianza de los productores presentaría cambios
+alrededor de los tiempos en que se publican los resultados de las
+elecciones presidenciales. Se observan dos tipos de cambios en la
+confianza de los productores:
+
+\begin{itemize}
+\tightlist
+\item
+  Los que ocurren antes de conocerse el resultado electoral definitivo,
+  como en el triunfo de Alberto Fernández en 2019, que responden a
+  encuestas o presunciones previas a la votación.
+\item
+  Los que se dan inmediatamente después de conocerse el resultado a
+  causa de desenlaces inesperados. Tal es el caso de la victoria de
+  Donald Trump en 2016.
+\end{itemize}
+
+En Argentina, tanto el cambio repentino en la confianza de 2019 como la
+tendencia creciente de 2023, mencionados en la
+Sección~\ref{sec-univ_arg}, tuvieron lugar en torno a las fechas de los
+resultados electorales (Figura~\ref{fig-elecciones_arg}), siendo estos
+dos años aquellos en los que las percepciones se mostraron más volátiles
+(Figura~\ref{fig-boxplot_arg}). De manera análoga, en Estados Unidos se
+observó una tendencia creciente repentina y efímera en 2020
+(Figura~\ref{fig-ageb}), la cual tuvo lugar en las proximidades de una
+elección presidencial (Figura~\ref{fig-elecciones_usa}). Durante ese
+mismo año, los valores de confianza de los productores exhibieron,
+aparentemente, una mayor dispersión (Figura~\ref{fig-boxplot_usa}). Esta
+exploracion visual en conjunto, sugiere que el \emph{Ag Barometer} se ve
+alterado por efectos políticos.
+
+Puede destacarse también una diferencia entre la confianza de ambos
+países. Los cambios en Argentina no siguen el mismo comportamiento que
+los de Estados Unidos. En este último se observa que, cuando hay
+elecciones presidenciales de por medio, la confianza siempre sube
+independientemente del partido que resulte ganador y que unos meses
+después baja. Esto podría deberse a que los partidos estadounidenses no
+son tan heterogéneos entre sí. En Argentina, en cambio, el sentimiento
+puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó
+Alberto Fernández en 2019, se produjo la baja más abrupta histórica de
+la serie, generando al año siguiente la confianza promedio más baja de
+todo el período, y el pesimismo se sostuvo durante todo su mandato
+(Figura~\ref{fig-acf_prom}). En cambio, al ganar Javier Milei en 2023,
+la confianza comenzó a crecer, pasando del pesimismo al optimismo. Esto
+podría explicarse por la heterogeneidad ideológica entre los partidos
+políticos argentinos.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-eventos_globales-1.pdf}}
+
+}
+
+\caption{\label{fig-eventos_globales}Evolución de los \emph{Barometers}
+y otros eventos globales/bélicos}
+
+\end{figure}%
+
+A partir de la inspección gráfica (Figura~\ref{fig-eventos_globales}),
+el \emph{Ag Barometer} no parece verse afectado por la invasión rusa a
+Ucrania. Sin embargo, sobre la base de esta visualización, no parece que
+ocurra lo mismo cuando se analiza el comienzo de la pandemia. En el caso
+de Estados Unidos, la confianza muestra una disminución notable
+alrededor de este acontecimiento. No obstante, a nivel local, la
+confianza ya registraba valores pesimistas desde antes del 2020,
+posiblemente debido al resultado electoral de 2019
+(Figura~\ref{fig-elecciones_arg}). Esta proximidad temporal entre ambos
+hitos dificulta analizar, mediante un análisis meramente gráfico, si la
+pandemia podría haber tenido un efecto en el \emph{Ag Barometer
+Austral}.
+
+\newpage
+
+\section{Discusión}\label{discusiuxf3n}
+
+En este informe se documentan los análisis que han sido realizados en el
+Centro de Agronegocios y Alimentos de la Universidad Austral con el fin
+de responder los objetivos planteados para esta práctica profesional.
+
+En primer lugar, se extiende un sincero agradecimiento a la Universidad
+Austral por la valiosa oportunidad de realizar esta práctica en el
+Centro. El contacto directo con los especialistas habilitó el trabajo
+interdisciplinario y el aprendizaje de temas relacionados a los
+agronegocios que no son abordados en el grado de estadística. Además, la
+posibilidad de analizar datos reales cuyo relevamiento es planificado y
+llevado a cabo por el Centro, y la Universidad \emph{Purdue}, es
+considerada un privilegio.
+
+Como punto de partida, se logró construir una base de datos que reúne
+las series argentinas, las de Estados Unidos y múltiples variables
+económicas sugeridas por los economistas de la Austral. Este proceso
+requirió imputación de datos faltantes y trabajo relacionado a
+programación.
+
+A partir de la base, se llevó a cabo un análisis univariado de las
+series temporales de la confianza de los productores agropecuarios de
+Argentina y Estados Unidos. Asimismo, se realizó un análisis bivariado
+para estudiar la posibilidad, mediante visualizaciones gráficas, de que
+exista relación entre los índices de confianza de ambos países,
+asociación con las condiciones presentes y expectativas futuras, y
+relación entre el \emph{Ag Barometer} con las variables económicas y
+ciertos acontecimientos.
+
+Como principales resultados, en cuanto al análisis univariado, se
+observó que las series no son estacionarias y siguen un patrón de paseo
+aleatorio. Respecto al bivariado, primero se concluyó que la confianza
+de los productores argentinos no guarda relación con la de los
+norteamericanos. En segundo lugar, se observó que los tres índices de
+cada país están relacionados entre sí de manera directa y contemporánea,
+no obstante, ninguno anticipa a otro. Como tercer resultado, las
+percepciones de los productores no estarían relacionadas con factores
+económicos como precios, tasas de interés, insumos, índices bursátiles o
+de actividad. Sin embargo, a partir de la inspección gráfica, las
+percepciones parecen verse afectadas frente a resultados de las
+elecciones presidenciales.
+
+Por último, en cuanto a las limitaciones de este trabajo, es importante
+señalar que las observaciones realizadas sobre la relación entre el
+\emph{Ag Barometer} y las variables económicas o los eventos
+considerados, se sustentan únicamente en un abordaje exploratorio y
+visual. Dicha aproximación gráfica no sería suficiente para concluir con
+rigor estadístico tales asociaciones sugeridas. En consecuencia, para
+futuras líneas de investigación, sería interesante profundizar el
+estudio mediante métodos estadísticos que vayan más allá de lo
+heurístico, tales como la implementación de modelos dinámicos, análisis
+de intervención, etc, que permitan modelar formalmente estos impactos.
+
+\newpage
+
+\section{Anexo}\label{anexo}
+
+\subsection{Características de los otros índices
+locales}\label{sec-carcs_indices_arg}
+
+Acorde a lo mencionado, a la hora de estudiar la relación entre dos
+series estimando la FCC, éstas deberían ser estacionarias. En caso de no
+serlo, para evitar correlaciones espurias, se realiza el pre-blanqueo
+sobre el par en cuestión previamente a la estimación. En este contexto,
+al investigar la relación entre las series locales en la
+Sección~\ref{sec-ccfs_arg} fue importante estudiar si estas tres son
+estacionarias o no. Este análisis ya fue presentado para el \emph{Ag
+Barometer Austral} en la Sección~\ref{sec-univ_arg}, por lo que el
+interés de este apartado es presentar qué ocurre para las Condiciones
+presentes y Expectativas futuras. A continuación se muestran
+resultados\footnote{La hipótesis nula del test ADF es \(H_0)\) La serie
+  no es estacionaria (tiene una raíz unitaria), la del test KPSS es
+  \(H_0)\) La serie es estacionaria y la del test Ljung-Box es \(H_0)\)
+  Los primeros 20 coeficientes de FAC son nulos.} que permitieron
+analizar esta característica.
+
+\begin{longtable}[t]{llcc}
+
+\caption{\label{tbl-carcs_indices_arg}Resultados de las pruebas sobre
+las Condiciones presentes y Expectativas futuras argentinas al 5\% de
+significación}
+
+\tabularnewline
+
+\toprule
+Variable & Test & p-value & Resultado\\
+\midrule
+Condiciones presentes & ADF & 0.4448 & No Estac.\\
+Condiciones presentes & KPSS & 0.1000 & Estacionaria\\
+Condiciones presentes diferenciada & ADF & 0.0405 & Estacionaria\\
+Condiciones presentes diferenciada & KPSS & 0.1000 & Estacionaria\\
+Condiciones presentes diferenciada & Ljung-Box & 0.0604 & Ruido blanco\\
+\addlinespace
+Expectativas futuras & ADF & 0.0512 & No Estac.\\
+Expectativas futuras & KPSS & 0.0149 & No Estac.\\
+Expectativas futuras diferenciada & ADF & 0.0861 & No Estac.\\
+Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
+Expectativas futuras diferenciada & Ljung-Box & 0.8984 & Ruido blanco\\
+\bottomrule
+
+\end{longtable}
+
+A partir de los resultados de la Tabla~\ref{tbl-carcs_indices_arg} y en
+base a la evidencia muestral, se concluye con un 5\% de nivel de
+significación, que la primera diferencia de las Condiciones presentes es
+estacionaria y los primeros 20 coeficientes de su FAC son nulos; la
+serie Expectativas futuras no es estacionaria y los primeros 20
+coeficientes de la FAC de su primera diferencia son nulos.
+
+Sin embargo para las Condiciones presentes y la primera diferencia de
+las Expectativas futuras, los tests realizados conducen a conclusiones
+contradictorias. En el caso de las Condiciones presentes en niveles,
+aunque por el test ADF se llega a que dicha serie no es estacionaria y
+mediante el de KPSS se concluye que es estacionaria, se la consideró
+como no estacionaria por presentar tendencia en el período que comprende
+desde principios de 2023 hasta fines de 2024
+(Figura~\ref{fig-indices_arg}).
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_expec_arg_dif1-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_expec_arg_dif1}FACM y FACPM de la primera
+diferencia de las Expectativas futuras argentinas}
+
+\end{figure}%
+
+Por otro lado, ante la discrepancia de los resultados para las
+Expectativas futuras diferenciadas, el test ADF conduce a que no son
+estacionarias y el KPSS sí, teniendo en cuenta su FACM y FACPM
+(Figura~\ref{fig-acf_expec_arg_dif1}) se observa que ninguno de sus
+rezagos es significativo, sugiriendo que esta serie sigue un ruido
+blanco, con lo cual fue considerada estacionaria.
+
+Teniendo en cuenta todos estos aspectos, se consideró a ambas series en
+niveles como no estacionarias, siendo necesario diferenciarlas para
+lograr la estacionariedad.
+
+\subsection{Características de los otros índices
+norteamericanos}\label{sec-carcs_indices_usa}
+
+Al igual que en el caso argentino, para inspeccionar la relación entre
+los índices estadounidenses, fue necesario estudiar si las Condiciones
+presentes y Expectativas futuras son estacionarias o no.
+
+\needspace{16\baselineskip}
+
+\begin{longtable}[t]{llcc}
+
+\caption{\label{tbl-carcs_indices_usa}Resultados de las pruebas sobre
+las Condiciones presentes y Expectativas futuras norteamericanas al 5\%
+de significación}
+
+\tabularnewline
+
+\toprule
+Variable & Test & p-value & Resultado\\
+\midrule
+Condiciones presentes & ADF & 0.0388 & Estacionaria\\
+Condiciones presentes & KPSS & 0.1000 & Estacionaria\\
+Condiciones presentes diferenciada & ADF & 0.0100 & Estacionaria\\
+Condiciones presentes diferenciada & KPSS & 0.1000 & Estacionaria\\
+Condiciones presentes diferenciada & Ljung-Box & 0.5395 & Ruido blanco\\
+\addlinespace
+Expectativas futuras & ADF & 0.0857 & No Estac.\\
+Expectativas futuras & KPSS & 0.1000 & Estacionaria\\
+Expectativas futuras diferenciada & ADF & 0.0100 & Estacionaria\\
+Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
+Expectativas futuras diferenciada & Ljung-Box & 0.4870 & Ruido blanco\\
+\bottomrule
+
+\end{longtable}
+
+En base a la evidencia muestral y los resultados\footnote{La hipótesis
+  nula del test ADF es \(H_0)\) La serie no es estacionaria (tiene una
+  raíz unitaria), la del test KPSS es \(H_0)\) La serie es estacionaria
+  y la del test Ljung-Box es \(H_0)\) Los primeros 20 coeficientes de
+  FAC son nulos.} de la Tabla~\ref{tbl-carcs_indices_usa}, se concluye
+que tanto para las Condiciones presentes como para las Expectativas
+futuras la primera diferencia es estacionaria y que los primeros 20
+coeficientes de las FAC son nulos. Sin embargo, para estas mismas series
+en niveles, los p-values conducen a resultados que ameritaron mas
+analisis.
+
+En primer lugar, se obtiene mediante el test ADF y KPSS que la serie de
+las Condiciones presentes es estacionaria.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_cond_eeuu-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_cond_eeuu}FACM y FACPM de las Condiciones
+presentes de Estados Unidos}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{Informe_files/figure-pdf/fig-acf_expec_eeuu-1.pdf}}
+
+}
+
+\caption{\label{fig-acf_expec_eeuu}FACM y FACPM de las Expectativas
+futuras de Estados Unidos}
+
+\end{figure}%
+
+\subsection{Soporte computacional}\label{soporte-computacional}
+
+Todo el código que permitió armar la base de datos, llevar a cabo
+pruebas de hipótesis, desarrollar la aplicación, redactar el informe,
+etc, fue realizado con R y se encuentra en el siguiente
+\href{https://github.com/patricia-nsc/Practica-Profesional-Privado}{repositorio}.
+
+\newpage
+
+\section{Referencias}\label{referencias}
+
+https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
+
+https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
+
+https://fred.stlouisfed.org/
+
+https://www.bcr.com.ar/es
+
+https://finance.yahoo.com/
+
+https://www.argentina.gob.ar/economia/agricultura/agricultura
+
+Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016).
+\emph{Time series analysis: Forecasting and control} (\(5^a\) ed.).
+Wiley.
+
+Bula, A. (2020). \emph{Importancia de la agricultura en el desarrollo
+socio-económico}. Puente Académico N° 16, Observatorio Económico Social,
+Universidad Nacional de Rosario (UNR).
+
+Cryer, J. D., \& Chan, K.-S. (2008). \emph{Time series analysis: With
+applications in R} (\(2^a\) ed.). Springer.
+
+Enders, W. (2014). \emph{Applied econometric time series}. (\(4^a\)
+ed.). John Wiley \& Sons.
+
+Hyndman, R. J., \& Athanasopoulos, G. (2021). \emph{Forecasting:
+Principles and practice} (\(3^a\) ed.). OTexts. https://otexts.com/fpp3/
+
+Lütkepohl, H., \& Krätzig, M. (Eds.). (2004). \emph{Applied Time Series
+Econometrics}. Cambridge University Press.
+
+Peña, D. (2010). \emph{Análisis de series temporales}. Alianza Editoral
+
+Tamplín, L. (2025). \emph{Evaluación de Métodos de Imputación de Datos
+Faltantes en Series Temporales Univariadas}. Tesis de grado de
+Licenciatura en Estadística. Universidad Nacional de Rosario. Rosario,
+Argentina.
+
+Tsay, R. S. (2010). \emph{Analysis of financial time series} (\(3^a\)
+ed.). John Wiley \& Sons.
 
 \end{document}

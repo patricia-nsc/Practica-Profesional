@@ -106,7 +106,73 @@ $pandoc.tex()$                         % Cargar el partial llamado 'pandoc' (por
   
 \begin{document}
 
-  $body$
+
+% ====================== PORTADA ======================
+
+
+
+\begin{titlepage}
+
+  \begin{center}
   
+  % --- encabezado ---
+  {\fontsize{20}{24}\selectfont Pr\'actica Profesional realizada en la Universidad Austral}
+  
+  \vspace{0.5cm}
+  
+  % --- logo austral ---
+  \includegraphics[width=0.8\textwidth]{logo_austral.jpg}
+  
+  \vspace{0.5cm}
+  
+  % --- titulo pp ---
+  {\fontsize{30}{36}\selectfont\bfseries ``Confianza agropecuaria en Argentina y Estados Unidos: un an\'alisis comparativo exploratorio de series temporales''}
+  
+  \vfill
+  
+  % --- fecha ---
+  {\fontsize{14}{17}\selectfont Febrero 2027}
+  
+  \end{center}
+  
+  \vfill
+  
+  % datos de autores (alineado a la izquierda) ---
+  {\fontsize{14}{17}\selectfont
+  \noindent\textbf{\underline{Alumna}:} Patricia Anal\'ia Nesci
+  
+  \vspace{0.2cm}
+  \noindent\textbf{\underline{Tutor en la Austral}:} Cand. Mag. Federico Andr\'es Borbiconi
+  
+  \vspace{0.2cm}
+  \noindent\textbf{\underline{Tutora en la Escuela de Estad\'istica}:} Mag. Fernanda M\'endez
+  }
+  
+  \vspace{1.2cm}
+  
+  % --- pie: carrera / facultad / universidad + logo UNR ---
+  \noindent
+  \begin{minipage}[c]{0.62\textwidth}
+  {\fontsize{14}{17}\selectfont
+  Licenciatura en Estad\'istica
+  
+  \vspace{0.2cm}
+  Facultad de Ciencias Econ\'omicas y Estad\'istica
+  
+  \vspace{0.2cm}
+  Universidad Nacional de Rosario
+  }
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[c]{0.3\textwidth}
+  \raggedleft
+  \includegraphics[width=3.3cm]{logo_unr.jpg}
+  \end{minipage}
+
+\end{titlepage}
+
+\restoregeometry
+  
+$body$
 
 \end{document}
