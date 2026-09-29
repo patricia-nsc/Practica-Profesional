@@ -375,15 +375,133 @@ A partir de lo presentado en la Tabla \ref{tbl-comparacion}, puede observarse qu
 
 
 
-<!-- # Metodología  -->
+# Metodología
 
-<!-- Definiciones básicas de una serie de tiempo -->
+## Definiciones básicas de una serie de tiempo 
+
+Una *serie de tiempo* es una secuencia cronológica de observaciones medidas sobre una variable de interés (Douglas, año, p. 2). Más específicamente, una serie de $T$ datos es una muestra de tamaño uno, del vector de $T$ variables aleatorias: $(z_1, \dots, z_t, \dots, z_T)$. En este contexto, puede definirse a una serie como una realización de un proceso estocástico. Puede definirse a este último como un conjunto de variables aleatorias ${z_t}$ donde el índice $t$ toma valores en un cierto conjunto $C$. En el caso de las series de tiempo, dicho conjunto $C$ es ordenado y corresponde a instantes temporales, como meses por ejemplo (Peña, 2010, p. 89). Es decir, la serie de $T$ observaciones $z_t$ es una realizacion del proceso estocastico $\left\{z_t, t \in C = \{1, 2, \dots, T\}\right\}$
+
+
+Las series de tiempo pueden descomponerse en las siguientes componentes:
+
+-   Tendencia: existe cuando hay un período largo de crecimiento o decrecimiento en los datos. 
+-   Ciclo: ocurre cuando los datos exhiben un patrón cuya duración es de mínimo dos años y generalmente es debido a condiciones económicas (Hyndman-Athanasopoulos, 2021, secc 2.3).
+-   Estacionalidad: representa un patrón intra-anual que se repite todos los años de manera regular (Colombo, 2024, pp.10-11).  Por ejemplo, si se tiene una serie sobre el consumo de gas por mes de Argentina, ésta presentará valores altos en los meses de invierno y bajos en los meses de verano, todos los años.
+-   Irregular:  agrupa todas las otras fluctuaciones que no son tomadas en
+cuenta en los componentes anteriores. La magnitud del efecto irregular puede cambiar
+drásticamente de un período a otro. (Colombo, 2024, p. 11)
+
+Muchas veces el comportamiento de ciclo es confundido con el de estacionalidad. Si el patrón tiene una duración mayor a un año y no fija, entonces se está ante la componente cíclica. Si la duración del patrón es siempre la misma y está asociada al calendario, como en el ejemplo del consumo de gas, la componente es estacional. En general, la magnitud del ciclo tiende a ser mas variable que la de la estacionalidad (Hyndman-Athanasopoulos, 2021, secc 2.3).
+
+
+Las variables aleatorias se describen mediante parámetros como la esperanza, la variancia, entre otros. De igual manera, para un proceso estocástico ${z_t}$, también es importante definir funciones que caractericen a cada una de las variables que lo componen.
+
+En primer lugar, se define a la *funcion de medias* del proceso:
+
+$$E(z_t) = \mu_t$$
+Cuando todas las variables $z_t$ tienen la misma media $\mu$, es decir, ocurre que $E(z_t) = \mu \forall t$, se dice que el proceso es estacionario en media.
+
+Se denomina *funcion de variancias* del proceso a:
+
+$$V(z_t) = \sigma^2_t$$
+El proceso es estacionario en variancia cuando todas las variables tienen la misma variancia: $V(z_t) = \sigma^2, \forall t$. O equivalentemente, cuando la varincia es constante a traves del tiempo.
+
+
+La dependencia lineal entre variables del proceso se representa mediante las funciones de autocovariancia y autocorrelacion. En este sentido, se defina a la *funcion de autocoriancias* del proceso como:
+
+$$\gamma(t, t+j) = cov(z_t, z_{t+j}) = E[(z_t - \mu_t)(z_{t+j} - \mu_{t+j})]$$
+En particular se verifica que, $\gamma(t,t) = cov(z_t, z_t) = V(z_t) = \sigma^2_t$.
+
+Por ultimo, se llama *funcion de autocorrelaciones* del proceso a:
+
+$$\rho(t, t+j) = cor(z_t, z_{t+j}) = \dfrac{cov(z_t, z_{t+j})}{\sqrt{V(z_t)} \sqrt{V(z_{t+j})}} = \dfrac{\gamma(t, t+j)}{\sqrt{\gamma(t,t)} \sqrt{\gamma({t+j, t+j})}} = \dfrac{\gamma(t, t+j)}{\sigma_t \sigma_{t+j}}$$
+
+
+Obtener la distribución de probabilidad del proceso, y así disponer de las características de cada variable, es posible en ciertas situaciones, por ejemplo, con variables climáticas, se puede suponer que cada año se observa una realización del mismo proceso, o técnicas que pueden generarse en un laboratorio. Sin embargo, en muchas otras aplicaciones, como ocurre con las variables económicas, sólo se puede observar una realización del proceso. Por ejemplo, si se observa el precio del dólar *blue* de Argentina, no es posible volver atrás en el tiempo para generar otra realización. Conceptualmente, el proceso estocástico existe, pero no es posible obtener varias realizaciones del mismo. Para poder estimar las características de cada variable $z_t$ del proceso a partir de esta única realización, es necesario suponer que la evolución de estas observaciones es estable a lo largo del tiempo. Esto condice al concepto de estacionariedad.
+
+Se dice que un proceso estocástico es *estacionario* (débil) si la media, variancia, covariancia/correlación son estables a lo largo del tiempo. Es decir, si:
+
+
+\begin{enumerate}
+
+    \item $\mu_t = \mu, \quad \forall t$ 
+
+    \item $\sigma^2_t = \sigma^2, \quad \forall t$ 
+
+    \item En términos de autocovariancias: $$\gamma(t, t-k) = cov(z_t, z_{t-k}) = \gamma_k, \quad \forall t$$
+    O bien en términos de autocorrelaciones: $$\rho(t, t-k) = cor(z_t, z_{t-k}) = \rho_k, \quad \forall t, \quad k \in \mathbb{Z}$$
+    
+\end{enumerate}
+
+
+La dos primeras condiciones indican que la media y variancia son constantes a través del tiempo y la tercera que la correlación entre dos variables sólo depende de qué tan separadas están en el tiempo (Pena, 2010, pp. 84-93).
+
+
+Dado que una serie de tiempo, en términos generales, es una secuencia ordenada de observaciones, su naturaleza es que sus observaciones estén correlacionadas. Por esta razón, no se pueden utilizar los métodos estadísticos que se basan en el supuesto de independencia (Wei, 2006, p. 1). Este tipo de datos deben ser analizados con otros recursos. Es relevante disponer de herramientas que permitan medir cómo es la estructura de dependencia de las observaciones.
+
+En Wei (2006, pp. 10-11) se define para un proceso estacionario a la:
+
+-   *funcion de autocovariancia* a la anteriormente presentada $\gamma_k = cov(z_t, z_{t-k}) = E[(z_t - \mu)(z_{t-k} - \mu)]$
+-   *funcion de autocorrelacion* (FAC) a $\rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}$
+
+
+
+Es trivial verificar que para procesos estacionarios:
+
+-   $\gamma_0 = V(z_t) = \sigma^2; \quad \rho_0 = 1$
+-   $|\gamma_k| \leq \gamma_0; \quad |\rho_k| \leq 1 \quad \forall k$
+-   $\gamma_k = \gamma_{-k}$ y $\rho_k = \rho_{-k} \quad \forall k$. Es decir, las funciones $\gamma_k$ y $\rho_k$ son simetricas alrededor del retando cero ($k=0$). Debido a esta propiedad, es que la FAC suele graficarse solo para rezagos no negativos.
+
+
+Ademas de la autocorrelacion entre $z_t$ y $z_{t-k}$, tambien podria querer investigarse la autocorrelacion entre $z_t$ y $z_{t-k}$ despues de que la dependencia lineal de las variables $z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1}$ haya sido eliminada eliminada. Esta correlacion condicional
+
+$$cor(z_t, z_{t-k} | z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1})$$
+es denominada *funcion de autocorrelacion parcial* (FACP).
+
+Se verifica que el primer coeficiente de la FAC es identico al primero de la FACP.
+
+<!-- pongo como se estiman? -->
+
+
+
+
+Un proceso estacionario muy importante es el llamado *proceso ruido blanco*, denotado por $\{a_t\}$ y definido por las siguientes condiciones:
+
+-   $E(a_t) = \mu_a, \quad \forall t, \quad \mu_a \in \mathbb{R}$. Generalmente se asume que $\mu_a = 0$.
+-   $V(a_t) = \sigma^2_a, \quad \forall t$
+-   $cov(a_t, a_{t-k}) = 0, \quad \forall k \in \mathbb{Z}$
+
+Por la tercera condicion, las observaciones estan incorreladas sin importar la separacion entre ellas, en estos procesos ocurre que conocer los valores pasados no proporciona ninguna informacion sobre el futuro. El proceso, "no tiene memoria" (Pena, 2010, pp. 95-96).
+
+Hasta este punto, se expusieron conceptos relacionados a series estacionarias. En muchos estudios, tasas de interes, los precios de activos son series de interes. Estas series generalemente no son estacionarias. Para series de precios, la no estacionariedad es principalmente debida a que no hay un nivel fijo para los precios, se dice que este tipo de series tienen una raiz unitaria. El mejor ejemplo de una serie que presenta una raiz unitaria son las siguen el patron de un paseo aleatorio. La serie $z_t$ sigue tiene el comportamiento de un paseo aleatorio si
+
+$$
+z_t = \mu + z_{t-1} + a_t
+$$ {#eq-rw}
+
+
+siendo $a_t$ un ruido blanco. Si $\mu = 0$, el proceso se llama paseo aleatorio, en caso contrario se llama *paseo aleatorio con deriva* (Tsay, 2010, pp.  71-72). En este modelo, el valor de la serie en el tiempo $t$ es igual a su valor en el tiempo anterior, $t-1$, mas un *random shock*. Este comportamiento es similar a seguir el camino que recorre un hombre en estado ebriedad cuya posicion en el tiempo $t$ es su posicion en el tiempo $t-1$ mas un paso en sireccion aleatoria en el teimpo $t$ (Wei, 2006, p. 72).
+
+De @eq-rw, se desprende que
+
+$$
+z_t - z_{t-1} = \mu + a_t
+$$
+si $z_t$ es un paseo aleatorio, entonces su primera diferencia sigue un ruido blanco con media $\mu_a + \mu$.
 
 
 
 
 
-<!-- \newpage -->
+
+
+
+## Analisis de dos variables
+
+ccf en cryer
+
+
+\newpage
 
 
 
@@ -760,25 +878,31 @@ d_arg |>
 # acf y pacf arg
 
 
-acf_agb_arg <- d_arg |> 
-  ACF(`Ag Barometer Austral`, lag_max = 60) |> 
-  autoplot() +
+acf_agb_arg <- ggAcf(d_arg$`Ag Barometer Austral`, lag.max = 40) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACM',
+  labs(title = NULL,  
+       y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
-
-pacf_agb_arg <- d_arg |> 
-  PACF(`Ag Barometer Austral`, lag_max = 60) |> 
-  autoplot() +
+pacf_agb_arg <- ggPacf(d_arg$`Ag Barometer Austral`, lag.max = 40) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
-  labs(y = 'FACPM',
+  labs(title = NULL,
+       y = 'FACPM',
        x = 'Retardo') +
   theme_bw()
 
-acf_agb_arg + pacf_agb_arg 
+acf_agb_arg + pacf_agb_arg
 ```
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1697,7 +1821,7 @@ Estudiadas las relaciones entre los índices de las universidades, el interés s
 
 
 Se presentan gráficos que permitieron analizar la posible existencia de relaciones. Éstos tienen dos particularidades. La primera es que cada punto representa el *Ag Barometer* de un cierto mes y la variable en el mes anterior. Se decidió que esta es la forma que mejor representa la posible relación porque tanto el relevamiento del *Ag Barometer* como la publicación de los precios ocurren a principios de cada mes, de tal manera que los productores responden en base a los precios del mes anterior. Por ende, la respuesta de los productores de cierto mes podría estar relacionada con los precios del mes anterior. Por ejemplo, si los productores son entrevistados a principios de septiembre para relevar el *Ag Barometer* de ese mes, la información de precios más reciente con la que cuentan es la de los precios de agosto, ya que los datos de septiembre todavía no fueron publicados. La segunda particularidad está vinculada a la 
-no estacionariedad de las series. Es muy común que variables económicas como tasas de interés, precios, etc, sean no estacionarias (Tsay, 2010). Por tal motivo se asumió que todas las variables buscadas tienen una raiz unitaria. Además, el propio *Ag Barometer Austral* tampoco es estacionario como se probó en la @sec-univ_arg. En consecuencia, a la hora de intentar medir la asociación entre la confianza de los productores y estas variables, se podría estar obteniendo un alto valor de correlación, no porque las variables estén asociadas, sino debido a la fuerte estructura de autocorrelación de las series (Cryer y Chan, 2008). Para no obtener estas correlaciones espurias, se realizó el proceso de pre-blanqueo previo a cada gráfico de dispersión en todas las figuras.
+no estacionariedad de las series. Es muy común que variables económicas como tasas de interés, precios, etc, sean no estacionarias (Tsay, 2010, p. 71-72). Por tal motivo se asumió que todas las variables buscadas tienen una raiz unitaria. Además, el propio *Ag Barometer Austral* tampoco es estacionario como se probó en la @sec-univ_arg. En consecuencia, a la hora de intentar medir la asociación entre la confianza de los productores y estas variables, se podría estar obteniendo un alto valor de correlación, no porque las variables estén asociadas, sino debido a la fuerte estructura de autocorrelación de las series (Cryer y Chan, 2008). Para no obtener estas correlaciones espurias, se realizó el proceso de pre-blanqueo previo a cada gráfico de dispersión en todas las figuras.
 
 
 
@@ -2648,6 +2772,8 @@ Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016). *Time seri
 
 Bula, A. (2020). *Importancia de la agricultura en el desarrollo socio-económico*. Puente Académico N° 16, Observatorio Económico Social, Universidad Nacional de Rosario (UNR).
 
+Colombo, F. (2024). *Estudio del comportamiento de los usuarios en Calle Recreativa de la ciudad de Rosario desde abril de 2013 hasta abril de 2023*. Práctica profesional de Licenciatura en Estadística. Universidad Nacional de Rosario. Rosario, Argentina.
+
 Cryer, J. D., & Chan, K.-S. (2008). *Time series analysis: With applications in R* ($2^a$ ed.). Springer.
 
 Enders, W. (2014). *Applied econometric time series*. ($4^a$ ed.). John Wiley & Sons.
@@ -2661,6 +2787,8 @@ Peña, D. (2010). *Análisis de series temporales*. Alianza Editoral
 Tamplín, L. (2025). *Evaluación de Métodos de Imputación de Datos Faltantes en Series Temporales Univariadas*. Tesis de grado de Licenciatura en Estadística. Universidad Nacional de Rosario. Rosario, Argentina.
 
 Tsay, R. S. (2010). *Analysis of financial time series* ($3^a$ ed.). John Wiley & Sons.
+
+Wei, W. W. S. (2006). *Time series analysis: Univariate and multivariate methods* ($2^a$ ed.). Pearson Addison Wesley.
 
 
 
