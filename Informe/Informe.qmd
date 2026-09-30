@@ -901,12 +901,6 @@ acf_agb_arg + pacf_agb_arg
 
 
 
-
-
-
-
-
-
 En primer lugar, fue necesario inspeccionar la dinámica temporal de estos datos. Los bastones de la FACM de la @fig-acf_agba parecen presentar un decaimiento exponencial donde la estimación del primer coeficiente es casi 0.8. Alrededor del rezago 24, también hay bastones significativos. Esto sugiere que la serie no sería ruido blanco.
 
 Se realiza el test de Ljung-Box (Box et al., 2016, p. 289) para analizar si el *Ag Barometer Austral* se comporta como un ruido blanco.
@@ -980,8 +974,6 @@ d_arg |>
 #| fig-height: 4
 #| fig-width: 6
 
-# EN REALIDAD ES FIG 9 !!!!!!!!!!!!
-
 # Comportamiento anual del Ag Barometer Austral
 d_arg |> 
   as_tibble() |> 
@@ -1043,20 +1035,19 @@ d_arg |>
 #| fig-cap: "FACM y FACPM de la primera diferencia del *Ag Barometer Austral*"
 #| fig-width: 8
 
-acf_agb_arg_dif1 <- d_arg |> 
-  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
-  ACF(dif1, lag_max = 60) |> 
-  autoplot() +
+acf_agb_arg_dif1 <- d_arg$`Ag Barometer Austral` |> 
+  diff() |> 
+  ggAcf(lag.max = 40) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
-
-pacf_agb_arg_dif1 <- d_arg |> 
-  mutate(dif1 = difference(`Ag Barometer Austral`)) |> 
-  PACF(dif1, lag_max = 60) |> 
-  autoplot() +
+pacf_agb_arg_dif1 <- d_arg$`Ag Barometer Austral` |> 
+  diff() |> 
+  ggPacf(lag.max = 40) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
        x = 'Retardo') +
@@ -1206,18 +1197,18 @@ d_eeuu |>
 
 # acf y pacf eeuu
 
-acf_agb_eeuu <- d_eeuu |> 
-  ACF(`Ag Economy Barometer`, lag_max = 60) |> 
-  autoplot() +
+acf_agb_eeuu <- d_eeuu$`Ag Economy Barometer` |> 
+  ggAcf(lag.max = 60) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
 
-pacf_agb_eeuu <- d_eeuu |> 
-  PACF(`Ag Economy Barometer`, lag_max = 60) |> 
-  autoplot() +
+pacf_agb_eeuu <- d_eeuu$`Ag Economy Barometer` |> 
+  ggPacf(lag.max = 60) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
        x = 'Retardo') +
@@ -1227,7 +1218,7 @@ acf_agb_eeuu + pacf_agb_eeuu
 ```
 
 
-En cuanto a su estructura temporal, se puede observar que los bastones de la FACM de la @fig-acf_ageb decaen de forma, aparentemente, exponencial y que para retardos más elevados, alrededor del 38 y del 58, algunos coeficientes también son significativos. Considerando todo esto, se podría pensar que la serie presenta una estructura de dependencia temporal.
+En cuanto a su estructura temporal, se puede observar que los bastones de la FACM de la @fig-acf_ageb decaen de forma, aparentemente, exponencial donde el primer coeficiente estimado de la FAC es de 0.8 y que para retardos más elevados, alrededor del 38 y del 58, algunos coeficientes también son significativos. Considerando todo esto, se podría pensar que la serie presenta una estructura de dependencia temporal.
 Sin embargo, al igual que en el caso local, se realiza el test de Ljung-Box para probar si esta serie se comporta como un ruido blanco. 
 
 
@@ -1355,27 +1346,26 @@ d_eeuu |>
 #| fig-cap: "FACM y FACPM de la primera diferencia del *Ag Economy Barometer*"
 #| fig-width: 8
 
-acf_agb_eeuu_dif1 <- d_eeuu |> 
-  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
-  ACF(dif1, lag_max = 60) |> 
-  autoplot() +
+acf_agb_eeuu_dif1 <- d_eeuu$`Ag Economy Barometer` |> 
+  diff() |> 
+  ggAcf(lag.max = 60) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
 
-pacf_agb_eeuu_dif1 <- d_eeuu |> 
-  mutate(dif1 = difference(`Ag Economy Barometer`)) |> 
-  PACF(dif1, lag_max = 60) |> 
-  autoplot() +
+pacf_agb_eeuu_dif1 <- d_eeuu$`Ag Economy Barometer` |> 
+  diff() |> 
+  ggPacf(lag.max = 60) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
        x = 'Retardo') +
   theme_bw()
 
 acf_agb_eeuu_dif1 + pacf_agb_eeuu_dif1
-
 ```
 
 
@@ -2443,7 +2433,8 @@ tibble(
 A partir de los resultados de la @tbl-carcs_indices_arg y en base a la evidencia muestral, se concluye con un 5% de nivel de significación, que la primera diferencia de las Condiciones presentes es estacionaria y los primeros 20 coeficientes de su FAC son nulos; la serie Expectativas futuras no es estacionaria y los primeros 20 coeficientes de la FAC de su primera diferencia son nulos.
 
 
-Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que es estacionaria, se la consideró como no estacionaria por presentar tendencia en el período que comprende desde principios de 2023 hasta fines de 2024 (@fig-indices_arg).
+Sin embargo para las Condiciones presentes y la primera diferencia de las Expectativas futuras, los tests realizados conducen a conclusiones contradictorias. En el caso de las Condiciones presentes en niveles, aunque por el test ADF se llega a que dicha serie no es estacionaria y mediante el de KPSS se concluye que sí, se la consideró como no estacionaria por presentar tendencia en el período que comprende desde principios de 2023 hasta fines de 2024 y por tener un cambio inesperado en 2019 al igual que el *Ag Barometer Austral* (@fig-indices_arg). Estos dos atributos mencionados son características de los paseos aleatorios (Hyndman-Athanasopoulos, 2021, secc. 9.1).
+
 
 
 <!-- acf dif1 exp fut arg -->
@@ -2453,20 +2444,20 @@ Sin embargo para las Condiciones presentes y la primera diferencia de las Expect
 #| fig-cap: "FACM y FACPM de la primera diferencia de las Expectativas futuras argentinas"
 #| fig-width: 8
 
-acf_expec_arg_dif1 <- d_arg |> 
-  mutate(dif1 = difference(`Expectativas futuras`)) |> 
-  ACF(dif1, lag_max = 60) |> 
-  autoplot() +
+acf_expec_arg_dif1 <- d_arg$`Expectativas futuras` |> 
+  diff() |> 
+  ggAcf(lag.max = 40) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
 
-pacf_expec_arg_dif1 <- d_arg |> 
-  mutate(dif1 = difference(`Expectativas futuras`)) |> 
-  PACF(dif1, lag_max = 60) |> 
-  autoplot() +
+pacf_expec_arg_dif1 <- d_arg$`Expectativas futuras` |> 
+  diff() |> 
+  ggPacf(lag.max = 40) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
        x = 'Retardo') +
@@ -2476,10 +2467,10 @@ acf_expec_arg_dif1 + pacf_expec_arg_dif1
 ```
 
 
-Por otro lado, ante la discrepancia de los resultados para las Expectativas futuras diferenciadas, el test ADF conduce a que no son estacionarias y el KPSS sí, teniendo en cuenta su FACM y FACPM (@fig-acf_expec_arg_dif1) se observa que ninguno de sus rezagos es significativo, sugiriendo que esta serie sigue un ruido blanco, con lo cual fue considerada estacionaria.
+Por otro lado, ante la discrepancia de los resultados para las Expectativas futuras diferenciadas, el test ADF conduce a que no son estacionarias y el KPSS a que sí, teniendo en cuenta su FACM y FACPM (@fig-acf_expec_arg_dif1) se observa que ninguno de sus rezagos es significativo, sugiriendo que esta serie sigue un ruido blanco, coincidente con el resultado del test Ljung-Box, con lo cual fue considerada estacionaria.
  
 
-Teniendo en cuenta todos estos aspectos, se consideró a ambas series en niveles como no estacionarias, siendo necesario diferenciarlas para lograr la estacionariedad. 
+Teniendo en cuenta todos estos aspectos, se determinó que ambas series en niveles no son estacionarias. Específicamente, son paseos aleatorios.
 
 
 
@@ -2489,7 +2480,7 @@ Teniendo en cuenta todos estos aspectos, se consideró a ambas series en niveles
 
 
 
-Al igual que en el caso argentino, para inspeccionar la relación entre los índices estadounidenses, fue necesario estudiar si las Condiciones presentes y Expectativas futuras son estacionarias o no.
+Al igual que en el caso argentino, para explorar la relación entre los índices estadounidenses, fue necesario estudiar si las Condiciones presentes y Expectativas futuras son estacionarias o no.
 
 
 ```{r}
@@ -2669,10 +2660,10 @@ tibble(
 ```
 
 
-En base a la evidencia muestral y los resultados[^hipotesis2] de la @tbl-carcs_indices_usa, se concluye que tanto para las Condiciones presentes como para las Expectativas futuras la primera diferencia es estacionaria y que los primeros 20 coeficientes de las FAC son nulos. Sin embargo, para estas mismas series en niveles, los p-values conducen a resultados que ameritaron mas analisis. 
+En base a la evidencia muestral y los resultados[^hipotesis2] de la @tbl-carcs_indices_usa, se concluye que tanto para las Condiciones presentes como para las Expectativas futuras la primera diferencia es estacionaria y que los primeros 20 coeficientes de las FAC son nulos. Sin embargo, para estas mismas series en niveles, los $p-values$ conducen a resultados que ameritaron más análisis. 
 
 
-En primer lugar, se obtiene mediante el test ADF y KPSS que la serie de las Condiciones presentes es estacionaria.
+Se obtiene mediante el test ADF y KPSS que la serie de las Condiciones presentes es estacionaria, mientras que para las Expectativas futuras se obtienen conclusiones contradictorias.
 
 
 ```{r}
@@ -2682,19 +2673,19 @@ En primer lugar, se obtiene mediante el test ADF y KPSS que la serie de las Cond
 
 # acf y pacf condiciones presentes eeuu
 
-acf_cond_eeuu <- d_eeuu |> 
-  ACF(`Condiciones presentes`, lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.1)) +
+acf_cond_eeuu <- d_eeuu$`Condiciones presentes` |> 
+  ggAcf(lag.max = 60) +
+  ggtitle(NULL) +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
 
-pacf_cond_eeuu <- d_eeuu |> 
-  PACF(`Condiciones presentes`, lag_max = 60) |> 
-  autoplot() +
-  scale_y_continuous(breaks = scales::breaks_width(0.1)) +
+pacf_cond_eeuu <- d_eeuu$`Condiciones presentes` |> 
+  ggPacf(lag.max = 60) +
+  ggtitle(NULL) +
+  scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
        x = 'Retardo') +
   theme_bw()
@@ -2713,18 +2704,18 @@ acf_cond_eeuu + pacf_cond_eeuu
 
 # acf y pacf condiciones presentes eeuu
 
-acf_expec_eeuu <- d_eeuu |> 
-  ACF(`Expectativas futuras`, lag_max = 60) |> 
-  autoplot() +
+acf_expec_eeuu <- d_eeuu$`Expectativas futuras` |> 
+  ggAcf(lag.max = 60) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACM',
        x = 'Retardo') +
   theme_bw()
 
 
-pacf_expec_eeuu <- d_eeuu |> 
-  PACF(`Expectativas futuras`, lag_max = 60) |> 
-  autoplot() +
+pacf_expec_eeuu <- d_eeuu$`Expectativas futuras` |> 
+  ggPacf(lag.max = 60) +
+  ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
        x = 'Retardo') +
@@ -2733,6 +2724,12 @@ pacf_expec_eeuu <- d_eeuu |>
 acf_expec_eeuu + pacf_expec_eeuu
 ```
 
+
+Observando la @fig-acf_cond_eeuu y la @fig-acf_expec_eeuu, se puede apreciar que la estimación del primer coeficiente de la FAC es aproximadamente 0.8 en ambos casos. Además, estas series, al igual que el *Ag Economy Barometer*, presentan cambios repentinos (@fig-indices_usa). Esta característica es típica de los paseos aleatorios (Hyndman-Athanasopoulos, 2021, secc. 9.1). Por estas razones, se consideraron a las Condiciones presentes y Expectativas futuras de Estados Unidos como series no estacionarias.
+
+
+
+Con todo este análisis se determinó que tanto las Condiciones presentes como Expectativas futuras no son estacionarias, en particular, siguen el patrón de un paseo aleatorio.
 
 
 <!-- expec f: lo mismo -->

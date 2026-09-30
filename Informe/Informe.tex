@@ -1486,12 +1486,13 @@ Barometer}}
 
 En cuanto a su estructura temporal, se puede observar que los bastones
 de la FACM de la Figura~\ref{fig-acf_ageb} decaen de forma,
-aparentemente, exponencial y que para retardos más elevados, alrededor
-del 38 y del 58, algunos coeficientes también son significativos.
-Considerando todo esto, se podría pensar que la serie presenta una
-estructura de dependencia temporal. Sin embargo, al igual que en el caso
-local, se realiza el test de Ljung-Box para probar si esta serie se
-comporta como un ruido blanco.
+aparentemente, exponencial donde el primer coeficiente estimado de la
+FAC es de 0.8 y que para retardos más elevados, alrededor del 38 y del
+58, algunos coeficientes también son significativos. Considerando todo
+esto, se podría pensar que la serie presenta una estructura de
+dependencia temporal. Sin embargo, al igual que en el caso local, se
+realiza el test de Ljung-Box para probar si esta serie se comporta como
+un ruido blanco.
 
 \begin{longtable}[t]{ccc}
 
@@ -2205,8 +2206,11 @@ contradictorias. En el caso de las Condiciones presentes en niveles,
 aunque por el test ADF se llega a que dicha serie no es estacionaria y
 mediante el de KPSS se concluye que es estacionaria, se la consideró
 como no estacionaria por presentar tendencia en el período que comprende
-desde principios de 2023 hasta fines de 2024
-(Figura~\ref{fig-indices_arg}).
+desde principios de 2023 hasta fines de 2024 y por tener un cambio
+inesperado en 2019 al igual que el Ag Barometer Austral
+(Figura~\ref{fig-indices_arg}). Estos dos atributos mencionados son
+características de los paseos aleatorios (Hyndman-Athanasopoulos, 2021,
+secc. 9.1).
 
 \begin{figure}
 
@@ -2223,7 +2227,7 @@ diferencia de las Expectativas futuras argentinas}
 
 Por otro lado, ante la discrepancia de los resultados para las
 Expectativas futuras diferenciadas, el test ADF conduce a que no son
-estacionarias y el KPSS sí, teniendo en cuenta su FACM y FACPM
+estacionarias y el KPSS a que sí, teniendo en cuenta su FACM y FACPM
 (Figura~\ref{fig-acf_expec_arg_dif1}) se observa que ninguno de sus
 rezagos es significativo, sugiriendo que esta serie sigue un ruido
 blanco, con lo cual fue considerada estacionaria.
@@ -2275,11 +2279,12 @@ En base a la evidencia muestral y los resultados\footnote{La hipótesis
 que tanto para las Condiciones presentes como para las Expectativas
 futuras la primera diferencia es estacionaria y que los primeros 20
 coeficientes de las FAC son nulos. Sin embargo, para estas mismas series
-en niveles, los p-values conducen a resultados que ameritaron mas
-analisis.
+en niveles, los \(p-values\) conducen a resultados que ameritaron más
+análisis.
 
-En primer lugar, se obtiene mediante el test ADF y KPSS que la serie de
-las Condiciones presentes es estacionaria.
+Se obtiene mediante el test ADF y KPSS que la serie de las Condiciones
+presentes es estacionaria, mientras que para las Expectativas futuras se
+obtienen conclusiones contradictorias.
 
 \begin{figure}
 
@@ -2306,6 +2311,20 @@ presentes de Estados Unidos}
 futuras de Estados Unidos}
 
 \end{figure}%
+
+Observando la Figura~\ref{fig-acf_cond_eeuu} y la
+Figura~\ref{fig-acf_expec_eeuu}, se puede apreciar que la estimación del
+primer coefciente de la FAC es aproximadamente 0.8 en ambos casos.
+Además, estas series, al igual que el \emph{Ag Economy Barometer},
+presentan cambios repentinos (Figura~\ref{fig-indices_usa}). Esta
+característica es típica de los paseos aleatorios
+(Hyndman-Athanasopoulos, 2021, secc. 9.1). Por estas razones, se
+consideraron a las Condiciones presentes y Expectativas futuras de
+Estados Unidos como series no estacionarias.
+
+Todo este análisis conlleva a concluir que tanto las Condiciones
+presentes como Expectativas futuras no son estacionarias, en particular,
+siguen el patrón de un paseo aleatorio.
 
 \subsection{Soporte computacional}\label{soporte-computacional}
 
