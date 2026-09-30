@@ -290,6 +290,8 @@ $Ag$ $Barometer$ & $Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$ & Percepciones actuales y f
 Condiciones presentes & $Q_1$, $Q_5$ & Percepciones actuales \\
 Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
 \bottomrule
+\addlinespace[0.5em]
+\multicolumn{3}{l}{Fuente: Elaboración propia en base a datos de la Universidad Austral} \\
 \end{tabular}
 \end{table}
 ```
@@ -540,10 +542,17 @@ d_conNA |>
     names_sort = TRUE
   ) |> 
   mutate(across(-Año, ~ifelse(is.na(.), "", as.character(round(., 1))))) |> 
-  kable(align = "c") |>       # sin 'digits' porque ya está formateado como texto
+  kable(align = "c") |>    
   kable_styling(
     latex_options = c("repeat_header"),
     repeat_header_text = "(continuación)"
+  )|> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Austral",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = TRUE,
+    threeparttable = TRUE # dentro de las dimensiones de la tabla
   )
 ```
 
@@ -552,7 +561,7 @@ d_conNA |>
 ```{r}
 #| label: fig-indices_arg_sin_imputar
 #| fig-cap: "Evolución de los índices argentinos en el período octubre 2018 - enero 2026"
-#| fig-height: 4
+#| fig-height: 4.2
 #| fig-width: 6
 
 # Grafico de las 3 series Arg con los faltantes
@@ -564,16 +573,17 @@ d_conNA |>
   ggplot(aes(x = Bimestre, y = valor, color = Índice)) +
   geom_line() +
   geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   scale_color_manual(values = c(
-    "Ag Barometer Austral" = "black",          
-    "Condiciones presentes" = "#417B5A", 
-    "Expectativas futuras" = "#FF88DC"  
+    "Ag Barometer Austral" = "#8FB933",          
+    "Condiciones presentes" = "#C7DC99", 
+    "Expectativas futuras" = "#567E00"  
   )) +
   labs(x = "Tiempo",
-       y = "Índice") +
+       y = "Índice",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position = "bottom") 
@@ -634,7 +644,14 @@ d_conNA |>
   column_spec(2, width = "4.5cm") |>
   column_spec(3, width = "3.2cm") |>
   column_spec(4, width = "3.2cm") |>
-  collapse_rows(columns = 1, latex_hline = "major", valign = "middle")
+  collapse_rows(columns = 1, latex_hline = "major", valign = "middle") |> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Austral",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = TRUE,
+    threeparttable = TRUE
+  )
 ```
 
 
@@ -654,7 +671,7 @@ Para cada serie y cada fecha, los valores imputados mediante cualquiera de los t
 ```{r}
 #| label: fig-indices_arg
 #| fig-cap: "Evolución de las series argentinas en el período noviembre 2018 - enero 2026"
-#| fig-height: 4
+#| fig-height: 4.2
 #| fig-width: 6
 
 # grafico de las series de arg imputadas
@@ -672,17 +689,19 @@ d_arg |>
   # capa extra: puntos azules sobre las fechas imputadas
   geom_point(
     data = ~ filter(.x, Bimestre %in% fechas_imputadas),
-    color = "blue", size = 1.2
+    color = "black", size = 1.2
   ) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   scale_color_manual(values = c(
-    "Ag Barometer Austral"  = "black",
-    "Condiciones presentes" = "#417B5A",
-    "Expectativas futuras"  = "#FF88DC"
+    "Ag Barometer Austral"  = "#8FB933",
+    "Condiciones presentes" = "#C7DC99",
+    "Expectativas futuras"  = "#567E00"
   )) +
-  labs(x = "Tiempo", y = "Índice") +
+  labs(x = "Tiempo",
+       y = "Índice",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw() +
   theme(legend.title    = element_blank(),
         legend.position = "bottom")
@@ -722,6 +741,13 @@ d_eeuu |>
   kable_styling(
     latex_options = c("repeat_header"),
     repeat_header_text = "(continuación)"
+  ) |> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Purdue",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = TRUE,
+    threeparttable = TRUE
   )
 
 ```
@@ -730,7 +756,7 @@ d_eeuu |>
 ```{r}
 #| label: fig-indices_usa
 #| fig-cap: "Evolución de los índices norteamericanos en el período octubre 2015 - marzo 2026"
-#| fig-height: 4.5
+#| fig-height: 4.7
 #| fig-width: 6.5
 
 d_eeuu |> 
@@ -741,16 +767,17 @@ d_eeuu |>
   ggplot(aes(x = Fecha, y = valor, color = Índice)) +
   geom_line() +
   geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   scale_color_manual(values = c(
-    "Ag Economy Barometer" = "black",          
-    "Condiciones presentes" = "#86A397", 
-    "Expectativas futuras" = "#FF88DC"
+    "Ag Economy Barometer" = "#974D55",          
+    "Condiciones presentes" = "#CBA6AA", 
+    "Expectativas futuras" = "#5E1920"
   )) +
   labs(x = "Tiempo",
-       y = "Índice") +
+       y = "Índice",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position = "bottom") + 
@@ -805,9 +832,12 @@ readxl::read_excel("Tablas/tabla_covs.xlsx") |>
   column_spec(2, width = "7.5cm") |> 
   column_spec(3, width = "5cm") |> 
   footnote(
-    general = "WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.",
-    general_title = "Nota: ",
-    footnote_as_chunk = FALSE, # Permite saltos de línea para que se vea completa
+    general = c(
+      "Nota: WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data",
+      "Fuente: Elaboración propia"
+    ),
+    general_title = "",
+    footnote_as_chunk = FALSE, # Clave para que cada elemento del vector sea un párrafo independiente
     threeparttable = TRUE      # Ajusta el ancho de la nota al ancho exacto de la tabla
   )
 ```
@@ -854,13 +884,14 @@ Se ofrece una primera impresión del *Ag Barometer Austral*, su FACM y su FACPM.
 d_arg |> 
   ggplot() +
   aes(x = Bimestre, y = `Ag Barometer Austral`) +
-  geom_line(color = "#6D9DC5") +
-  geom_point(size = 1, color = "#6D9DC5") +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_line(color = "#8FB933") +
+  geom_point(size = 1, color = "#8FB933") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   labs(x = "Tiempo",
-       y = "Ag Barometer Austral") +
+       y = "Ag Barometer Austral",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw() 
 ```
 
@@ -889,7 +920,8 @@ pacf_agb_arg <- ggPacf(d_arg$`Ag Barometer Austral`, lag.max = 40) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(title = NULL,
        y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw()
 
 acf_agb_arg + pacf_agb_arg
@@ -930,7 +962,14 @@ map_dfr(c(6, 12, 18, 24), \(l) {
     col.names = c("Rezago", "Estadística", "p-value"),
     align = "c"
   )|> 
-  kableExtra::kable_styling(latex_options = "hold_position") # para q no se corte la tabla
+  kableExtra::kable_styling(latex_options = "hold_position")  |> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Austral",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = FALSE,  
+    threeparttable = T 
+  )
 
 ```
 
@@ -956,13 +995,14 @@ d_arg |>
   summarise(agb_medio = mean(`Ag Barometer Austral`)) |> 
   ggplot() +
   aes(x = Año, y = agb_medio) +
-  geom_line(color = "#6D9DC5") +
-  geom_point(size = 1.4, color = "#6D9DC5") +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_line(color = "#8FB933") +
+  geom_point(size = 1.4, color = "#8FB933") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_continuous(breaks = scales::breaks_width(1)) +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   labs(x = "Tiempo",
-       y = "Ag Barometer Austral medio") +
+       y = "Ag Barometer Austral medio",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw() 
 ```
 
@@ -984,7 +1024,10 @@ d_arg |>
   ggplot(aes(x = Mes, y = `Ag Barometer Austral`, color = factor(Año), group = Año)) +
   geom_line() +
   geom_point(size = 1.5) +
-  labs(x = 'Mes', y = 'Ag Barometer Austral', color = 'Año') +
+  labs(x = 'Mes', 
+       y = 'Ag Barometer Austral', 
+       color = 'Año',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw() +
   theme(
     plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5)
@@ -1004,7 +1047,8 @@ d_arg |>
 
 d_arg |> 
   gg_subseries(`Ag Barometer Austral`) +  
-  labs(x = "Tiempo") +
+  labs(x = "Tiempo",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   scale_x_yearmonth(
     date_breaks = "4 years",# Muestra una etiqueta cada 2 años 
     date_labels = "%Y" ,    # %y: Muestra 22 en vez de 2022
@@ -1024,7 +1068,8 @@ d_arg |>
   mutate(anio = factor(year(Bimestre))) |> 
   ggplot(aes(x = anio,  y = `Ag Barometer Austral`)) +
   geom_boxplot() +
-  labs(x = 'Año') +
+  labs(x = 'Año',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   theme_bw()
 ```
@@ -1050,7 +1095,8 @@ pacf_agb_arg_dif1 <- d_arg$`Ag Barometer Austral` |>
   ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw()
 
 acf_agb_arg_dif1 + pacf_agb_arg_dif1
@@ -1179,13 +1225,14 @@ Para llevar a cabo este análisis, se comienza presentado la serie junto a su FA
 d_eeuu |> 
   ggplot() +
   aes(x = Fecha, y = `Ag Economy Barometer`) +
-  geom_line(color = "#BF211E") +
-  geom_point(size = 1, color = "#BF211E") +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_line(color = "#974D55") +
+  geom_point(size = 1, color = "#974D55") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   labs(x = "Tiempo",
-       y = "Ag Economy Barometer") +
+       y = "Ag Economy Barometer",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw() 
 ```
 
@@ -1211,7 +1258,8 @@ pacf_agb_eeuu <- d_eeuu$`Ag Economy Barometer` |>
   ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw()
 
 acf_agb_eeuu + pacf_agb_eeuu
@@ -1248,7 +1296,14 @@ map_dfr(c(6, 12, 18, 24), \(l) {
     col.names = c("Rezago", "Estadística", "p-value"),
     align = "c"
   )|> 
-  kableExtra::kable_styling(latex_options = "hold_position") # para q no se corte la tabla
+  kableExtra::kable_styling(latex_options = "hold_position") |> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Purdue",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = FALSE,  
+    threeparttable = T 
+  )
 
 ```
 
@@ -1271,13 +1326,14 @@ d_eeuu |>
   summarise(agb_medio = mean(`Ag Economy Barometer`)) |> 
   ggplot() +
   aes(x = Año, y = agb_medio) +
-  geom_line(color = "#BF211E") +
-  geom_point(size = 1.4, color = "#BF211E") +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "red") +
+  geom_line(color = "#974D55") +
+  geom_point(size = 1.4, color = "#974D55") +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666") +
   scale_x_continuous(breaks = scales::breaks_width(1)) +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   labs(x = "Tiempo",
-       y = "Ag Economy Barometer medio") +
+       y = "Ag Economy Barometer medio",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw() 
 ```
 
@@ -1298,7 +1354,10 @@ d_eeuu |>
   ggplot(aes(x = Mes, y = `Ag Economy Barometer`, color = factor(Año), group = Año)) +
   geom_line() +
   geom_point(size = 1.5) +
-  labs(x = 'Mes', y = 'Ag Economy Barometer', color = 'Año') +
+  labs(x = 'Mes', 
+       y = 'Ag Economy Barometer', 
+       color = 'Año',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw() +
   theme(
     plot.margin = margin(t = 5.5, r = 20, b = 5.5, l = 5)
@@ -1314,7 +1373,8 @@ d_eeuu |>
 
 d_eeuu |> 
   gg_subseries(`Ag Economy Barometer`) +  
-  labs(x = "Tiempo") +
+  labs(x = "Tiempo",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   scale_x_yearmonth(
     date_breaks = "7 years",# Muestra una etiqueta cada 2 años 
     date_labels = "%Y" ,    # %y: Muestra 22 en vez de 2022
@@ -1335,7 +1395,8 @@ d_eeuu |>
   mutate(anio = factor(year(Fecha))) |> 
   ggplot(aes(x = anio,  y = `Ag Economy Barometer`)) +
   geom_boxplot() +
-  labs(x = 'Año') +
+  labs(x = 'Año',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   theme_bw()
 ```
@@ -1362,7 +1423,8 @@ pacf_agb_eeuu_dif1 <- d_eeuu$`Ag Economy Barometer` |>
   ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw()
 
 acf_agb_eeuu_dif1 + pacf_agb_eeuu_dif1
@@ -1489,7 +1551,7 @@ A continuación se presentan herramientas que permitan comparar la evolución de
 ```{r}
 #| label: fig-ambos_agb
 #| fig-cap: "Evolución del *Ag Barometer Austral* y del *Ag Economy Barometer* en el período octubre 2015 - marzo 2026"
-#| fig-height: 4
+#| fig-height: 4.2
 #| fig-width: 6
 
 # grafico de AgB arg y eeuu superpuestos
@@ -1504,15 +1566,16 @@ d |>
   ggplot(aes(x = Fecha, y = valor, color = Índice, group = Índice)) +
   geom_line() +
   geom_point(size = 1) +
-  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666", linewidth = 0.7) +
   scale_x_yearmonth(date_breaks = "1 year", date_labels = "%Y") +
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   scale_color_manual(values = c(
-    "Ag Barometer Austral" = "#6D9DC5",          
-    "Ag Economy Barometer" = "#BF211E" 
+    "Ag Barometer Austral" = "#8FB933",          
+    "Ag Economy Barometer" = "#974D55" 
   )) +
   labs(x = "Tiempo", 
-       y = "Ag Barometer") +
+       y = "Ag Barometer",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral y Universidad Purdue') +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position = "bottom"
@@ -1543,7 +1606,7 @@ tabla_medidas <- d |>
 ```{r}
 #| label: fig-promedios_ambos_paises
 #| fig-cap: "Evolución del *Ag Barometer* medio"
-#| fig-height: 4
+#| fig-height: 4.2
 #| fig-width: 6
 
 # grafico q compara las medias de arg y usa
@@ -1560,18 +1623,19 @@ tabla_medidas |>
   ggplot(aes(x = Año, y = valor, color = Índice, group = Índice)) +
   geom_line() +
   geom_point(size = 1.5) + 
-  geom_hline(yintercept = 100, linetype = "dashed", color = "#7BC950", linewidth = 0.7) +
+  geom_hline(yintercept = 100, linetype = "dashed", color = "#666666", linewidth = 0.7) +
   scale_x_continuous(breaks = seq(min(as.numeric(as.character(tabla_medidas$Año))), 
                                   max(as.numeric(as.character(tabla_medidas$Año))), 
                                   by = 1)) +
   
   scale_y_continuous(breaks = scales::breaks_width(20)) +
   scale_color_manual(values = c(
-    "Media_Arg" = "#6D9DC5",          
-    "Media_Usa" = "#BF211E" 
+    "Media_Arg" = "#8FB933",          
+    "Media_Usa" = "#974D55" 
   ), labels = c("Ag Barometer Austral medio", "Ag Economy Barometer medio")) + 
   labs(x = "Año", 
-       y = "Ag Barometer medio") +
+       y = "Ag Barometer medio",
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral y Universidad Purdue') +
   theme_bw() +
   theme(legend.title = element_blank(),
         legend.position = "bottom")
@@ -1606,7 +1670,8 @@ d_homogeneo |>
                        y = dif_agba, 
                        lag_max = 18,
                        lab_x = 'Ag Economy Barometer',
-                       lab_y = 'Ag Barometer Austral')
+                       lab_y = 'Ag Barometer Austral',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral y Universidad Purdue')
 ```
 
 
@@ -1676,7 +1741,8 @@ d |>
                        y = dif_agba, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
-                       lab_y = 'Ag Barometer Austral')
+                       lab_y = 'Ag Barometer Austral',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral')
 ```
 
 ```{r}
@@ -1694,7 +1760,8 @@ d |>
                        y = dif_agba, 
                        lag_max = 18,
                        lab_x = 'Expectativas futuras',
-                       lab_y = 'Ag Barometer Austral')
+                       lab_y = 'Ag Barometer Austral',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral')
 ```
 
 
@@ -1714,7 +1781,8 @@ d |>
                        y = dif_exp, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
-                       lab_y = 'Expectativas futuras')
+                       lab_y = 'Expectativas futuras',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral')
 ```
 
 
@@ -1749,7 +1817,8 @@ d |>
                        y = dif_ageb, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
-                       lab_y = 'Ag Economy Barometer')
+                       lab_y = 'Ag Economy Barometer',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue')
 ```
 
 
@@ -1769,7 +1838,8 @@ d |>
                        y = dif_ageb, 
                        lag_max = 18,
                        lab_x = 'Expectativas futuras',
-                       lab_y = 'Ag Economy Barometer')
+                       lab_y = 'Ag Economy Barometer',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue')
 ```
 
 
@@ -1788,7 +1858,8 @@ d |>
                        y = dif_exp, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
-                       lab_y = 'Expectativas futuras')
+                       lab_y = 'Expectativas futuras',
+                       fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue')
 ```
 
 Según la @fig-ccf_usa1, a medida que la confianza de los productores norteamericanos aumenta (o disminuye), sus Condiciones presentes también. De igual manera ocurre entre el *Ag Economy Barometer* con las Expectativas futuras (@fig-ccf_usa2) y entre las Condiciones presentes con las Expectativas futuras (@fig-ccf_usa3). En otras palabras, los tres índices evolucionan juntos a través del tiempo.
@@ -1876,7 +1947,8 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 correlaciones_preblanqueadas(
   df = d_completo_arg, 
   y_col = "Ag Barometer Austral", 
-  x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)]
+  x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)],
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'
 )$grafico
 ```
 
@@ -1935,7 +2007,8 @@ df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variab
 correlaciones_preblanqueadas(
   df = d_completo_eeuu, 
   y_col = "Ag Economy Barometer", 
-  x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)]
+  x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)],
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue'
 )$grafico
 ```
 
@@ -2007,7 +2080,8 @@ df_cor_arg$variable <- factor(df_cor_arg$variable, levels = df_cor_arg$variable)
 correlaciones_preblanqueadas(
   df = d_completo_arg, 
   y_col = "Ag Barometer Austral", 
-  x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)]
+  x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)],
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'
 )$grafico
 ```
 
@@ -2066,7 +2140,8 @@ df_cor_eeuu$variable <- factor(df_cor_eeuu$variable, levels = df_cor_eeuu$variab
 correlaciones_preblanqueadas(
   df = d_completo_eeuu, 
   y_col = "Ag Economy Barometer", 
-  x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)]
+  x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)],
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue'
 )$grafico
 ```
 
@@ -2116,7 +2191,8 @@ graficar_elecciones(
   ancho_sombreado = 3, 
   tiempo_col = Bimestre, # col tiempo q defini en elecciones_df
   serie = `Ag Barometer Austral`, # serie q quiero graf del data
-  color_serie = "#6D9DC5"         
+  color_serie = "#8FB933",
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'   
 )
 ```
 
@@ -2127,7 +2203,7 @@ graficar_elecciones(
 ```{r}
 #| label: fig-elecciones_usa
 #| fig-cap: "Evolución del *Ag Economy Barometer* y resultados de la elecciones presidenciales estadounidenses"
-#| fig-height: 4.5
+#| fig-height: 4.8
 #| fig-width: 6.3
 
 # hitos iniciales para el PDF
@@ -2150,7 +2226,8 @@ graficar_elecciones(
   ancho_sombreado = 3, 
   tiempo_col = Fecha,
   serie = `Ag Economy Barometer`,
-  color_serie = "#BF211E"         
+  color_serie = "#974D55",
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue'      
 )
 
 ```
@@ -2199,7 +2276,10 @@ graficar_hitos_globales(
   data = d,
   hitos_df = hitos_globales,
   ancho_sombreado = 3,
-  tiempo_col = Fecha
+  tiempo_col = Fecha,
+  colores_series = c("Ag Barometer Austral" = "#8FB933",
+                     "Ag Economy Barometer" = "#974D55"),
+  fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral y Universidad Purdue'
 )
 ```
 
@@ -2423,7 +2503,14 @@ tibble(
     )
   ) |> 
   kable(align = "llcc") |> 
-  row_spec(5, extra_css = "border-bottom: 1px solid black;")
+  row_spec(5, extra_css = "border-bottom: 1px solid black;") |> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Austral",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = FALSE,  
+    threeparttable = T 
+  )
 ```
 
 [^hipotesis2]: La hipótesis nula del test ADF es $H_0)$ La serie no es estacionaria (tiene una raíz unitaria), la del test KPSS es $H_0)$ La serie es estacionaria y la del test Ljung-Box es $H_0)$ Los primeros 20 coeficientes de FAC son nulos.
@@ -2460,7 +2547,8 @@ pacf_expec_arg_dif1 <- d_arg$`Expectativas futuras` |>
   ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral') +
   theme_bw()
 
 acf_expec_arg_dif1 + pacf_expec_arg_dif1
@@ -2655,7 +2743,14 @@ tibble(
     )
   ) |> 
   kable(align = "llcc") |> 
-  row_spec(5, extra_css = "border-bottom: 1px solid black;")
+  row_spec(5, extra_css = "border-bottom: 1px solid black;") |> 
+  footnote(
+    general = "Fuente: Elaboración propia en base a datos de la Universidad Purdue",
+    general_title = "",
+    footnote_as_chunk = TRUE,
+    escape = FALSE,  
+    threeparttable = T 
+  )
   
 ```
 
@@ -2687,7 +2782,8 @@ pacf_cond_eeuu <- d_eeuu$`Condiciones presentes` |>
   ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw()
 
 acf_cond_eeuu + pacf_cond_eeuu
@@ -2718,7 +2814,8 @@ pacf_expec_eeuu <- d_eeuu$`Expectativas futuras` |>
   ggtitle(NULL) +
   scale_y_continuous(breaks = scales::breaks_width(0.2)) +
   labs(y = 'FACPM',
-       x = 'Retardo') +
+       x = 'Retardo',
+       caption = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue') +
   theme_bw()
 
 acf_expec_eeuu + pacf_expec_eeuu
@@ -2752,18 +2849,9 @@ Todo el código que permitió armar la base de datos, llevar a cabo pruebas de h
 
 <!-- ver como se citan los dataset! -->
 
-https://ag.purdue.edu/commercialag/ageconomybarometer/survey-methodology/
+Banco Mundial. (2026). Pink Sheet: Commodity Markets [Conjunto de datos]. World Bank Group. https://www.worldbank.org/en/research/commodity-markets
 
-https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
-
-https://fred.stlouisfed.org/
-
-https://www.bcr.com.ar/es
-
-https://finance.yahoo.com/
-
-https://www.argentina.gob.ar/economia/agricultura/agricultura
-
+Bolsa de Comercio de Rosario. (2026). Índice de Actividad de la Cadena Agropecuaria (IACA) y estadísticas de mercado [Conjunto de datos]. https://www.bcr.com.ar/es
 
 Box, G. E. P., Jenkins, G. M., Reinsel, G. C., y Ljung, G. M. (2016). *Time series analysis: Forecasting and control* ($5^a$ ed.). Wiley.
 
@@ -2775,6 +2863,8 @@ Cryer, J. D., & Chan, K.-S. (2008). *Time series analysis: With applications in 
 
 Enders, W. (2014). *Applied econometric time series*. ($4^a$ ed.). John Wiley & Sons.
 
+Federal Reserve Bank of St. Louis. (2026). Federal Reserve Economic Data (FRED) [Conjunto de datos]. https://fred.stlouisfed.org/ 
+
 Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* ($3^a$ ed.). OTexts. https://otexts.com/fpp3/
 
 Lütkepohl, H., & Krätzig, M. (Eds.). (2004). *Applied Time Series Econometrics*. Cambridge University Press.
@@ -2785,7 +2875,13 @@ Tamplín, L. (2025). *Evaluación de Métodos de Imputación de Datos Faltantes 
 
 Tsay, R. S. (2010). *Analysis of financial time series* ($3^a$ ed.). John Wiley & Sons.
 
+Universidad Austral. (2018). Ag Barometer Austral [Conjunto de datos]. Centro de Agronegocios y Alimentos. https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/
+
+Universidad Purdue. (2015). Ag Economy Barometer [Conjunto de datos]. Purdue University Center for Commercial Agriculture. https://ag.purdue.edu/commercialag/ageconomybarometer/
+
 Wei, W. W. S. (2006). *Time series analysis: Univariate and multivariate methods* ($2^a$ ed.). Pearson Addison Wesley.
+
+Yahoo Finance. (2026). Historical Data for Dow Jones Industrial Average and NASDAQ [Conjunto de datos]. https://finance.yahoo.com/
 
 
 

@@ -563,6 +563,8 @@ $Ag$ $Barometer$ & $Q_1$, $Q_2$, $Q_3$, $Q_4$, $Q_5$ & Percepciones actuales y f
 Condiciones presentes & $Q_1$, $Q_5$ & Percepciones actuales \\
 Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
 \bottomrule
+\addlinespace[0.5em]
+\multicolumn{3}{l}{Fuente: Elaboración propia en base a datos de la Universidad Austral} \\
 \end{tabular}
 
 }
@@ -895,6 +897,11 @@ Antes de decidir qué procesos aplicar sobre las series de Argentina, fue
 necesario identificar algunos atributos de estos datos, que se presentan
 a continuación.
 
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Austral
+\end{TableNotes}
+
 \begin{longtable}[t]{ccccccccc}
 
 \caption{\label{tbl-agba_sin_imputar}\emph{Ag Barometer Austral} en el
@@ -914,6 +921,7 @@ Año & ene & mar & abr & may & jul & sept & oct & nov\\
 
 \endfoot
 \bottomrule
+\insertTableNotes
 \endlastfoot
 2018 &  &  &  &  &  &  & 100 & 95\\
 2019 & 106 & 103 &  & 117 & 137 & 74 &  & 64\\
@@ -927,6 +935,8 @@ Año & ene & mar & abr & may & jul & sept & oct & nov\\
 2026 & 158 &  &  &  &  &  &  & \\*
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 \begin{figure}
 
@@ -972,6 +982,11 @@ interpolación lineal, interpolación de Stine y el filtro de Kalman
 presentados por Tamplín (2025). A continuación se muestran los
 resultados.
 
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Austral
+\end{TableNotes}
+
 \begin{longtable}[t]{>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{4.5cm}>{\centering\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{3.2cm}}
 
 \caption{\label{tbl-agba_imputacion_3mets}Imputación de las series
@@ -991,6 +1006,7 @@ Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
 
 \endfoot
 \bottomrule
+\insertTableNotes
 \endlastfoot
  & Interpolacion lineal & 52.5000 & 50.5000\\
 \nopagebreak
@@ -1011,6 +1027,8 @@ Serie & Método & Valor imputado marzo 2020 & Valor imputado mayo 2020\\
 \multirow{-3}{4.5cm}{\raggedright\arraybackslash Expectativas futuras} & Filtro de Kalman & 55.5112 & 51.1437\\*
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 Para cada serie y cada fecha, los valores imputados mediante cualquiera
 de los tres métodos, son similares
@@ -1046,6 +1064,11 @@ caso de ser requiridos, fue necesario primero identificar qué
 características poseen estos datos. Por tal motivo se muestran, a
 continuación, las series estadounidenses.
 
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Purdue
+\end{TableNotes}
+
 \begin{longtable}[t]{ccccccccccccc}
 
 \caption{\label{tbl-ageb}\emph{Ag Economy Barometer} en el período
@@ -1065,6 +1088,7 @@ Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
 
 \endfoot
 \bottomrule
+\insertTableNotes
 \endlastfoot
 2015 &  &  &  &  &  &  &  &  &  & 116 & 97 & 107\\
 2016 & 98 & 96 & 85 & 106 & 97 & 104 & 112 & 95 & 101 & 92 & 116 & 132\\
@@ -1082,6 +1106,8 @@ Año & ene & feb & mar & abr & may & jun & jul & ago & sept & oct & nov & dic\\
 2026 & 113 & 116 & 127 &  &  &  &  &  &  &  &  & \\*
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 \begin{figure}
 
@@ -1151,8 +1177,8 @@ características y su procedencia.
 
 \begin{ThreePartTable}
 \begin{TableNotes}
-\item \textit{Nota: } 
-\item WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data.
+\item Nota: WTI = West Texas Intermediate; HRW = Hard Red Winter; SRW = Soft Red Winter; UTDT = Universidad Torcuato Di Tella; UM = University of Michigan; FRED = Federal Reserve Economic Data
+\item Fuente: Elaboración propia
 \end{TableNotes}
 
 \begin{longtable}[t]{>{\raggedright\arraybackslash}p{3.5cm}>{\raggedright\arraybackslash}p{7.5cm}>{\raggedright\arraybackslash}p{5cm}}
@@ -1279,6 +1305,11 @@ blanco.
 Se realiza el test de Ljung-Box (Box et al., 2016, p.~289) para analizar
 si el \emph{Ag Barometer Austral} se comporta como un ruido blanco.
 
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Austral
+\end{TableNotes}
+
 \begin{longtable}[t]{ccc}
 
 \caption{\label{tbl-pvalue_arg_rb}Pruebas Ljung-Box sobre el \emph{Ag
@@ -1294,8 +1325,11 @@ Rezago & Estadística & p-value\\
 18 & 107.1535 & <0.001\\
 24 & 147.0830 & <0.001\\
 \bottomrule
+\insertTableNotes
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 Con un nivel de significación del 5\% y en base a la evidencia muestral,
 se rechaza la hipótesis nula de ausencia de autocorrelación, para los
@@ -1494,6 +1528,11 @@ dependencia temporal. Sin embargo, al igual que en el caso local, se
 realiza el test de Ljung-Box para probar si esta serie se comporta como
 un ruido blanco.
 
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Purdue
+\end{TableNotes}
+
 \begin{longtable}[t]{ccc}
 
 \caption{\label{tbl-pvalue_eeuu_rb}Pruebas Ljung-Box sobre el \emph{Ag
@@ -1509,8 +1548,11 @@ Rezago & Estadística & p-value\\
 18 & 202.5331 & <0.001\\
 24 & 207.3438 & <0.001\\
 \bottomrule
+\insertTableNotes
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 Con un nivel de significación del 5\% y en base a la evidencia muestral,
 se rechaza la hipótesis nula de incorrelación para los cuatro retardos
@@ -2167,6 +2209,11 @@ resultados\footnote{La hipótesis nula del test ADF es \(H_0)\) La serie
   Los primeros 20 coeficientes de FAC son nulos.} que permitieron
 analizar esta característica.
 
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Austral
+\end{TableNotes}
+
 \begin{longtable}[t]{llcc}
 
 \caption{\label{tbl-carcs_indices_arg}Resultados de las pruebas sobre
@@ -2190,8 +2237,11 @@ Expectativas futuras diferenciada & ADF & 0.0861 & No Estac.\\
 Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
 Expectativas futuras diferenciada & Ljung-Box & 0.8984 & Ruido blanco\\
 \bottomrule
+\insertTableNotes
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 A partir de los resultados de la Tabla~\ref{tbl-carcs_indices_arg} y en
 base a la evidencia muestral, se concluye con un 5\% de nivel de
@@ -2204,10 +2254,10 @@ Sin embargo para las Condiciones presentes y la primera diferencia de
 las Expectativas futuras, los tests realizados conducen a conclusiones
 contradictorias. En el caso de las Condiciones presentes en niveles,
 aunque por el test ADF se llega a que dicha serie no es estacionaria y
-mediante el de KPSS se concluye que es estacionaria, se la consideró
-como no estacionaria por presentar tendencia en el período que comprende
-desde principios de 2023 hasta fines de 2024 y por tener un cambio
-inesperado en 2019 al igual que el Ag Barometer Austral
+mediante el de KPSS se concluye que sí, se la consideró como no
+estacionaria por presentar tendencia en el período que comprende desde
+principios de 2023 hasta fines de 2024 y por tener un cambio inesperado
+en 2019 al igual que el \emph{Ag Barometer Austral}
 (Figura~\ref{fig-indices_arg}). Estos dos atributos mencionados son
 características de los paseos aleatorios (Hyndman-Athanasopoulos, 2021,
 secc. 9.1).
@@ -2230,20 +2280,25 @@ Expectativas futuras diferenciadas, el test ADF conduce a que no son
 estacionarias y el KPSS a que sí, teniendo en cuenta su FACM y FACPM
 (Figura~\ref{fig-acf_expec_arg_dif1}) se observa que ninguno de sus
 rezagos es significativo, sugiriendo que esta serie sigue un ruido
-blanco, con lo cual fue considerada estacionaria.
+blanco, coincidente con el resultado del test Ljung-Box, con lo cual fue
+considerada estacionaria.
 
-Teniendo en cuenta todos estos aspectos, se consideró a ambas series en
-niveles como no estacionarias, siendo necesario diferenciarlas para
-lograr la estacionariedad.
+Teniendo en cuenta todos estos aspectos, se determinó que ambas series
+en niveles no son estacionarias. Específicamente, son paseos aleatorios.
 
 \subsection{Características de los otros índices
 norteamericanos}\label{sec-carcs_indices_usa}
 
-Al igual que en el caso argentino, para inspeccionar la relación entre
-los índices estadounidenses, fue necesario estudiar si las Condiciones
+Al igual que en el caso argentino, para explorar la relación entre los
+índices estadounidenses, fue necesario estudiar si las Condiciones
 presentes y Expectativas futuras son estacionarias o no.
 
 \needspace{16\baselineskip}
+
+\begin{ThreePartTable}
+\begin{TableNotes}[para]
+\item Fuente: Elaboración propia en base a datos de la Universidad Purdue
+\end{TableNotes}
 
 \begin{longtable}[t]{llcc}
 
@@ -2268,8 +2323,11 @@ Expectativas futuras diferenciada & ADF & 0.0100 & Estacionaria\\
 Expectativas futuras diferenciada & KPSS & 0.1000 & Estacionaria\\
 Expectativas futuras diferenciada & Ljung-Box & 0.4870 & Ruido blanco\\
 \bottomrule
+\insertTableNotes
 
 \end{longtable}
+
+\end{ThreePartTable}
 
 En base a la evidencia muestral y los resultados\footnote{La hipótesis
   nula del test ADF es \(H_0)\) La serie no es estacionaria (tiene una
@@ -2314,7 +2372,7 @@ futuras de Estados Unidos}
 
 Observando la Figura~\ref{fig-acf_cond_eeuu} y la
 Figura~\ref{fig-acf_expec_eeuu}, se puede apreciar que la estimación del
-primer coefciente de la FAC es aproximadamente 0.8 en ambos casos.
+primer coeficiente de la FAC es aproximadamente 0.8 en ambos casos.
 Además, estas series, al igual que el \emph{Ag Economy Barometer},
 presentan cambios repentinos (Figura~\ref{fig-indices_usa}). Esta
 característica es típica de los paseos aleatorios
@@ -2322,9 +2380,9 @@ característica es típica de los paseos aleatorios
 consideraron a las Condiciones presentes y Expectativas futuras de
 Estados Unidos como series no estacionarias.
 
-Todo este análisis conlleva a concluir que tanto las Condiciones
-presentes como Expectativas futuras no son estacionarias, en particular,
-siguen el patrón de un paseo aleatorio.
+Con todo este análisis se determinó que tanto las Condiciones presentes
+como Expectativas futuras no son estacionarias, en particular, siguen el
+patrón de un paseo aleatorio.
 
 \subsection{Soporte computacional}\label{soporte-computacional}
 
