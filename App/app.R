@@ -12,7 +12,7 @@ library(readxl)
 # Datos
 # ----------------------------------------------------------- #
 
-ruta_data <- "Datos/Procesados/agbarometer_ARG_imputado.xlsx"
+ruta_data <- "../Datos/Procesados/agbarometer_ARG_imputado.xlsx"
 
 ####################################################
 # User Interface
@@ -364,6 +364,7 @@ server <- function(input, output, session) {
     )
   })
   
+  # function #1
   formatear_fecha_amigable <- function(fecha_date) {
     meses_es <- c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
     m_idx <- as.numeric(format(fecha_date, "%m"))
@@ -371,6 +372,7 @@ server <- function(input, output, session) {
     paste(meses_es[m_idx], anio_fmt)
   }
   
+  # function #2
   generar_fila_metrica <- function(nombre_variable, valor_actual, fecha_actual_str, valor_anterior, fecha_anterior_str) {
     if (is.na(valor_actual) || is.na(valor_anterior)) {
       variacion_pct <- 0
@@ -404,6 +406,8 @@ server <- function(input, output, session) {
     )
   }
   
+  ## terminan las functions
+  
   output$tarjeta_variaciones_bimestrales <- renderUI({
     df <- rv$data %>% arrange(Bimestre)
     n <- nrow(df)
@@ -416,12 +420,11 @@ server <- function(input, output, session) {
     anterior <- df[n - 1, ]
     
     f_act <- formatear_fecha_amigable(actual$Bimestre)
-    f_ant <- formatear_fecha_amigable(anterior$Bimestre)
+    f_ant <- formatear_fecha_amigable(anterior$Bimestre)          
     
-    tagList(
-      generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
-      generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
-      generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
+    tagList(generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
+            generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
+            generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
     )
   })
   
@@ -433,24 +436,19 @@ server <- function(input, output, session) {
     actual <- df[n, ]
     
     anio_actual <- as.numeric(format(actual$Bimestre, "%Y"))
-    mes_actual <- format(actual$Bimestre, "%m")
+    mes_actual <- as.numeric(format(actual$Bimestre, "%m"))
     
-    fecha_anterior_anual <- as.Date(sprintf("%d-%s-01", anio_actual - 1, mes_actual))
-    
-    df_ant_anual <- df %>% filter(Bimestre == fecha_anterior_anual)
-    
-    if (nrow(df_ant_anual) == 0) {
-      df_ant_anual <- df %>% filter(as.numeric(format(Bimestre, "%Y")) == (anio_actual - 1)) %>% tail(1)
-    }
+    # Búsqueda robusta por año anterior y mes correspondiente en todo el dataset rv$data
+    df_ant_anual <- df %>% filter(as.numeric(format(Bimestre, "%Y")) == (anio_actual - 1) & as.numeric(format(Bimestre, "%m")) == mes_actual)
     
     if (nrow(df_ant_anual) == 0) {
-      return(div(style = "padding: 10px; text-align: center; color: #666; font-size: 0.9rem;", "Sin registros interanuales previos."))
+      return(div(style = "padding: 10px; text-align: center; color: #666; font-size: 0.9rem;", "Sin registros interanuales previos para este período."))
     }
     
     anterior <- df_ant_anual[1, ]
     
     f_act <- formatear_fecha_amigable(actual$Bimestre)
-    f_ant <- formatear_fecha_amigable(anterior$Bimestre)
+    f_ant <- formatear_fecha_amigable(anterior$Bimestre)          
     
     tagList(
       generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
@@ -461,3 +459,5 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
+
