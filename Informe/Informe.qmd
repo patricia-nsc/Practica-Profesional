@@ -575,7 +575,7 @@ Presentados estos conceptos teóricos, al emplearlos en aplicaciones prácticas,
 Por este motivo, es necesario desarrollar un método que permita separar la asociación lineal entre las variables X e Y de sus autocorrelaciones. Un elemento útil en estos casos es el pre-blanqueo, o *prewhitening* en inglés. El *pre-blanqueo* de una serie es el proceso de reemplazarla por los residuos (ruido blanco) que se obtienen al ajustarle un modelo $ARIMA(p, d, q)$. La idea práctica es estimar la FCC entre las variables X e Y pre-blanqueadas, realizando el pre-blanqueo sobre la variable X y luego utilizar esa transformación para pre-blanquear Y. Se asume que Y pre-blanqueada es estacionaria a pesar de sólo haber obtenido los residuos para la serie X.
 
 El proceso de pre-blanqueo tiene dos ventajas. La primera es que este procedimiento es una operación lineal, esto garantiza que la relación entre las series originales se preservará tras realizarlo. 
-La segunda es que es válido evaluar si los coeficientes de la FCC son estadísticamente distintos de cero, comparando los coeficientes de FCCM de las series pre-blanqueadas con el umbral $1.96/\sqrt{T}$.
+La segunda es que es válido evaluar si los coeficientes de la FCC son estadísticamente distintos de cero, comparando los coeficientes de FCCM de las series pre-blanqueadas con el umbral $1.96/\sqrt{T}$ (Cryer-Chan, 2008).
 
 
 
@@ -1270,7 +1270,7 @@ Se pueden observar en la @fig-boxplot_arg dos características sobre la serie. L
 
 Características de la serie tales como la presencia de tendencias temporales y variancia no constante a lo largo de los años, pueden interpretarse como indicios de no estacionariedad del *Ag Barometer Austral*. Siguiendo esta línea de análisis, se realizaron los tests *Augmented Dickey-Fuller* (ADF) (Peña, 2010, p. 269) y *Kwiatkowski, Phillips, Schmidt y Shin* (KPSS) (Lütkepohl-Krätzig, 2004, p. 63). Se concluye en base a la evidencia muestral que la serie de las percepciones del sector agropecuario argentino no es estacionaria, al 5% de nivel de significación ($p-value=$ `r pv_agba_adf`, $p-value=$ `r pv_agba_kpss`)[^hipotesis].
 
-[^hipotesis]: El test ADF evalúa la hipótesis nula $H_0)$ La serie no es estacionaria, mientras que el test KPSS prueba $H_0)$ La serie es estacionaria. Por lo que se concluye a un 5% de nivel de significación que la serie no es estacionaria si para el test ADF se obtiene un $p-value>0.05$ y para el KPSS un $p-value \leq 0.05$.
+[^hipotesis]: El test ADF evalúa la hipótesis nula $H_0)$ La serie no es estacionaria (tiene una raíz unitaria), mientras que el test KPSS prueba $H_0)$ La serie es estacionaria. Por lo que se concluye a un 5% de nivel de significación que la serie no es estacionaria si para el test ADF se obtiene un $p-value>0.05$ y para el KPSS un $p-value \leq 0.05$.
 
 <!-- ADF:  Ho) no estac,  quiero pv grande -->
 <!-- KPSS: Ho) estac,     quiero pv chico (quiero H1) -->
