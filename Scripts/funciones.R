@@ -1,5 +1,4 @@
 
-
 # Librerias
 library(forecast)
 library(tidyverse)
@@ -10,6 +9,20 @@ library(dplyr)
 library(TSA)            # 3 librerias q uso p crear ccf_preblanqueadas() + ggplot2
 library(dplyr)
 library(rlang)
+library(ggplot2)   # para la fc 3 de la app
+library(dplyr)
+library(tidyr)
+library(tsibble)
+library(ggrepel)
+
+
+
+
+
+#############################################################
+# funciones para el informe
+#############################################################
+
 
 
 
@@ -366,3 +379,162 @@ resultado_test <- function(test, pvalue){
 }
 
 
+#############################################################
+# funciones para la app
+#############################################################
+
+
+# -------------------------------------------------------------- #
+# Funcion 1
+# -------------------------------------------------------------- #
+
+
+formatear_fecha_amigable <- function(fecha_date) {
+  meses_es <- c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
+  m_idx <- as.numeric(format(fecha_date, "%m"))
+  anio_fmt <- format(fecha_date, "%y")
+  paste(meses_es[m_idx], anio_fmt)
+}
+
+
+# -------------------------------------------------------------- #
+# Funcion 2
+# -------------------------------------------------------------- #
+
+
+generar_fila_metrica <- function(nombre_variable, valor_actual, fecha_actual_str, valor_anterior, fecha_anterior_str) {
+  if (is.na(valor_actual) || is.na(valor_anterior)) {
+    variacion_pct <- 0
+    es_aumento <- TRUE
+  } else {
+    variacion_pct <- ((valor_actual - valor_anterior) / valor_anterior) * 100
+    es_aumento <- variacion_pct >= 0
+  }
+  
+  clase_badge <- if (es_aumento) "badge-growth-green" else "badge-growth-red"
+  signo_str <- if (es_aumento) "+" else ""
+  
+  div(
+    class = "metric-row",
+    div(
+      class = "metric-label",
+      nombre_variable
+    ),
+    div(
+      class = "metric-values",
+      tags$span(style = "font-size: 0.85rem; color: #111111; font-weight: 500;", fecha_actual_str),
+      div(class = "pill-current", round(valor_actual, 1)),
+      tags$span(style = "color: #333333; font-weight: 600;", "vs"),
+      tags$span(style = "font-size: 0.85rem; color: #111111; font-weight: 500;", fecha_anterior_str),
+      div(class = "pill-past", round(valor_anterior, 1)),
+      div(
+        class = clase_badge,
+        sprintf("%s%.2f%%", signo_str, variacion_pct)
+      )
+    )
+  )
+}
+
+
+
+
+# -------------------------------------------------------------- #
+# Funcion 3
+# -------------------------------------------------------------- #
+
+
+graficar_eventos_app <- function(data, 
+                                 elecciones_df = NULL, 
+                                 ancho_sombreado = 3,
+                                 tiempo_col = Bimestre, 
+                                 series_seleccionadas = c("Ag Barometer Austral"), 
+                                 colores_series = c("Ag Barometer Austral" = "#8FB933"),
+                                 fuente = NULL) {  
+  
+  y_min <- 30
+  y_max <- 190
+  tcol  <- rlang::as_name(rlang::ensym(tiempo_col))
+  
+  # Desplaza fechas n meses (n puede ser negativo)
+  mover_meses <- function(f, n) {
+    as.Date(vapply(f, function(x) {
+      as.character(seq(x, by = paste(n, "months"), length.out = 2)[2])
+    }, character(1)))
+  }
+  
+  # Datos con columna 'fecha' tipo Date (evita problemas de yearmonth en plotly)
+  data <- data |> dplyr::mutate(fecha = as.Date(.data[[tcol]]))
+  
+  # Hitos
+  hitos_proc <- NULL
+  if (!is.null(elecciones_df) && nrow(elecciones_df) > 0) {
+    hitos_proc <- elecciones_df |> 
+      dplyr::mutate(fecha = as.Date(.data[[tcol]])) |> 
+      dplyr::arrange(fecha) |> 
+      dplyr::mutate(
+        Tag     = as.character(dplyr::row_number()),
+        xmin    = mover_meses(fecha, -ancho_sombreado),
+        xmax    = mover_meses(fecha,  ancho_sombreado),
+        ymin    = y_min,
+        ymax    = y_max,
+        # Número: a la derecha de la raya, a mitad de camino del borde del sombreado
+        x_texto = fecha + round(ancho_sombreado * 30.4 / 2),
+        Y_pos   = y_max - 8
+      )
+  }
+  
+  cols_a_pivotear <- intersect(series_seleccionadas, names(data))
+  if (length(cols_a_pivotear) == 0) cols_a_pivotear <- "Ag Barometer Austral"
+  
+  data_larga <- data |>  
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(cols_a_pivotear),
+      names_to = "Indice",
+      values_to = "valor"
+    )
+  
+  p <- ggplot2::ggplot(
+    data_larga,
+    ggplot2::aes(x = fecha, y = valor, color = Indice, group = Indice,
+                 text = paste0("<b>", Indice, "</b><br>Fecha: ",
+                               format(fecha, "%b %Y"), "<br>Valor: ", round(valor, 1)))
+  ) +
+    ggplot2::geom_hline(yintercept = 100, linetype = "dashed", color = "#B3B3B3", linewidth = 0.7) +
+    ggplot2::geom_line(linewidth = 0.6) +
+    ggplot2::geom_point(size = 1.3)
+  
+  if (!is.null(hitos_proc) && nrow(hitos_proc) > 0) {
+    p <- p +
+      ggplot2::geom_rect(
+        data = hitos_proc,
+        ggplot2::aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax),
+        fill = "#B3B3B3", alpha = 0.35, inherit.aes = FALSE
+      ) +
+      ggplot2::geom_vline(
+        data = hitos_proc,
+        ggplot2::aes(xintercept = fecha),
+        color = "#666666", linetype = "dashed", linewidth = 0.6, inherit.aes = FALSE
+      ) +
+      ggplot2::geom_text(
+        data = hitos_proc,
+        ggplot2::aes(x = x_texto, y = Y_pos, label = Tag),
+        fontface = "bold", color = "black", size = 5, inherit.aes = FALSE
+      )
+  }
+  
+  p +
+    ggplot2::scale_color_manual(values = colores_series) +
+    ggplot2::scale_x_date(date_breaks = "1 year", date_labels = "%Y") +
+    ggplot2::scale_y_continuous(
+      breaks = scales::breaks_width(20),
+      limits = c(y_min, y_max),
+      expand = c(0, 0)
+    ) +
+    ggplot2::labs(x = "Tiempo", y = "Índice") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(
+      legend.title = ggplot2::element_blank(),
+      legend.position = "bottom",
+      panel.grid.minor = ggplot2::element_blank()
+    )
+}

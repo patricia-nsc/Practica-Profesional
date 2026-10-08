@@ -7,6 +7,7 @@ library(bslib)
 library(dplyr)
 library(DT)
 library(readxl)
+library(plotly)    # paraq graf serie sea interactivo
 
 # ----------------------------------------------------------- #
 # Datos
@@ -14,15 +15,20 @@ library(readxl)
 
 ruta_data <- "../Datos/Procesados/agbarometer_ARG_imputado.xlsx"
 
+# ----------------------------------------------------------- #
+# Funciones y path del logo
+# ----------------------------------------------------------- #
+
+source("../Scripts/funciones.R")
+
+addResourcePath("logo_dir", "../Informe/Logos")
+
 ####################################################
 # User Interface
 ####################################################
 
 ui <- page_navbar(
-  title = span(
-    style = "color: white; font-weight: bold; font-family: 'Helvetica Neue', sans-serif;",
-    "Ag Barometer Austral | Tablero Interactivo"
-  ),
+  title = span(style = "font-weight: bold;", "Ag Barometer Austral  |  SIV"),
   bg = "#7D212B",
   theme = bs_theme(
     version = 5,
@@ -83,8 +89,6 @@ ui <- page_navbar(
         border-radius: 16px;
         border: 2px solid #7D212B;
       }
-
-      /* Estética Minimalista, Futurista y con Hover para el Tablero */
       .dashboard-section-title {
         font-size: 1.15rem;
         font-weight: 700;
@@ -174,19 +178,37 @@ ui <- page_navbar(
         min-width: 80px;
         text-align: center;
       }
+      .card-body img, .card-body .shiny-plot-output img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+      .navbar-logo-derecha {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        padding-right: 15px;
+      }
     "))
   ),
   
+  footer = tags$script(HTML("
+    $(document).ready(function() {
+      var logoHtml = '<div class=\"navbar-logo-derecha\"><img src=\"logo_dir/logo_austral_ceag.png\" height=\"44px\" style=\"background: transparent;\"></div>';
+      $('.navbar-nav').last().after(logoHtml);
+    });
+  ")),
+  
+  # ------------------------------------------------------------- #
   # PESTAÑA 1: carga de datos
+  # ------------------------------------------------------------- #
   nav_panel(
-    title = "Gestión de Datos",
-    icon = icon("database"),
+    title = "Nuevo Registro",
     fluidRow(
       column(
         width = 4,
         div(
           class = "card mb-4",
-          div(class = "card-header", icon("plus-circle"), "Ingresar nuevo registro"),
+          div(class = "card-header", "Ingresar nuevo registro"),
           div(
             class = "card-body",
             p(style = "font-size: 0.9rem; color: #666;", 
@@ -207,9 +229,9 @@ ui <- page_navbar(
                 numericInput("input_anio", "Año:", value = 2026, min = 2018, max = 2100, step = 1)
               )
             ),
+            numericInput("input_agbarometer", "Ag Barometer Austral:", value = 100, min = 0, max = 300, step = 0.1),
             numericInput("input_condiciones", "Condiciones Presentes:", value = 100, min = 0, max = 300, step = 0.1),
             numericInput("input_expectativas", "Expectativas Futuras:", value = 100, min = 0, max = 300, step = 0.1),
-            numericInput("input_agbarometer", "Ag Barometer Austral:", value = 100, min = 0, max = 300, step = 0.1),
             div(
               style = "text-align: center; margin-top: 15px;",
               actionButton("btn_agregar", "Agregar registro", icon = icon("save"), class = "btn btn-custom-primary w-100 mb-2")
@@ -225,7 +247,7 @@ ui <- page_navbar(
         width = 8,
         div(
           class = "card",
-          div(class = "card-header", icon("table"), " Vista Previa"),
+          div(class = "card-header", "Vista Previa"),
           div(
             class = "card-body",
             DTOutput("tabla_datos")
@@ -235,10 +257,11 @@ ui <- page_navbar(
     )
   ),
   
+  # ------------------------------------------------------------- #
   # PESTAÑA 2: tablero
+  # ------------------------------------------------------------- #
   nav_panel(
     title = "Tablero Analítico",
-    icon = icon("chart-line"),
     fluidRow(
       column(
         width = 12,
@@ -248,12 +271,14 @@ ui <- page_navbar(
         )
       )
     ),
+    
+    # VARIACIONES
     fluidRow(
       column(
         width = 6,
         div(
           class = "dashboard-section-title",
-          icon("calendar-alt"), "Variaciones bimestrales"
+          "Variaciones bimestrales"
         ),
         div(
           class = "minimal-card",
@@ -264,11 +289,77 @@ ui <- page_navbar(
         width = 6,
         div(
           class = "dashboard-section-title",
-          icon("history"), "Variaciones interanuales"
+          "Variaciones interanuales"
         ),
         div(
           class = "minimal-card",
           uiOutput("tarjeta_variaciones_interanuales")
+        )
+      )
+    ),
+    
+    # Evolución del Ag Barometer Austral y Eventos
+    fluidRow(
+      column(
+        width = 12,
+        div(
+          style = "padding: 10px 0px 5px 0px;",
+          h4(style = "color: #7D212B; font-weight: bold; letter-spacing: 0.5px;", "Evolución del Ag Barometer Austral y Eventos")
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        width = 6,
+        div(
+          class = "card mb-4",
+          div(class = "card-header", "Opciones de gráfico y eventos"),
+          div(
+            class = "card-body",
+            checkboxGroupInput("series_sel", "Seleccionar Series:", 
+                               choices = c("Ag Barometer Austral", "Condiciones presentes", "Expectativas futuras"),
+                               selected = "Ag Barometer Austral"),
+            
+            conditionalPanel(
+              condition = "input.series_sel.includes('Ag Barometer Austral')",
+              textInput("color_ag", "Color Ag Barometer Austral:", value = "#8FB933")
+            ),
+            conditionalPanel(
+              condition = "input.series_sel.includes('Condiciones presentes')",
+              textInput("color_cond", "Color Condiciones Presentes:", value = "#C7DC99")
+            ),
+            conditionalPanel(
+              condition = "input.series_sel.includes('Expectativas futuras')",
+              textInput("color_exp", "Color Expectativas Futuras:", value = "#567E00")
+            ),
+            
+            sliderInput("ancho_sombra", "Ancho del sombreado:", min = 1, max = 6, value = 3, step = 1),
+            hr(),
+            numericInput("cantidad_eventos", "Cantidad de eventos a mostrar:", value = 2, min = 0, max = 10, step = 1),
+            uiOutput("contenedor_eventos_dinamicos")
+          )
+        )
+      ),
+      column(
+        width = 6,
+        div(
+          class = "card",
+          div(
+            class = "card-header d-flex justify-content-between align-items-center",
+            "Gráfico dinámico",
+            div(
+              actionButton("btn_zoom_grafico", "", icon = icon("search-plus"), class = "btn btn-sm btn-light me-1", title = "Zoom"),
+              downloadButton("btn_descargar_grafico", "", class = "btn btn-sm btn-light", title = "Descargar")
+            )
+          ),
+          div(
+            class = "card-body text-center",
+            plotlyOutput("grafico_evolucion", height = "450px"),
+            div(
+              style = "text-align: left; margin-top: 15px; font-size: 0.85rem; color: #333333; line-height: 1.4;",
+              uiOutput("referencias_eventos_UI")
+            )
+          )
         )
       )
     )
@@ -282,19 +373,18 @@ ui <- page_navbar(
 server <- function(input, output, session) {
   
   showModal(modalDialog(
-    title = span(style = "color: #7D212B; font-weight: bold;", "Bienvenido al Sistema Interactivo"),
+    title = NULL,
     div(
-      style = "text-align: center;",
-      tags$img(src = "https://www.austral.edu.ar/rosario/wp-content/uploads/sites/12/2021/03/logo-ceag-bordo.png", 
+      style = "text-align: center; padding: 10px;",
+      tags$img(src = "logo_dir/logo_austral_ceag.png", 
                height = "90px", style = "margin-bottom: 20px;"),
-      p(style = "font-size: 1.05rem; color: #333;",
-        "Aplicación desarrollada para la gestión y análisis exploratorio del ", 
-        tags$b("Ag Barometer Austral"), "."),
-      hr(),
-      p(style = "font-size: 0.9rem; color: #666;", 
-        "Utilice la pestaña 'Gestión de Datos' para incorporar nuevos relevamientos bimestrales de manera rápida y segura.")
+      h3(style = "color: #7D212B; font-weight: bold; margin-bottom: 15px;", 
+         "¡Bienvenido al SIV!"),
+      p(style = "font-size: 1.05rem; color: #333; margin-bottom: 20px;",
+        "Sistema Interactivo de Visualización (SIV) para el ", 
+        tags$b("Ag Barometer Austral"), ".")
     ),
-    footer = modalButton("Comenzar", icon = icon("rocket")),
+    footer = modalButton("Comenzar"),
     easyClose = TRUE,
     class = "welcome-modal"
   ))
@@ -328,9 +418,9 @@ server <- function(input, output, session) {
     
     nueva_fila <- data.frame(
       Bimestre = nueva_fecha,
+      `Ag Barometer Austral` = input$input_agbarometer,
       `Condiciones presentes` = input$input_condiciones,
       `Expectativas futuras` = input$input_expectativas,
-      `Ag Barometer Austral` = input$input_agbarometer,
       check.names = FALSE
     )
     
@@ -364,7 +454,6 @@ server <- function(input, output, session) {
     )
   })
   
-  # function #1
   formatear_fecha_amigable <- function(fecha_date) {
     meses_es <- c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
     m_idx <- as.numeric(format(fecha_date, "%m"))
@@ -372,7 +461,6 @@ server <- function(input, output, session) {
     paste(meses_es[m_idx], anio_fmt)
   }
   
-  # function #2
   generar_fila_metrica <- function(nombre_variable, valor_actual, fecha_actual_str, valor_anterior, fecha_anterior_str) {
     if (is.na(valor_actual) || is.na(valor_anterior)) {
       variacion_pct <- 0
@@ -406,8 +494,6 @@ server <- function(input, output, session) {
     )
   }
   
-  ## terminan las functions
-  
   output$tarjeta_variaciones_bimestrales <- renderUI({
     df <- rv$data %>% arrange(Bimestre)
     n <- nrow(df)
@@ -420,11 +506,11 @@ server <- function(input, output, session) {
     anterior <- df[n - 1, ]
     
     f_act <- formatear_fecha_amigable(actual$Bimestre)
-    f_ant <- formatear_fecha_amigable(anterior$Bimestre)          
+    f_ant <- formatear_fecha_amigable(anterior$Bimestre)                                   
     
     tagList(generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
-            generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
-            generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
+                                                                                                   generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
+                                                                                                   generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
     )
   })
   
@@ -438,7 +524,6 @@ server <- function(input, output, session) {
     anio_actual <- as.numeric(format(actual$Bimestre, "%Y"))
     mes_actual <- as.numeric(format(actual$Bimestre, "%m"))
     
-    # Búsqueda robusta por año anterior y mes correspondiente en todo el dataset rv$data
     df_ant_anual <- df %>% filter(as.numeric(format(Bimestre, "%Y")) == (anio_actual - 1) & as.numeric(format(Bimestre, "%m")) == mes_actual)
     
     if (nrow(df_ant_anual) == 0) {
@@ -448,16 +533,163 @@ server <- function(input, output, session) {
     anterior <- df_ant_anual[1, ]
     
     f_act <- formatear_fecha_amigable(actual$Bimestre)
-    f_ant <- formatear_fecha_amigable(anterior$Bimestre)          
+    f_ant <- formatear_fecha_amigable(anterior$Bimestre)                                         
     
-    tagList(
-      generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
-      generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
-      generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
+    tagList(generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
+                                                                                                         generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
+                                                                                                         generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
     )
   })
+  
+  output$contenedor_eventos_dinamicos <- renderUI({
+    num_eventos <- input$cantidad_eventos
+    if (is.null(num_eventos) || num_eventos <= 0) return(NULL)
+    
+    fechas_def <- c("2019-10-01", "2023-11-01", rep("2024-01-01", 8))
+    textos_def <- c("Triunfo de Alberto Fernández (Partido Frente de Todos)", 
+                    "Triunfo de Javier Milei (Partido La Libertad Avanza) | Ballotage", 
+                    rep("", 8))
+    
+    lapply(1:num_eventos, function(i) {
+      f_val <- if(i <= length(fechas_def)) fechas_def[i] else "2024-01-01"
+      t_val <- if(i <= length(textos_def)) textos_def[i] else ""
+      
+      tagList(
+        hr(),
+        h6(style = "font-weight: bold; color: #7D212B;", paste("Evento", i)),
+        dateInput(paste0("fecha_evento_", i), paste("Fecha (Año-Mes) - Evento", i), value = f_val, format = "yyyy-mm"),
+        textInput(paste0("desc_evento_", i), paste("Descripción - Evento", i), value = t_val)
+      )
+    })
+  })
+  
+  eventos_reactivos <- reactive({
+    num_eventos <- input$cantidad_eventos
+    if (is.null(num_eventos) || num_eventos <= 0) return(NULL)
+    
+    lista_eventos <- list()
+    
+    for (i in 1:num_eventos) {
+      desc_val <- input[[paste0("desc_evento_", i)]]
+      fecha_val <- input[[paste0("fecha_evento_", i)]]
+      
+      if (!is.null(desc_val) && desc_val != "" && !is.null(fecha_val)) {
+        lista_eventos[[length(lista_eventos) + 1]] <- data.frame(
+          Bimestre = tsibble::yearmonth(fecha_val),
+          Tag = "",
+          Descripcion = desc_val,
+          stringsAsFactors = FALSE
+        )
+      }
+    }
+    
+    if (length(lista_eventos) > 0) {
+      do.call(rbind, lista_eventos)
+    } else {
+      NULL
+    }
+  })
+  
+  objeto_grafico_reactivo <- reactive({
+    df_datos <- rv$data |> mutate(Bimestre = tsibble::yearmonth(Bimestre))
+    df_elecciones <- eventos_reactivos()
+    
+    colores_map <- c(
+      "Ag Barometer Austral" = input$color_ag,
+      "Condiciones presentes" = input$color_cond,
+      "Expectativas futuras" = input$color_exp
+    )
+    
+    grafico_estatico <- graficar_eventos_app(
+      data = df_datos,
+      elecciones_df = df_elecciones,
+      ancho_sombreado = input$ancho_sombra,
+      tiempo_col = Bimestre,
+      series_seleccionadas = input$series_sel,
+      colores_series = colores_map,
+      fuente = NULL
+    )
+    
+    # Convertimos a gráfico interactivo con plotly manteniendo las formas de anotación, sombreado y tooltip limpio
+    grafico_interactivo <- ggplotly(grafico_estatico, tooltip = "text") %>%
+      layout(
+        hovermode = "x unified",
+        legend = list(orientation = "h", x = 0.2, y = -0.15),
+        xaxis = list(zeroline = FALSE),
+        yaxis = list(zeroline = FALSE)
+      )
+    
+    return(grafico_interactivo)
+  })
+  
+  output$grafico_evolucion <- renderPlotly({
+    objeto_grafico_reactivo()
+  })
+  
+  # Renderizado de las referencias debajo del gráfico en la interfaz
+  output$referencias_eventos_UI <- renderUI({
+    df_elecciones <- eventos_reactivos()
+    
+    elementos_referencia <- list()
+    
+    if (!is.null(df_elecciones) && nrow(df_elecciones) > 0) {
+      df_ordenado <- df_elecciones %>% arrange(Bimestre) %>% mutate(Tag = as.character(row_number()))
+      
+      texto_eventos <- paste(
+        paste0("<b>Eventos:</b><br>", paste(paste0(df_ordenado$Tag, ": ", df_ordenado$Descripcion), collapse = "<br>")),
+        sep = ""
+      )
+      elementos_referencia[[length(elementos_referencia) + 1]] <- HTML(texto_eventos)
+    }
+    
+    fuente_texto <- "Fuente: Elaboración en base a datos de la Universidad Austral"
+    if (length(elementos_referencia) > 0) {
+      elementos_referencia[[length(elementos_referencia) + 1]] <- tags$br()
+    }
+    elementos_referencia[[length(elementos_referencia) + 1]] <- HTML(fuente_texto)
+    
+    tagList(elementos_referencia)
+  })
+  
+  observeEvent(input$btn_zoom_grafico, {
+    showModal(modalDialog(
+      title = span(style = "color: #7D212B; font-weight: bold;", "Visualización Ampliada"),
+      plotlyOutput("grafico_zoom_modal", height = "550px"),
+      footer = modalButton("Cerrar"),
+      easyClose = TRUE,
+      size = "l"
+    ))
+  })
+  
+  output$grafico_zoom_modal <- renderPlotly({
+    objeto_grafico_reactivo()
+  })
+  
+  output$btn_descargar_grafico <- downloadHandler(
+    filename = function() {
+      paste("evolucion_ag_barometer_", Sys.Date(), ".png", sep = "")
+    },
+    content = function(file) {
+      df_datos <- rv$data |> mutate(Bimestre = tsibble::yearmonth(Bimestre))
+      df_elecciones <- eventos_reactivos()
+      
+      grafico_estatico_descarga <- graficar_eventos_app(
+        data = df_datos,
+        elecciones_df = df_elecciones,
+        ancho_sombreado = input$ancho_sombra,
+        tiempo_col = Bimestre,
+        series_seleccionadas = input$series_sel,
+        colores_series = c(
+          "Ag Barometer Austral" = input$color_ag,
+          "Condiciones presentes" = input$color_cond,
+          "Expectativas futuras" = input$color_exp
+        ),
+        fuente = 'Fuente: Elaboración en base a datos de la Universidad Austral'
+      )
+      ggsave(file, plot = grafico_estatico_descarga, width = 10, height = 6, dpi = 120, device = "png")
+    }
+  )
 }
 
 shinyApp(ui, server)
-
 
