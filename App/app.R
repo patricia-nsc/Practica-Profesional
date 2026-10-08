@@ -7,7 +7,7 @@ library(bslib)
 library(dplyr)
 library(DT)
 library(readxl)
-library(plotly)    # paraq graf serie sea interactivo
+library(plotly)
 
 # ----------------------------------------------------------- #
 # Datos
@@ -38,9 +38,23 @@ ui <- page_navbar(
   ),
   header = tags$head(
     tags$style(HTML("
+      /* Fijar la barra de navegación arriba de todo */
+      .navbar {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 1030 !important;
+      }
+      /* Configuración general del cuerpo */
       body {
         background-color: #F8F9FA;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      /* Espaciado superior para que las pestañas no queden debajo de la barra fija */
+      .tab-content {
+        margin-top: 85px !important;
+        padding-top: 20px !important;
       }
       .card {
         border: none;
@@ -362,6 +376,54 @@ ui <- page_navbar(
           )
         )
       )
+    ),
+    
+    # ------------------------------------------------------------- #
+    # SECCIÓN: Distribución del indicador por año (con Plotly)
+    # ------------------------------------------------------------- #
+    fluidRow(
+      column(
+        width = 12,
+        div(
+          style = "padding: 15px 0px 5px 0px;",
+          h4(style = "color: #7D212B; font-weight: bold; letter-spacing: 0.5px;", "Distribución del indicador por año")
+        )
+      )
+    ),
+    fluidRow(
+      column(
+        width = 4,
+        div(
+          class = "card mb-4",
+          div(class = "card-header", "Opciones del Boxplot"),
+          div(
+            class = "card-body",
+            selectInput("selector_variable_boxplot", "Seleccionar indicador:",
+                        choices = c("Ag Barometer Austral" = "Ag Barometer Austral",
+                                    "Condiciones presentes" = "Condiciones presentes",
+                                    "Expectativas futuras" = "Expectativas futuras"),
+                        selected = "Ag Barometer Austral")
+          )
+        )
+      ),
+      column(
+        width = 8,
+        div(
+          class = "card",
+          div(
+            class = "card-header d-flex justify-content-between align-items-center",
+            "Gráfico de distribución anual",
+            div(
+              actionButton("btn_zoom_boxplot", "", icon = icon("search-plus"), class = "btn btn-sm btn-light me-1", title = "Zoom"),
+              downloadButton("btn_descargar_boxplot", "", class = "btn btn-sm btn-light", title = "Descargar")
+            )
+          ),
+          div(
+            class = "card-body text-center",
+            plotlyOutput("grafico_boxplot_interactivo", height = "400px")
+          )
+        )
+      )
     )
   )
 )
@@ -506,7 +568,7 @@ server <- function(input, output, session) {
     anterior <- df[n - 1, ]
     
     f_act <- formatear_fecha_amigable(actual$Bimestre)
-    f_ant <- formatear_fecha_amigable(anterior$Bimestre)                                   
+    f_ant <- formatear_fecha_amigable(anterior$Bimestre)                                
     
     tagList(generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
                                                                                                    generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
@@ -533,7 +595,7 @@ server <- function(input, output, session) {
     anterior <- df_ant_anual[1, ]
     
     f_act <- formatear_fecha_amigable(actual$Bimestre)
-    f_ant <- formatear_fecha_amigable(anterior$Bimestre)                                         
+    f_ant <- formatear_fecha_amigable(anterior$Bimestre)                                       
     
     tagList(generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
                                                                                                          generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
@@ -607,10 +669,9 @@ server <- function(input, output, session) {
       tiempo_col = Bimestre,
       series_seleccionadas = input$series_sel,
       colores_series = colores_map,
-      fuente = NULL
+      fuente = 'Fuente: Elaboración en base a datos de la Universidad Austral'
     )
     
-    # Convertimos a gráfico interactivo con plotly manteniendo las formas de anotación, sombreado y tooltip limpio
     grafico_interactivo <- ggplotly(grafico_estatico, tooltip = "text") %>%
       layout(
         hovermode = "x unified",
@@ -626,7 +687,6 @@ server <- function(input, output, session) {
     objeto_grafico_reactivo()
   })
   
-  # Renderizado de las referencias debajo del gráfico en la interfaz
   output$referencias_eventos_UI <- renderUI({
     df_elecciones <- eventos_reactivos()
     
@@ -651,6 +711,41 @@ server <- function(input, output, session) {
     tagList(elementos_referencia)
   })
   
+  # Objeto reactivo para el gráfico de caja (boxplot) anual convertido a Plotly
+  objeto_boxplot_reactivo <- reactive({
+    variable_seleccionada <- input$selector_variable_boxplot
+    
+    grafico_boxplot_estatico <- rv$data |> 
+      mutate(anio = factor(year(Bimestre))) |> 
+      ggplot(aes(x = anio, y = .data[[variable_seleccionada]],
+                 text = paste0("<b>Año: </b>", anio, "<br><b>", variable_seleccionada, ": </b>", round(.data[[variable_seleccionada]], 1)))) +
+      geom_boxplot(fill = "#7D212B", alpha = 0.7, color = "#401015") +
+      labs(
+        x = 'Año',
+        y = variable_seleccionada,
+        caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'
+      ) +
+      scale_y_continuous(breaks = scales::breaks_width(20)) +
+      theme_bw() +
+      theme(
+        plot.caption = element_text(hjust = 0, size = 9, color = "gray20"),
+        axis.title = element_text(face = "bold", color = "#333333")
+      )
+    
+    grafico_boxplot_interactivo <- ggplotly(grafico_boxplot_estatico, tooltip = "text") %>%
+      layout(
+        xaxis = list(zeroline = FALSE),
+        yaxis = list(zeroline = FALSE),
+        margin = list(b = 50)
+      )
+    
+    return(grafico_boxplot_interactivo)
+  })
+  
+  output$grafico_boxplot_interactivo <- renderPlotly({
+    objeto_boxplot_reactivo()
+  })
+  
   observeEvent(input$btn_zoom_grafico, {
     showModal(modalDialog(
       title = span(style = "color: #7D212B; font-weight: bold;", "Visualización Ampliada"),
@@ -663,6 +758,21 @@ server <- function(input, output, session) {
   
   output$grafico_zoom_modal <- renderPlotly({
     objeto_grafico_reactivo()
+  })
+  
+  # Modal de zoom para el boxplot
+  observeEvent(input$btn_zoom_boxplot, {
+    showModal(modalDialog(
+      title = span(style = "color: #7D212B; font-weight: bold;", "Visualización Ampliada - Distribución Anual"),
+      plotlyOutput("grafico_zoom_boxplot_modal", height = "550px"),
+      footer = modalButton("Cerrar"),
+      easyClose = TRUE,
+      size = "l"
+    ))
+  })
+  
+  output$grafico_zoom_boxplot_modal <- renderPlotly({
+    objeto_boxplot_reactivo()
   })
   
   output$btn_descargar_grafico <- downloadHandler(
@@ -686,7 +796,35 @@ server <- function(input, output, session) {
         ),
         fuente = 'Fuente: Elaboración en base a datos de la Universidad Austral'
       )
-      ggsave(file, plot = grafico_estatico_descarga, width = 10, height = 6, dpi = 120, device = "png")
+      ggsave(file, plot = grafico_estatico_descarga, width = 11, height = 8.5, dpi = 150, device = "png")
+    }
+  )
+  
+  # Manejador de descarga estática para el boxplot anual
+  output$btn_descargar_boxplot <- downloadHandler(
+    filename = function() {
+      paste("distribucion_anual_", input$selector_variable_boxplot, "_", Sys.Date(), ".png", sep = "")
+    },
+    content = function(file) {
+      variable_seleccionada <- input$selector_variable_boxplot
+      
+      grafico_boxplot_estatico_descarga <- rv$data |> 
+        mutate(anio = factor(year(Bimestre))) |> 
+        ggplot(aes(x = anio, y = .data[[variable_seleccionada]])) +
+        geom_boxplot(fill = "#7D212B", alpha = 0.7, color = "#401015") +
+        labs(
+          x = 'Año',
+          y = variable_seleccionada,
+          caption = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'
+        ) +
+        scale_y_continuous(breaks = scales::breaks_width(20)) +
+        theme_bw() +
+        theme(
+          plot.caption = element_text(hjust = 0, size = 9, color = "gray20"),
+          axis.title = element_text(face = "bold", color = "#333333")
+        )
+      
+      ggsave(file, plot = grafico_boxplot_estatico_descarga, width = 10, height = 6, dpi = 150, device = "png")
     }
   )
 }

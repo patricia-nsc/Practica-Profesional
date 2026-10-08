@@ -477,10 +477,21 @@ graficar_eventos_app <- function(data,
         xmax    = mover_meses(fecha,  ancho_sombreado),
         ymin    = y_min,
         ymax    = y_max,
-        # Número: a la derecha de la raya, a mitad de camino del borde del sombreado
         x_texto = fecha + round(ancho_sombreado * 30.4 / 2),
         Y_pos   = y_max - 8
       )
+    
+    texto_hitos <- paste(
+      paste0(hitos_proc$Tag, ": ", hitos_proc$Descripcion),
+      collapse = "\n"
+    )
+    leyenda_completa <- paste("Eventos:\n", texto_hitos, sep = "")
+  } else {
+    leyenda_completa <- ""
+  }
+  
+  if (!is.null(fuente) && fuente != "") {
+    leyenda_completa <- if (leyenda_completa == "") fuente else paste0(leyenda_completa, "\n", fuente)
   }
   
   cols_a_pivotear <- intersect(series_seleccionadas, names(data))
@@ -530,11 +541,13 @@ graficar_eventos_app <- function(data,
       limits = c(y_min, y_max),
       expand = c(0, 0)
     ) +
-    ggplot2::labs(x = "Tiempo", y = "Índice") +
+    ggplot2::labs(x = "Tiempo", y = "Índice", caption = leyenda_completa) +
     ggplot2::theme_bw() +
     ggplot2::theme(
       legend.title = ggplot2::element_blank(),
       legend.position = "bottom",
-      panel.grid.minor = ggplot2::element_blank()
+      panel.grid.minor = ggplot2::element_blank(),
+      plot.caption = ggplot2::element_text(hjust = 0, size = 8, color = "gray20", lineheight = 1.2),
+      plot.caption.position = "plot"
     )
 }
