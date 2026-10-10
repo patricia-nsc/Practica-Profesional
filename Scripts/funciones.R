@@ -451,9 +451,26 @@ graficar_eventos_app <- function(data,
                                  colores_series = c("Ag Barometer Austral" = "#8FB933"),
                                  fuente = NULL) {  
   
-  y_min <- 30
-  y_max <- 190
-  tcol  <- rlang::as_name(rlang::ensym(tiempo_col))
+  tcol <- rlang::as_name(rlang::ensym(tiempo_col))
+  
+  # Datos con columna 'fecha' tipo Date primero
+  data <- data |> dplyr::mutate(fecha = as.Date(.data[[tcol]]))
+  
+  cols_a_pivotear <- intersect(series_seleccionadas, names(data))
+  if (length(cols_a_pivotear) == 0) cols_a_pivotear <- "Ag Barometer Austral"
+  
+  data_larga <- data |>  
+    tidyr::pivot_longer(
+      cols = dplyr::all_of(cols_a_pivotear),
+      names_to = "Indice",
+      values_to = "valor"
+    )
+  
+  max_valor_datos <- max(data_larga$valor, na.rm = TRUE)
+  min_valor_datos <- min(data_larga$valor, na.rm = TRUE)
+  
+  y_min <- min(30, floor(min_valor_datos / 10) * 10 - 10)
+  y_max <- max(190, ceiling(max_valor_datos / 10) * 10 + 10)
   
   # Desplaza fechas n meses (n puede ser negativo)
   mover_meses <- function(f, n) {
@@ -461,9 +478,6 @@ graficar_eventos_app <- function(data,
       as.character(seq(x, by = paste(n, "months"), length.out = 2)[2])
     }, character(1)))
   }
-  
-  # Datos con columna 'fecha' tipo Date (evita problemas de yearmonth en plotly)
-  data <- data |> dplyr::mutate(fecha = as.Date(.data[[tcol]]))
   
   # Hitos
   hitos_proc <- NULL
@@ -493,16 +507,6 @@ graficar_eventos_app <- function(data,
   if (!is.null(fuente) && fuente != "") {
     leyenda_completa <- if (leyenda_completa == "") fuente else paste0(leyenda_completa, "\n", fuente)
   }
-  
-  cols_a_pivotear <- intersect(series_seleccionadas, names(data))
-  if (length(cols_a_pivotear) == 0) cols_a_pivotear <- "Ag Barometer Austral"
-  
-  data_larga <- data |>  
-    tidyr::pivot_longer(
-      cols = dplyr::all_of(cols_a_pivotear),
-      names_to = "Indice",
-      values_to = "valor"
-    )
   
   p <- ggplot2::ggplot(
     data_larga,
