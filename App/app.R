@@ -11,6 +11,9 @@ library(plotly)
 library(ggplot2)
 library(lubridate)
 
+# Configurar locale para meses en español
+Sys.setlocale("LC_TIME", "es_ES.UTF-8")
+
 # ----------------------------------------------------------- #
 # Datos
 # ----------------------------------------------------------- #
@@ -63,15 +66,16 @@ generar_fila_metrica <- function(nombre_variable, valor_actual, fecha_actual_str
   )
 }
 
-# Las tres filas de métricas con su título integrado estilo variaciones
+# Las tres filas de métricas con su título interno en negro y negrita
 filas_metricas <- function(titulo, actual, anterior) {
   f_act <- formatear_fecha_amigable(actual$Bimestre)
   f_ant <- formatear_fecha_amigable(anterior$Bimestre)            
   
-  tagList(div(style = "font-size: 1.1rem; font-weight: 700; color: #7D212B; margin-bottom: 18px; letter-spacing: 0.2px;", titulo),           
-          generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
-                                                                               generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
-                                                                               generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
+  tagList(
+    div(style = "font-size: 1.1rem; font-weight: 700; color: #111111; margin-bottom: 18px; letter-spacing: 0.2px;", titulo),            
+    generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
+    generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
+    generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
   )
 }
 
@@ -93,6 +97,11 @@ buscar_interanual <- function(df) {
 
 # Boxplot estático (se usa en pantalla y en la descarga)
 armar_boxplot <- function(datos, variable, con_tooltip = TRUE) {
+  if (nrow(datos) == 0) {
+    p <- ggplot() + labs(x = "Año", y = variable, caption = "Sin datos en el rango seleccionado") + theme_bw()
+    return(p)
+  }
+  
   df <- datos |> mutate(anio = factor(year(Bimestre)))
   
   if (con_tooltip) {
@@ -123,7 +132,7 @@ armar_boxplot <- function(datos, variable, con_tooltip = TRUE) {
 ####################################################
 
 ui <- page_navbar(
-  title = span(style = "font-weight: bold;", "Ag Barometer Austral  |  SIVA"),
+  title = span(style = "font-weight: bold; letter-spacing: 0.5px;", "Ag Barometer Austral  |  SIVA"),
   bg = "#7D212B",
   theme = bs_theme(
     version = 5,
@@ -140,91 +149,111 @@ ui <- page_navbar(
         left: 0 !important;
         width: 100% !important;
         z-index: 1030 !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       }
-      /* Configuración general del cuerpo */
+      /* Fondo general */
       body {
-        background-color: #F8F9FA;
+        background: linear-gradient(135deg, #F4F6F9 0%, #E9ECEF 100%);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
       }
-      /* Espaciado superior para que las pestañas no queden debajo de la barra fija */
+      /* Espaciado superior */
       .tab-content {
         margin-top: 85px !important;
         padding-top: 20px !important;
         padding-bottom: 40px !important;
       }
-      /* Estilo general para TODAS las tarjetas con efecto de salto (hover) */
+      /* ESTILO TARJETAS */
       .card {
-        border: none;
-        border-radius: 14px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        border: 1px solid rgba(0,0,0,0.06);
-        background: #ffffff;
-        padding: 24px;
+        border: 1px solid rgba(125, 33, 43, 0.12);
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+        padding: 26px 24px 24px 24px;
         margin-bottom: 30px !important;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+        position: relative;
       }
       .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(125, 33, 43, 0.08), 0 4px 12px rgba(0,0,0,0.05);
+        border-color: rgba(125, 33, 43, 0.3);
       }
-      /* Estilo sutil tipo referencia para las tarjetas de variaciones */
       .card-sutil {
-        background: #ffffff;
-        border-radius: 14px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-        border: 1px solid rgba(0,0,0,0.06);
-        padding: 24px;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
+        border: 1px solid rgba(125, 33, 43, 0.12);
+        padding: 26px 24px 24px 24px;
         margin-bottom: 30px;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+        position: relative;
       }
       .card-sutil:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(125, 33, 43, 0.08), 0 4px 12px rgba(0,0,0,0.05);
+        border-color: rgba(125, 33, 43, 0.3);
       }
-      /* Títulos internos para las tarjetas estándar (sin bloque oscuro) */
+      /* Títulos internos de tarjetas en negro y negrita */
       .card-title-custom {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         font-weight: 700;
+        color: #111111;
+        margin-bottom: 20px;
+        letter-spacing: 0.3px;
+        border-bottom: 2px solid rgba(125, 33, 43, 0.08);
+        padding-bottom: 10px;
+      }
+      /* Títulos de sección en bordo, negrita y grandes (sin nubecita) */
+      .section-title-clean {
+        font-size: 1.35rem;
+        font-weight: 800;
         color: #7D212B;
-        margin-bottom: 18px;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.5px;
+        margin-top: 10px;
+        margin-bottom: 15px;
       }
       .btn-custom-primary {
         background-color: #73A800;
         color: white;
         border: none;
         font-weight: 600;
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 10px 20px;
-        transition: background-color 0.2s;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(115, 168, 0, 0.25);
       }
       .btn-custom-primary:hover {
         background-color: #5E8700;
         color: white;
+        box-shadow: 0 6px 16px rgba(115, 168, 0, 0.4);
       }
       .btn-custom-secondary {
         background-color: #F8D7DA;
         color: #721C24;
         border: 1px solid #F5C6CB;
         font-weight: 600;
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 8px 15px;
-        transition: background-color 0.2s;
+        transition: all 0.2s ease;
       }
       .btn-custom-secondary:hover {
         background-color: #F1B0B7;
         color: #491217;
       }
       .welcome-modal .modal-content {
-        border-radius: 16px;
+        border-radius: 18px;
         border: 2px solid #7D212B;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
       }
       .metric-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 12px 0;
-        border-bottom: 1px solid #f4f6f8;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
       }
       .metric-row:last-child {
         border-bottom: none;
@@ -248,36 +277,37 @@ ui <- page_navbar(
       .pill-current {
         background: #191919;
         color: white;
-        padding: 3px 10px;
-        border-radius: 6px;
+        padding: 4px 10px;
+        border-radius: 8px;
         font-weight: 600;
         font-size: 0.85rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       }
       .pill-past {
         background: #e9ecef;
         color: #212529;
-        padding: 3px 10px;
-        border-radius: 6px;
+        padding: 4px 10px;
+        border-radius: 8px;
         font-weight: 600;
         font-size: 0.85rem;
       }
       .badge-growth-green {
-        background-color: rgba(115, 168, 0, 0.18);
+        background-color: rgba(115, 168, 0, 0.15);
         color: #4A7000;
-        border: 1px solid rgba(115, 168, 0, 0.5);
+        border: 1px solid rgba(115, 168, 0, 0.4);
         padding: 4px 12px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-weight: 700;
         font-size: 0.88rem;
         min-width: 80px;
         text-align: center;
       }
       .badge-growth-red {
-        background-color: rgba(217, 83, 79, 0.18);
+        background-color: rgba(217, 83, 79, 0.15);
         color: #C9302C;
-        border: 1px solid rgba(217, 83, 79, 0.5);
+        border: 1px solid rgba(217, 83, 79, 0.4);
         padding: 4px 12px;
-        border-radius: 6px;
+        border-radius: 8px;
         font-weight: 700;
         font-size: 0.88rem;
         min-width: 80px;
@@ -314,7 +344,7 @@ ui <- page_navbar(
         div(
           class = "card",
           div(class = "card-title-custom", "Ingresar nuevo registro"),
-          p(style = "font-size: 0.9rem; color: #666;",
+          p(style = "font-size: 0.9rem; color: #555;",
             "Ingrese los datos del nuevo relevamiento para actualizar automáticamente el sistema."),
           fluidRow(
             column(
@@ -351,7 +381,8 @@ ui <- page_navbar(
         width = 8,
         div(
           class = "card",
-          div(class = "card-title-custom", "Vista Previa"),
+          div(class = "card-title-custom", "Vista previa de los últimos registros"),
+          p(style = "font-size: 0.85rem; color: #666; margin-bottom: 10px;", "Haga clic en una fila para editarla."),
           DTOutput("tabla_datos")
         )
       )
@@ -363,13 +394,23 @@ ui <- page_navbar(
   # ------------------------------------------------------------- #
   nav_panel(
     title = "Tablero Analítico",
+    
+    # PERÍODO: Slider horizontal sin tarjeta de fondo, ancho y limpio arriba de todo
     fluidRow(
       column(
         width = 12,
         div(
-          style = "padding: 10px 0px 15px 0px;",
-          h4(style = "color: #7D212B; font-weight: bold; letter-spacing: 0.5px;", "Síntesis de Variaciones")
+          style = "display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 25px; padding: 0 10px;",
+          tags$span(style = "font-size: 0.85rem; font-weight: 700; color: #7D212B; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;", "Período:"),
+          div(style = "flex-grow: 1; max-width: 800px;", uiOutput("selector_rango_fechas_ui"))
         )
+      )
+    ),
+    
+    fluidRow(
+      column(
+        width = 12,
+        div(class = "section-title-clean", "Síntesis de Variaciones")
       )
     ),
     
@@ -395,11 +436,7 @@ ui <- page_navbar(
     fluidRow(
       column(
         width = 12,
-        div(
-          style = "padding: 10px 0px 5px 0px;",
-          h4(style = "color: #7D212B; font-weight: bold; letter-spacing: 0.5px;",
-             "Evolución del Ag Barometer Austral y Eventos")
-        )
+        div(class = "section-title-clean", "Evolución del Ag Barometer Austral y Eventos")
       )
     ),
     fluidRow(
@@ -437,7 +474,7 @@ ui <- page_navbar(
           class = "card",
           div(
             style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;",
-            div(class = "card-title-custom", style = "margin-bottom: 0;", "Gráfico dinámico"),
+            div(class = "card-title-custom", style = "margin-bottom: 0; border-bottom: none; padding-bottom: 0;", "Gráfico"),
             div(
               actionButton("btn_zoom_grafico", "", icon = icon("search-plus"), class = "btn btn-sm btn-outline-secondary me-1", title = "Zoom"),
               downloadButton("btn_descargar_grafico", "", class = "btn btn-sm btn-outline-secondary", title = "Descargar")
@@ -458,11 +495,7 @@ ui <- page_navbar(
     fluidRow(
       column(
         width = 12,
-        div(
-          style = "padding: 15px 0px 5px 0px;",
-          h4(style = "color: #7D212B; font-weight: bold; letter-spacing: 0.5px;",
-             "Distribución de los indicadores por año")
-        )
+        div(class = "section-title-clean", "Distribución de los indicadores por año")
       )
     ),
     fluidRow(
@@ -470,7 +503,7 @@ ui <- page_navbar(
         width = 4,
         div(
           class = "card",
-          div(class = "card-title-custom", "Opciones del Boxplot"),
+          div(class = "card-title-custom", "Opciones"),
           selectInput("selector_variable_boxplot", "Seleccionar indicador:",
                       choices = c("Ag Barometer Austral" = "Ag Barometer Austral",
                                   "Condiciones presentes" = "Condiciones presentes",
@@ -484,7 +517,7 @@ ui <- page_navbar(
           class = "card",
           div(
             style = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;",
-            div(class = "card-title-custom", style = "margin-bottom: 0;", "Gráfico de distribución anual"),
+            div(class = "card-title-custom", style = "margin-bottom: 0; border-bottom: none; padding-bottom: 0;", "Gráfico"),
             div(
               actionButton("btn_zoom_boxplot", "", icon = icon("search-plus"), class = "btn btn-sm btn-outline-secondary me-1", title = "Zoom"),
               downloadButton("btn_descargar_boxplot", "", class = "btn btn-sm btn-outline-secondary", title = "Descargar")
@@ -537,8 +570,31 @@ server <- function(input, output, session) {
     }
   )
   
+  # UI dinámico para el slider de fechas horizontal con formato en español
+  output$selector_rango_fechas_ui <- renderUI({
+    df <- rv$data
+    if (nrow(df) == 0) return(NULL)
+    min_f <- min(df$Bimestre, na.rm = TRUE)
+    max_f <- max(df$Bimestre, na.rm = TRUE)
+    
+    sliderInput("rango_periodo", label = NULL,
+                min = min_f, max = max_f,
+                value = c(min_f, max_f),
+                timeFormat = "%b %y",
+                width = "100%")
+  })
+  
+  # Datos filtrados por el rango de fechas seleccionado en el tablero
+  datos_filtrados <- reactive({
+    df <- rv$data %>% arrange(Bimestre)
+    rango <- input$rango_periodo
+    if (is.null(rango)) return(df)
+    
+    df %>% filter(Bimestre >= rango[1] & Bimestre <= rango[2])
+  })
+  
   # ----------------------------------------------------------- #
-  # Alta y baja de registros
+  # Alta, baja y edición de registros
   # ----------------------------------------------------------- #
   
   observeEvent(input$btn_agregar, {
@@ -546,9 +602,9 @@ server <- function(input, output, session) {
     anio_val <- input$input_anio
     nueva_fecha <- as.Date(sprintf("%d-%02d-01", as.integer(anio_val), as.integer(mes_val)))
     
+    # Verificar si ya existe para editar en lugar de duplicar si viene de edición
     if (nueva_fecha %in% rv$data$Bimestre) {
-      showNotification("¡Atención! Ya existe un registro para este período.", type = "warning", duration = 4)
-      return()
+      rv$data <- rv$data %>% filter(Bimestre != nueva_fecha)
     }
     
     nueva_fila <- data.frame(
@@ -560,7 +616,7 @@ server <- function(input, output, session) {
     )
     
     rv$data <- bind_rows(rv$data, nueva_fila) %>% arrange(Bimestre)
-    showNotification("¡Nueva fila agregada y vista previa actualizada con éxito!", type = "message", duration = 3)
+    showNotification("¡Registro guardado y vista previa actualizada con éxito!", type = "message", duration = 3)
   })
   
   observeEvent(input$btn_eliminar, {
@@ -588,48 +644,94 @@ server <- function(input, output, session) {
     }
   })
   
+  # Vista previa: últimos 7 registros, sin paginación ni textos de entrada
   output$tabla_datos <- renderDT({
     df_mostrar <- rv$data %>%
       arrange(Bimestre) %>%
-      tail(3) %>%
+      tail(7) %>%
       mutate(Bimestre = format(Bimestre, "%Y-%m"))
     
     datatable(
       df_mostrar,
       options = list(
-        dom = "tip",
-        pageLength = 3,
+        dom = "t",
+        pageLength = 7,
+        ordering = FALSE,
         language = list(url = "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json")
       ),
-      rownames = FALSE
+      rownames = FALSE,
+      selection = "none"
     )
   })
   
+  # Preguntar al hacer clic en una fila si se desea editar
+  observeEvent(input$tabla_datos_cell_clicked, {
+    clic <- input$tabla_datos_cell_clicked
+    if (is.null(clic) || length(clic) == 0 || is.null(clic$row)) return()
+    
+    row_idx <- clic$row
+    
+    df_mostrar <- rv$data %>%
+      arrange(Bimestre) %>%
+      tail(7)
+    
+    fila_sel <- df_mostrar[row_idx, ]
+    
+    showModal(modalDialog(
+      title = span(style = "color: #7D212B; font-weight: bold;", "Confirmar edición"),
+      p(sprintf("¿Está seguro de que desea editar el registro correspondiente a %s?", format(fila_sel$Bimestre, "%Y-%m"))),
+      footer = tagList(
+        modalButton("Cancelar"),
+        actionButton("btn_confirmar_edicion", "Sí, editar", class = "btn btn-custom-primary")
+      ),
+      easyClose = TRUE
+    ))
+    
+    # Guardar temporalmente la fila seleccionada para cargarla al confirmar
+    rv$fila_a_editar <- fila_sel
+  })
+  
+  observeEvent(input$btn_confirmar_edicion, {
+    removeModal()
+    fila <- rv$fila_a_editar
+    if (!is.null(fila)) {
+      mes_num <- as.numeric(format(fila$Bimestre, "%m"))
+      anio_num <- as.numeric(format(fila$Bimestre, "%Y"))
+      updateSelectInput(session, "input_mes", selected = mes_num)
+      updateNumericInput(session, "input_anio", value = anio_num)
+      updateNumericInput(session, "input_agbarometer", value = fila$`Ag Barometer Austral`)
+      updateNumericInput(session, "input_condiciones", value = fila$`Condiciones presentes`)
+      updateNumericInput(session, "input_expectativas", value = fila$`Expectativas futuras`)
+      
+      showNotification("Los datos se han cargado en el formulario de la izquierda para su edición.", type = "message", duration = 4)
+    }
+  })
+  
   # ----------------------------------------------------------- #
-  # Tarjetas de variaciones
+  # Tarjetas de variaciones (usando datos_filtrados)
   # ----------------------------------------------------------- #
   
   output$tarjeta_variaciones_bimestrales <- renderUI({
-    df <- rv$data %>% arrange(Bimestre)
+    df <- datos_filtrados()
     n <- nrow(df)
     
     if (n < 2) {
       return(div(style = "padding: 10px; text-align: center; color: #666; font-size: 0.9rem;",
-                 "Se requieren al menos dos registros."))
+                 "Se requieren al menos dos registros en el período seleccionado."))
     }
     
     filas_metricas("Variaciones bimestrales", df[n, ], df[n - 1, ])
   })
   
   output$tarjeta_variaciones_interanuales <- renderUI({
-    df <- rv$data %>% arrange(Bimestre) %>% mutate(Bimestre = as.Date(Bimestre))
+    df <- datos_filtrados() %>% mutate(Bimestre = as.Date(Bimestre))
     if (nrow(df) == 0) return(NULL)
     
     anterior <- buscar_interanual(df)
     
     if (is.null(anterior)) {
       return(div(style = "padding: 10px; text-align: center; color: #666; font-size: 0.9rem;",
-                 "Sin registros interanuales previos para este período."))
+                 "Sin registros interanuales previos para el último punto del período seleccionado."))
     }
     
     filas_metricas("Variaciones interanuales", df[nrow(df), ], anterior)
@@ -690,12 +792,12 @@ server <- function(input, output, session) {
   })
   
   # ----------------------------------------------------------- #
-  # Gráfico de evolución
+  # Gráfico de evolución (usando datos_filtrados)
   # ----------------------------------------------------------- #
   
   armar_grafico_estatico <- function() {
     graficar_eventos_app(
-      data = rv$data |> mutate(Bimestre = tsibble::yearmonth(Bimestre)),
+      data = datos_filtrados() |> mutate(Bimestre = tsibble::yearmonth(Bimestre)),
       elecciones_df = eventos_reactivos(),
       ancho_sombreado = input$ancho_sombra,
       tiempo_col = Bimestre,
@@ -746,11 +848,11 @@ server <- function(input, output, session) {
   })
   
   # ----------------------------------------------------------- #
-  # Boxplot anual
+  # Boxplot anual (usando datos_filtrados)
   # ----------------------------------------------------------- #
   
   objeto_boxplot_reactivo <- reactive({
-    ggplotly(armar_boxplot(rv$data, input$selector_variable_boxplot, con_tooltip = TRUE),
+    ggplotly(armar_boxplot(datos_filtrados(), input$selector_variable_boxplot, con_tooltip = TRUE),
              tooltip = "text") %>%
       layout(
         xaxis = list(zeroline = FALSE),
@@ -813,7 +915,7 @@ server <- function(input, output, session) {
       paste0("distribucion_anual_", input$selector_variable_boxplot, "_", Sys.Date(), ".png")
     },
     content = function(file) {
-      p <- armar_boxplot(rv$data, input$selector_variable_boxplot, con_tooltip = FALSE)
+      p <- armar_boxplot(datos_filtrados(), input$selector_variable_boxplot, con_tooltip = FALSE)
       ggsave(file, plot = p, width = 10, height = 6, dpi = 150, device = "png")
     }
   )
