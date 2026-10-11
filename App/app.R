@@ -69,10 +69,10 @@ generar_fila_metrica <- function(nombre_variable, valor_actual, fecha_actual_str
 # Las tres filas de métricas con su título interno en negro y negrita
 filas_metricas <- function(titulo, actual, anterior) {
   f_act <- formatear_fecha_amigable(actual$Bimestre)
-  f_ant <- formatear_fecha_amigable(anterior$Bimestre)            
+  f_ant <- formatear_fecha_amigable(anterior$Bimestre)         
   
   tagList(
-    div(style = "font-size: 1.1rem; font-weight: 700; color: #111111; margin-bottom: 18px; letter-spacing: 0.2px;", titulo),            
+    div(style = "font-size: 1.1rem; font-weight: 700; color: #111111; margin-bottom: 18px; letter-spacing: 0.2px;", titulo),         
     generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
     generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
     generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
@@ -96,7 +96,8 @@ buscar_interanual <- function(df) {
 }
 
 # Boxplot estático (se usa en pantalla y en la descarga)
-armar_boxplot <- function(datos, variable, con_tooltip = TRUE) {
+# titulo: opcional; si es NULL o vacío, no se agrega título
+armar_boxplot <- function(datos, variable, con_tooltip = TRUE, titulo = NULL) {
   if (nrow(datos) == 0) {
     p <- ggplot() + labs(x = "Año", y = variable, caption = "Sin datos en el rango seleccionado") + theme_bw()
     return(p)
@@ -112,12 +113,12 @@ armar_boxplot <- function(datos, variable, con_tooltip = TRUE) {
     p <- ggplot(df, aes(x = anio, y = .data[[variable]]))
   }
   
-  p +
+  p <- p +
     geom_boxplot(fill = "#7D212B", alpha = 0.7, color = "#401015") +
     labs(
       x = "Año",
       y = variable,
-      caption = "Fuente: Elaboración propia en base a datos de la Universidad Austral"
+      caption = "Fuente: Elaboración en base a datos de la Universidad Austral"
     ) +
     scale_y_continuous(breaks = scales::breaks_width(20)) +
     theme_bw() +
@@ -125,6 +126,13 @@ armar_boxplot <- function(datos, variable, con_tooltip = TRUE) {
       plot.caption = element_text(hjust = 0, size = 9, color = "gray20"),
       axis.title = element_text(face = "bold", color = "#333333")
     )
+  
+  # Título opcional: a la izquierda, en negro y sin negrita
+  if (!is.null(titulo) && titulo != "") {
+    p <- p + labs(title = titulo) +
+      theme(plot.title = element_text(face = "plain", size = 14, hjust = 0, color = "black"))
+  }
+  p
 }
 
 ####################################################
@@ -444,6 +452,7 @@ ui <- page_navbar(
         width = 4,
         div(
           class = "card",
+          style = "overflow-x: hidden;",
           div(class = "card-title-custom", "Opciones de gráfico y eventos"),
           checkboxGroupInput("series_sel", "Seleccionar Series:",
                              choices = c("Ag Barometer Austral", "Condiciones presentes", "Expectativas futuras"),
@@ -462,7 +471,11 @@ ui <- page_navbar(
             textInput("color_exp", "Color Expectativas Futuras:", value = "#567E00")
           ),
           
-          sliderInput("ancho_sombra", "Ancho del sombreado:", min = 1, max = 6, value = 3, step = 1),
+          # El slider arranca desde 0
+          sliderInput("ancho_sombra", "Ancho del sombreado:", min = 0, max = 6, value = 3, step = 1),
+          hr(),
+          # Campo para título opcional de descarga (vacío = sin título), arriba de la cantidad de eventos
+          textInput("titulo_descarga_grafico", "Título del gráfico (para descarga):", value = ""),
           hr(),
           numericInput("cantidad_eventos", "Cantidad de eventos a mostrar:", value = 2, min = 0, max = 10, step = 1),
           uiOutput("contenedor_eventos_dinamicos")
@@ -508,7 +521,10 @@ ui <- page_navbar(
                       choices = c("Ag Barometer Austral" = "Ag Barometer Austral",
                                   "Condiciones presentes" = "Condiciones presentes",
                                   "Expectativas futuras" = "Expectativas futuras"),
-                      selected = "Ag Barometer Austral")
+                      selected = "Ag Barometer Austral"),
+          hr(),
+          # Campo para título opcional de descarga del boxplot (vacío = sin título)
+          textInput("titulo_descarga_boxplot", "Título del gráfico (para descarga):", value = "")
         )
       ),
       column(
@@ -567,7 +583,8 @@ server <- function(input, output, session) {
           check.names = FALSE
         )
       }
-    }
+    },
+    fila_a_editar = NULL
   )
   
   # UI dinámico para el slider de fechas horizontal con formato en español
@@ -697,6 +714,7 @@ server <- function(input, output, session) {
     if (!is.null(fila)) {
       mes_num <- as.numeric(format(fila$Bimestre, "%m"))
       anio_num <- as.numeric(format(fila$Bimestre, "%Y"))
+      
       updateSelectInput(session, "input_mes", selected = mes_num)
       updateNumericInput(session, "input_anio", value = anio_num)
       updateNumericInput(session, "input_agbarometer", value = fila$`Ag Barometer Austral`)
@@ -764,28 +782,39 @@ server <- function(input, output, session) {
     })
   })
   
+  # Procesamiento de eventos: filtrados por rango, ordenados cronológicamente y enumerados solos
   eventos_reactivos <- reactive({
     num_eventos <- input$cantidad_eventos
     if (is.null(num_eventos) || is.na(num_eventos) || num_eventos <= 0) return(NULL)
     
     lista_eventos <- list()
+    rango <- input$rango_periodo
     
     for (i in seq_len(num_eventos)) {
       desc_val <- input[[paste0("desc_evento_", i)]]
       fecha_val <- input[[paste0("fecha_evento_", i)]]
       
       if (!is.null(desc_val) && desc_val != "" && !is.null(fecha_val)) {
-        lista_eventos[[length(lista_eventos) + 1]] <- data.frame(
-          Bimestre = tsibble::yearmonth(fecha_val),
-          Tag = "",
-          Descripcion = desc_val,
-          stringsAsFactors = FALSE
-        )
+        f_date <- as.Date(paste0(fecha_val, "-01"))
+        # Filtrar si está dentro del rango temporal seleccionado
+        if (is.null(rango) || (f_date >= rango[1] && f_date <= rango[2])) {
+          lista_eventos[[length(lista_eventos) + 1]] <- data.frame(
+            Bimestre = tsibble::yearmonth(f_date),
+            Tag = "",
+            FechaReal = f_date,
+            Descripcion = desc_val,
+            stringsAsFactors = FALSE
+          )
+        }
       }
     }
     
     if (length(lista_eventos) > 0) {
-      do.call(rbind, lista_eventos)
+      df_ev <- do.call(rbind, lista_eventos)
+      # Ordenar cronológicamente y asignar tag secuencial
+      df_ev <- df_ev %>% arrange(FechaReal) %>% mutate(Tag = as.character(row_number()))
+      df_ev$FechaReal <- NULL
+      df_ev
     } else {
       NULL
     }
@@ -795,8 +824,8 @@ server <- function(input, output, session) {
   # Gráfico de evolución (usando datos_filtrados)
   # ----------------------------------------------------------- #
   
-  armar_grafico_estatico <- function() {
-    graficar_eventos_app(
+  armar_grafico_estatico <- function(titulo_personalizado = NULL) {
+    p <- graficar_eventos_app(
       data = datos_filtrados() |> mutate(Bimestre = tsibble::yearmonth(Bimestre)),
       elecciones_df = eventos_reactivos(),
       ancho_sombreado = input$ancho_sombra,
@@ -809,13 +838,23 @@ server <- function(input, output, session) {
       ),
       fuente = "Fuente: Elaboración en base a datos de la Universidad Austral"
     )
+    
+    # Título opcional (solo descarga): a la izquierda, en negro y sin negrita
+    if (!is.null(titulo_personalizado) && titulo_personalizado != "") {
+      p <- p + labs(title = titulo_personalizado) + 
+        theme(plot.title = element_text(face = "plain", size = 14, hjust = 0, color = "black"))
+    }
+    p
   }
   
   objeto_grafico_reactivo <- reactive({
     ggplotly(armar_grafico_estatico(), tooltip = "text") %>%
       layout(
         hovermode = "x unified",
-        legend = list(orientation = "h", x = 0.2, y = -0.15),
+        # Leyenda anclada debajo del área del gráfico con margen inferior fijo,
+        # así el gráfico no se achica al agregar series
+        legend = list(orientation = "h", x = 0, y = -0.2, yanchor = "top"),
+        margin = list(b = 120),
         xaxis = list(zeroline = FALSE),
         yaxis = list(zeroline = FALSE)
       )
@@ -831,11 +870,9 @@ server <- function(input, output, session) {
     elementos_referencia <- list()
     
     if (!is.null(df_elecciones) && nrow(df_elecciones) > 0) {
-      df_ordenado <- df_elecciones %>% arrange(Bimestre) %>% mutate(Tag = as.character(row_number()))
-      
       texto_eventos <- paste0(
         "<b>Eventos:</b><br>",
-        paste(paste0(df_ordenado$Tag, ": ", df_ordenado$Descripcion), collapse = "<br>")
+        paste(paste0(df_elecciones$Tag, ": ", df_elecciones$Descripcion), collapse = "<br>")
       )
       elementos_referencia[[length(elementos_referencia) + 1]] <- HTML(texto_eventos)
       elementos_referencia[[length(elementos_referencia) + 1]] <- tags$br()
@@ -906,7 +943,9 @@ server <- function(input, output, session) {
       paste0("evolucion_ag_barometer_", Sys.Date(), ".png")
     },
     content = function(file) {
-      ggsave(file, plot = armar_grafico_estatico(), width = 11, height = 8.5, dpi = 150, device = "png")
+      # Si el campo de título está vacío, se descarga sin título
+      plot_a_descargar <- armar_grafico_estatico(titulo_personalizado = input$titulo_descarga_grafico)
+      ggsave(file, plot = plot_a_descargar, width = 11, height = 8.5, dpi = 150, device = "png")
     }
   )
   
@@ -915,7 +954,9 @@ server <- function(input, output, session) {
       paste0("distribucion_anual_", input$selector_variable_boxplot, "_", Sys.Date(), ".png")
     },
     content = function(file) {
-      p <- armar_boxplot(datos_filtrados(), input$selector_variable_boxplot, con_tooltip = FALSE)
+      # Si el campo de título está vacío, se descarga sin título
+      p <- armar_boxplot(datos_filtrados(), input$selector_variable_boxplot,
+                         con_tooltip = FALSE, titulo = input$titulo_descarga_boxplot)
       ggsave(file, plot = p, width = 10, height = 6, dpi = 150, device = "png")
     }
   )
