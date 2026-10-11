@@ -11,129 +11,42 @@ library(plotly)
 library(ggplot2)
 library(lubridate)
 
-# Configurar locale para meses en español
-Sys.setlocale("LC_TIME", "es_ES.UTF-8")
+
 
 # ----------------------------------------------------------- #
 # Datos
 # ----------------------------------------------------------- #
 
-ruta_data <- "../Datos/Procesados/agbarometer_ARG_imputado.xlsx"
+ruta_data <- "agbarometer_ARG_imputado.xlsx"
+
+
+
 
 # ----------------------------------------------------------- #
-# Funciones y path del logo
+# funciones y logo
 # ----------------------------------------------------------- #
 
-source("../Scripts/funciones.R")
+source("funciones_app.R")
 
-addResourcePath("logo_dir", "../Informe/Logos")
 
-# ----------------------------------------------------------- #
-# Funciones auxiliares (fuera del server)
-# ----------------------------------------------------------- #
+# Logo: se busca en app/www/ o en la carpeta de app.R, y se sirve SOLO esa imagen
+# (se copia a una carpeta temporal, así no se expone el resto del proyecto).
+archivo_logo <- "logo_austral_ceag.png"
+ruta_logo <- c(file.path("www", archivo_logo), archivo_logo)
+ruta_logo <- ruta_logo[file.exists(ruta_logo)][1]
 
-formatear_fecha_amigable <- function(fecha_date) {
-  meses_es <- c("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
-  m_idx <- as.numeric(format(fecha_date, "%m"))
-  anio_fmt <- format(fecha_date, "%y")
-  paste(meses_es[m_idx], anio_fmt)
+if (is.na(ruta_logo)) {
+  warning("No se encontró ", archivo_logo, " (buscado en www/ y en la carpeta de la app). Directorio actual: ", getwd())
+} else {
+  dir_logo <- file.path(tempdir(), "logo_siva")
+  dir.create(dir_logo, showWarnings = FALSE)
+  file.copy(ruta_logo, file.path(dir_logo, archivo_logo), overwrite = TRUE)
+  addResourcePath("logo_dir", dir_logo)
 }
 
-generar_fila_metrica <- function(nombre_variable, valor_actual, fecha_actual_str, valor_anterior, fecha_anterior_str) {
-  if (is.na(valor_actual) || is.na(valor_anterior)) {
-    variacion_pct <- 0
-    es_aumento <- TRUE
-  } else {
-    variacion_pct <- ((valor_actual - valor_anterior) / valor_anterior) * 100
-    es_aumento <- variacion_pct >= 0
-  }
-  
-  clase_badge <- if (es_aumento) "badge-growth-green" else "badge-growth-red"
-  signo_str <- if (es_aumento) "+" else ""
-  
-  div(
-    class = "metric-row",
-    div(class = "metric-label", nombre_variable),
-    div(
-      class = "metric-values",
-      tags$span(style = "font-size: 0.85rem; color: #111111; font-weight: 500;", fecha_actual_str),
-      div(class = "pill-current", round(valor_actual, 1)),
-      tags$span(style = "color: #333333; font-weight: 600;", "vs"),
-      tags$span(style = "font-size: 0.85rem; color: #111111; font-weight: 500;", fecha_anterior_str),
-      div(class = "pill-past", round(valor_anterior, 1)),
-      div(class = clase_badge, sprintf("%s%.2f%%", signo_str, variacion_pct))
-    )
-  )
-}
 
-# Las tres filas de métricas con su título interno en negro y negrita
-filas_metricas <- function(titulo, actual, anterior) {
-  f_act <- formatear_fecha_amigable(actual$Bimestre)
-  f_ant <- formatear_fecha_amigable(anterior$Bimestre)         
-  
-  tagList(
-    div(style = "font-size: 1.1rem; font-weight: 700; color: #111111; margin-bottom: 18px; letter-spacing: 0.2px;", titulo),         
-    generar_fila_metrica("Ag Barometer Austral", actual$`Ag Barometer Austral`, f_act, anterior$`Ag Barometer Austral`, f_ant),
-    generar_fila_metrica("Condiciones Presentes", actual$`Condiciones presentes`, f_act, anterior$`Condiciones presentes`, f_ant),
-    generar_fila_metrica("Expectativas Futuras", actual$`Expectativas futuras`, f_act, anterior$`Expectativas futuras`, f_ant)
-  )
-}
 
-# Fila del año anterior para el mismo mes (o NULL si no existe)
-buscar_interanual <- function(df) {
-  n <- nrow(df)
-  if (n == 0) return(NULL)
-  actual <- df[n, ]
-  anio_actual <- as.numeric(format(actual$Bimestre, "%Y"))
-  mes_actual <- as.numeric(format(actual$Bimestre, "%m"))
-  
-  previo <- df %>%
-    filter(as.numeric(format(Bimestre, "%Y")) == (anio_actual - 1) &
-             as.numeric(format(Bimestre, "%m")) == mes_actual)
-  
-  if (nrow(previo) == 0) return(NULL)
-  previo[1, ]
-}
 
-# Boxplot estático (se usa en pantalla y en la descarga)
-# titulo: opcional; si es NULL o vacío, no se agrega título
-armar_boxplot <- function(datos, variable, con_tooltip = TRUE, titulo = NULL) {
-  if (nrow(datos) == 0) {
-    p <- ggplot() + labs(x = "Año", y = variable, caption = "Sin datos en el rango seleccionado") + theme_bw()
-    return(p)
-  }
-  
-  df <- datos |> mutate(anio = factor(year(Bimestre)))
-  
-  if (con_tooltip) {
-    p <- ggplot(df, aes(x = anio, y = .data[[variable]],
-                        text = paste0("<b>Año: </b>", anio, "<br><b>", variable, ": </b>",
-                                      round(.data[[variable]], 1))))
-  } else {
-    p <- ggplot(df, aes(x = anio, y = .data[[variable]]))
-  }
-  
-  p <- p +
-    geom_boxplot(fill = "#7D212B", alpha = 0.7, color = "#401015") +
-    labs(
-      x = "Año",
-      y = variable,
-      caption = "Fuente: Elaboración en base a datos de la Universidad Austral"
-    ) +
-    scale_y_continuous(breaks = scales::breaks_width(20)) +
-    theme_bw() +
-    theme(
-      plot.caption = element_text(hjust = 0, size = 9, color = "gray20"),
-      axis.title = element_text(face = "bold", color = "#333333")
-    )
-  
-  # Título opcional: a la izquierda, en negro y sin negrita
-  if (!is.null(titulo) && titulo != "") {
-    p <- p + labs(title = titulo) +
-      theme(plot.title = element_text(face = "plain", size = 14, hjust = 0, color = "black"))
-  }
-  p
-}
 
 ####################################################
 # User Interface
@@ -603,11 +516,11 @@ server <- function(input, output, session) {
   
   # Datos filtrados por el rango de fechas seleccionado en el tablero
   datos_filtrados <- reactive({
-    df <- rv$data %>% arrange(Bimestre)
+    df <- rv$data |> arrange(Bimestre)
     rango <- input$rango_periodo
     if (is.null(rango)) return(df)
     
-    df %>% filter(Bimestre >= rango[1] & Bimestre <= rango[2])
+    df |> filter(Bimestre >= rango[1] & Bimestre <= rango[2])
   })
   
   # ----------------------------------------------------------- #
@@ -621,7 +534,7 @@ server <- function(input, output, session) {
     
     # Verificar si ya existe para editar en lugar de duplicar si viene de edición
     if (nueva_fecha %in% rv$data$Bimestre) {
-      rv$data <- rv$data %>% filter(Bimestre != nueva_fecha)
+      rv$data <- rv$data |> filter(Bimestre != nueva_fecha)
     }
     
     nueva_fila <- data.frame(
@@ -632,7 +545,7 @@ server <- function(input, output, session) {
       check.names = FALSE
     )
     
-    rv$data <- bind_rows(rv$data, nueva_fila) %>% arrange(Bimestre)
+    rv$data <- bind_rows(rv$data, nueva_fila) |> arrange(Bimestre)
     showNotification("¡Registro guardado y vista previa actualizada con éxito!", type = "message", duration = 3)
   })
   
@@ -656,16 +569,16 @@ server <- function(input, output, session) {
   observeEvent(input$btn_confirmar_eliminacion, {
     removeModal()
     if (nrow(rv$data) > 3) {
-      rv$data <- rv$data %>% arrange(Bimestre) %>% slice(-n())
+      rv$data <- rv$data |> arrange(Bimestre) |> slice(-n())
       showNotification("Se ha eliminado el último registro ingresado.", type = "error", duration = 3)
     }
   })
   
   # Vista previa: últimos 7 registros, sin paginación ni textos de entrada
   output$tabla_datos <- renderDT({
-    df_mostrar <- rv$data %>%
-      arrange(Bimestre) %>%
-      tail(7) %>%
+    df_mostrar <- rv$data |>
+      arrange(Bimestre) |>
+      tail(7) |>
       mutate(Bimestre = format(Bimestre, "%Y-%m"))
     
     datatable(
@@ -688,8 +601,8 @@ server <- function(input, output, session) {
     
     row_idx <- clic$row
     
-    df_mostrar <- rv$data %>%
-      arrange(Bimestre) %>%
+    df_mostrar <- rv$data |>
+      arrange(Bimestre) |>
       tail(7)
     
     fila_sel <- df_mostrar[row_idx, ]
@@ -742,7 +655,7 @@ server <- function(input, output, session) {
   })
   
   output$tarjeta_variaciones_interanuales <- renderUI({
-    df <- datos_filtrados() %>% mutate(Bimestre = as.Date(Bimestre))
+    df <- datos_filtrados() |> mutate(Bimestre = as.Date(Bimestre))
     if (nrow(df) == 0) return(NULL)
     
     anterior <- buscar_interanual(df)
@@ -812,7 +725,7 @@ server <- function(input, output, session) {
     if (length(lista_eventos) > 0) {
       df_ev <- do.call(rbind, lista_eventos)
       # Ordenar cronológicamente y asignar tag secuencial
-      df_ev <- df_ev %>% arrange(FechaReal) %>% mutate(Tag = as.character(row_number()))
+      df_ev <- df_ev |> arrange(FechaReal) |> mutate(Tag = as.character(row_number()))
       df_ev$FechaReal <- NULL
       df_ev
     } else {
@@ -848,7 +761,7 @@ server <- function(input, output, session) {
   }
   
   objeto_grafico_reactivo <- reactive({
-    ggplotly(armar_grafico_estatico(), tooltip = "text") %>%
+    ggplotly(armar_grafico_estatico(), tooltip = "text") |>
       layout(
         hovermode = "x unified",
         # Leyenda anclada debajo del área del gráfico con margen inferior fijo,
@@ -890,7 +803,7 @@ server <- function(input, output, session) {
   
   objeto_boxplot_reactivo <- reactive({
     ggplotly(armar_boxplot(datos_filtrados(), input$selector_variable_boxplot, con_tooltip = TRUE),
-             tooltip = "text") %>%
+             tooltip = "text") |>
       layout(
         xaxis = list(zeroline = FALSE),
         yaxis = list(zeroline = FALSE),
@@ -963,3 +876,5 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
+
