@@ -30,23 +30,37 @@ library(ggrepel)
 # Funcion 1
 # -------------------------------------------------------------- #
 
-# sirve para estimar la ccf entre las series pre-blanqueadas
 ccf_preblanqueadas <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = NULL, fuente = NULL) {
   
-  x_var <- enquo(x)
+  x_var <- enquo(x) 
   y_var <- enquo(y)
   
-  x_vec <- data |> pull({{ x }})
+  x_vec <- data |> pull({{ x }}) 
   y_vec <- data |> pull({{ y }})
   
-  pw <- prewhiten(x = x_vec, y = y_vec, lag.max = lag_max, plot = FALSE)
+  # 1. Limpieza de NAs con complete.cases (igual que en tu función 2)
+  validos <- complete.cases(x_vec, y_vec)
+  x_val <- x_vec[validos]
+  y_val <- y_vec[validos]
   
-  df <- data.frame(
-    lag = as.numeric(pw$ccf$lag),
-    ccf = as.numeric(pw$ccf$acf)
+  # 2. Ajustar ARIMA a X usando auto.arima (maneja p, d, q automáticamente)
+  fit_x <- auto.arima(x_val, ic = "aicc")
+  x_whitened <- residuals(fit_x)
+  
+  # 3. Usar exactamente el mismo modelo para Y
+  fit_y <- Arima(y_val, model = fit_x)
+  y_whitened <- residuals(fit_y)
+  
+  # 4. Calcular la FCCM (Cross-Correlation Function) entre los residuos
+  ccf_res <- ccf(x_whitened, y_whitened, lag.max = lag_max, plot = FALSE)
+  
+  # 5. Armar el dataframe para el gráfico
+  df_plot <- data.frame(
+    lag = as.numeric(ccf_res$lag),
+    ccf = as.numeric(ccf_res$acf)
   )
   
-  ic <- qnorm(0.975) / sqrt(pw$ccf$n.used) # 1.96/sqrt(# obs usadas en ccf)
+  ic <- qnorm(0.975) / sqrt(ccf_res$n.used) # 1.96 / sqrt(N)
   
   if (is.null(lab_x)) lab_x <- as_label(x_var)
   if (is.null(lab_y)) lab_y <- as_label(y_var)
@@ -54,7 +68,8 @@ ccf_preblanqueadas <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = N
   caption <- paste0("x = ", lab_x, "\ny = ", lab_y)
   if (!is.null(fuente)) caption <- paste0(caption, "\n", fuente)
   
-  ggplot(df, aes(lag, ccf)) +
+  # 6. Gráfico
+  p <- ggplot(df_plot, aes(lag, ccf)) +
     geom_col(width = 0.15, fill = "black") +
     geom_hline(yintercept = c(-ic, ic), linetype = "dashed", color = "#666666") +
     geom_hline(yintercept = 0, color = "black", linewidth = 0.6) +
@@ -66,7 +81,10 @@ ccf_preblanqueadas <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = N
       caption = caption
     ) +
     theme_bw()
+  
+  return(list(grafico = p, fit_x = fit_x, fit_y = fit_y, ccf_values = ccf_res))
 }
+
 
 
 
@@ -85,41 +103,45 @@ correlaciones_preblanqueadas <- function(df, y_col, x_cols, fuente = NULL) {
   # asumo que todas las X y la Y son no estacionarias, ents antes de 
   
   # Argumentos entrada:
-  # df: dataframe con las series
-  # y_col: str: nombre de la columna de la variable interes
-  # x_cols: names(df)[3:ncol(df)] , suponiendo q desde la col 3 hasta la ultima 
-  # son todas las covariables
-  # fuente: str (opcional): texto de la fuente, se agrega en una nueva linea
-  # debajo del caption del grafico
+    # df: dataframe con las series
+    # y_col: str: nombre de la columna de la variable interes
+    # x_cols: names(df)[3:ncol(df)] , suponiendo q desde la col 3 hasta la ultima 
+      # son todas las covariables
+    # fuente: str (opcional): texto de la fuente, se agrega en una nueva linea
+    # debajo del caption del grafico
   
   # Para obtener el grafico se hace: 
   # correlaciones_preblanqueadas(df, y_col, x_cols)$grafico
   
+  # creo lista en donde me voy a guardar cada X_j e Y preblanqueadas
   lista_preblanqueada <- list()
   y_original <- df[[y_col]]
   
   for (col in x_cols) {
     x <- df[[col]]
-    validos <- complete.cases(x, y_original)
+    validos <- complete.cases(x, y_original) # se queda con los x_t e y_t q no son NA
     
-    # ajusto ARIMA a X y uso eso misma transformacion para Y
-    fit_x <- auto.arima(x[validos], seasonal = TRUE, ic = "aicc")
+    # ajusto ARIMA a X 
+    fit_x <- auto.arima(x[validos], ic = "aicc")
     x_whitened <- residuals(fit_x)
     
+    # uso eso misma transformacion para Y
     fit_y <- Arima(y_original[validos], model = fit_x)
     y_whitened <- residuals(fit_y)
     
+    # me guardo la X y la Y que prebalanque con el mismo filtro
+    # en formato largo, index=Fecha, voy apilando
     lista_preblanqueada[[col]] <- tibble(
       Fecha = df$Fecha[validos],
       variable = col,
       x_pre = x_whitened,
       y_pre = y_whitened
     )
-  }
+  } 
   
   d_pre_long <- bind_rows(lista_preblanqueada)
   
-  # calculo correlaciones
+  # agrupo por variable y calculo cor(x, y)
   df_cor_pre <- d_pre_long |>
     group_by(variable) |>
     summarise(r = cor(x_pre, y_pre, method = "pearson")) |>

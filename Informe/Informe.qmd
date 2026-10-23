@@ -52,10 +52,10 @@ Dado que los resultados presentados se sustentan principalmente en técnicas exp
 
 
 
-***Palabras clave:*** confianza, productor agropecuario, series de tiempo, asociaciones, Argentina y Estados Unidos.
+***Palabras clave:*** confianza, productor agropecuario, series de tiempo, asociaciones, Argentina, Estados Unidos.
 
 
-***Keywords:*** Ag Barometer, farmers, time series, associations, economic variables, presidential elections*.
+***Keywords:** sentiment, farmers, time series, associations, Argentina, United States*.
 
 
 \newpage
@@ -140,6 +140,8 @@ d_homogeneo <- d |>
 
 
 
+
+
 ```{r}
 # importo funciones
 source("../Scripts/funciones.R")
@@ -151,7 +153,7 @@ source("../Scripts/funciones.R")
 
 
 
-Todo lo que hoy la raza humana ingiere se deriva, en su mayoría, de la agricultura o de la ganadería, es decir, del sector agropecuario. Su crecimiento incrementa las productividades, disminuye los precios de los alimentos, aumenta el empleo agrícola y controla la inflación, todo esto contribuye al progreso de la sociedad. Por estas razones, el sector agropecuario es fundamental para sociedades consideradas no desarrolladas (Bula, 2020). En este sentido, si bien el sector es importante, en cada país se desenvuelve en distintas condiciones debido a diferencias en sus entornos económicos, financieros y climáticos. Por tal motivo, resulta de interés disponer de datos que permitan realizar comparaciones de distintas economías.
+Todo lo que hoy la raza humana ingiere se deriva, en su mayoría, de la agricultura o de la ganadería, es decir, del sector agropecuario. Su crecimiento genera divisas, incrementa las productividades disminuyendo los precios de los alimentos y aumenta el empleo, todo esto contribuye al progreso de la sociedad. Por estas razones, el sector agropecuario es fundamental para sociedades consideradas no desarrolladas (Bula, 2020). En este sentido, si bien el sector es importante, en cada país se desenvuelve en distintas condiciones debido a diferencias en sus entornos económicos, financieros y climáticos. Por tal motivo, resulta de interés disponer de datos que permitan realizar comparaciones de distintas economías.
 
 
 
@@ -402,7 +404,7 @@ En primer lugar, se define a la *función de medias* del proceso como
 
 $$
 E(z_t) = \mu_t
-$$
+$$ {#eq-fc_de_medias}
 
 Cuando todas las variables $z_t$ tienen la misma media $\mu$, es decir, $E(z_t) = \mu \quad \forall t$, se dice que el proceso es *estacionario en media*.
 
@@ -410,7 +412,7 @@ Se denomina *función de variancias* del proceso a
 
 $$
 V(z_t) = \sigma^2_t
-$$
+$$ {#eq-fc_de_variancias}
 
 
 El proceso se dice *estacionario en variancia* cuando todas las variables tienen la misma variancia: $V(z_t) = \sigma^2 \quad \forall t$. O equivalentemente, cuando la variancia es constante a través del tiempo.
@@ -420,7 +422,7 @@ La dependencia lineal entre variables del proceso se representa mediante las fun
 
 $$
 \gamma(t, t+j) = cov(z_t, z_{t+j}) = E[(z_t - \mu_t)(z_{t+j} - \mu_{t+j})] \quad j \in \mathbb{Z}
-$$
+$$ {#eq-fc_de_covariancias}
 
 
 En particular, se verifica que: $\gamma(t,t) = cov(z_t, z_t) = V(z_t) = \sigma^2_t$.
@@ -429,7 +431,7 @@ Por último, se llama *función de autocorrelaciones* del proceso a
 
 $$
 \rho(t, t+j) = cor(z_t, z_{t+j}) = \dfrac{cov(z_t, z_{t+j})}{\sqrt{V(z_t)} \sqrt{V(z_{t+j})}} = \dfrac{\gamma(t, t+j)}{\sqrt{\gamma(t,t)} \sqrt{\gamma({t+j, t+j})}} = \dfrac{\gamma(t, t+j)}{\sigma_t \sigma_{t+j}}
-$$
+$$ {#eq-acf_general}
 
 
 Obtener la distribución de probabilidad del proceso, y así disponer de las características de cada variable (media, variancia, etc), es posible en ciertas situaciones, por ejemplo, con variables climáticas, se puede suponer que cada año se observa una realización del mismo proceso, o técnicas que pueden generarse en un laboratorio. Sin embargo, en muchas otras aplicaciones, como ocurre con las variables económicas, sólo se puede observar una realización del proceso. Por ejemplo, si se observa la tasa de inflación en Argentina elaborada por el INDEC, no es posible volver atrás en el tiempo para generar otra realización. Conceptualmente el proceso estocástico existe, pero no es posible obtener varias realizaciones del mismo. Para poder estimar las características de cada variable $z_t$ del proceso a partir de esta única realización, es necesario suponer que la evolución de estas observaciones es estable a lo largo del tiempo. Esto conduce al concepto de estacionariedad.
@@ -456,8 +458,16 @@ Dado que una serie de tiempo, en términos generales, es una secuencia ordenada 
 
 En Wei (2006, pp. 10-11) se define para un proceso estacionario a la:
 
--   *función de autocovariancia* a la anteriormente presentada $\gamma_k = cov(z_t, z_{t-k}) = E[(z_t - \mu)(z_{t-k} - \mu)]$
--   *función de autocorrelación* (FAC) a $\rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}$
+-   *función de autocovariancia*
+
+$$
+\gamma_k = cov(z_t, z_{t-k}) = E[(z_t - \mu)(z_{t-k} - \mu)]
+$$ {#eq-fc_autocov_estac}
+
+-   *función de autocorrelación* (FAC)
+$$
+\rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}
+$$ {#eq-acf}
 
 
 
@@ -470,7 +480,8 @@ Es trivial verificar que para procesos estacionarios:
 
 Además de la autocorrelación entre $z_t$ y $z_{t-k}$, también podría querer investigarse la autocorrelación entre $z_t$ y $z_{t-k}$ después de que la dependencia lineal de las variables $z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1}$ haya sido eliminada. Esta correlación condicional
 
-$$cor(z_t, z_{t-k} | z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1})$$
+$$cor(z_t, z_{t-k} | z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1})$$ {#eq-pacf}
+
 es denominada *función de autocorrelación parcial* (FACP).
 
 Se verifica que el primer coeficiente de la FAC es idéntico al primero de la FACP.
@@ -502,11 +513,11 @@ Es típico de los paseos aleatorios presentar largos períodos en los cuales se 
 
 
 
-De @eq-rw, se desprende que
+De la @eq-rw, se desprende que
 
 $$
 z_t - z_{t-1} = \mu + a_t
-$$
+$$ {#eq-dif_rw}
 
 
 si $z_t$ es un paseo aleatorio, entonces su primera diferencia ($z_t - z_{t-1}$) sigue un ruido blanco con media $\mu_a + \mu$.
@@ -528,19 +539,19 @@ Supóngase que se tienen dos procesos estacionarios $\{x_t\}$ e $\{y_t\}$. Se de
 
 $$
 \gamma_{xy}(t, t+k) = cov(x_t, y_{t+k}) \quad k \in \mathbb{Z}
-$$ {#eq-fc_cov}
+$$ {#eq-fc_cov_cruzada}
 
 
 
-La @eq-fc_cov mide la relación lineal entre las variables $x_t$ e $y_{t+k}$. 
+La @eq-fc_cov_cruzada mide la relación lineal entre las variables $x_t$ e $y_{t+k}$. 
 
 Se verifica que: $\gamma_{xy}(t, t+k) = \gamma_{yx}(t+k, t)$
 
-Dos procesos $\{x_t\}$ e $\{y_t\}$ son *conjuntamente estacionarios* si cada uno de ellos es estacionario y las covariancias cruzadas sólo dependen del retardo entre las variables, $k$, y no del instante inicial considerado. Entonces la @eq-fc_cov se simplifica a 
+Dos procesos $\{x_t\}$ e $\{y_t\}$ son *conjuntamente estacionarios* si cada uno de ellos es estacionario y las covariancias cruzadas sólo dependen del retardo entre las variables, $k$, y no del instante inicial considerado. Entonces la @eq-fc_cov_cruzada se simplifica a 
 
 $$
 \gamma_{xy}(t, t+k) = \gamma_{xy}(k) = cov(x_t, y_{t+k})
-$$
+$$ {#eq-fc_cov_cruz_simplificada}
 
 Esta función no varía al intercambiar las variables y el signo del retardo simultáneamente: $\gamma_{xy}(k) = \gamma_{yx}(-k)$
 
@@ -556,8 +567,8 @@ siendo $\sigma_x = \sqrt{V(x_t)}$ y $\sigma_y = \sqrt{V(y_t)}$.
 Esta función de la @eq-ccf es la estandarización de la función de covariancias. Según el valor de $k$ se observan distintos tipos de relaciones:
 
 -   Si $k=0$, $\rho_{xy}(0)$ mide la relación contemporánea o instantánea entre $x_t$ e $y_{t}$.
--   Si $k>0$, $\rho_{xy}(k)$ mide cómo los valores de $x_t$ influyen sobre los valores futuros $y_{t+k}$ (Peña, 2010, pp. 499-505).
--   Si $k<0$, $\rho_{xy}(k)$ representa cómo los valores pasados de $y_{t-k}$ influyen sobre los valores $x_{t}$.
+-   Si $k>0$, $\rho_{xy}(k)$ mide la asociación entre los valores de $x_t$ y los valores futuros $y_{t+k}$ (Peña, 2010, pp. 499-505).
+-   Si $k<0$, $\rho_{xy}(k)$ representa la asociación entre los valores pasados de $y_{t-k}$ y los valores $x_{t}$.
 
 
 Peña (2010) presenta las siguientes propiedades:
@@ -572,10 +583,14 @@ Si un coeficiente, en valor absoluto, de la función de autocorrelación muestra
 
 Presentados estos conceptos teóricos, al emplearlos en aplicaciones prácticas, generalmente ocurre que las series no son estacionarias. Cuando se desea estudiar la relación entre dos series de este estilo estimando la FCC, hay que tener cautela a la hora de interpretar. La no estacionariedad puede aumentar artificialmente los coeficientes de la FCCM. Estas correlaciones artificiales se denominan *correlaciones espurias* y pueden conducir a concluir erróneamente ciertas estructuras de relación entre las variables. En otras palabras, las fuertes estructuras de autocorrelación presentes en las series no estacionarias dificulta explorar la relación entre ellas. 
 
-Por este motivo, es necesario desarrollar un método que permita separar la asociación lineal entre las variables X e Y de sus autocorrelaciones. Un elemento útil en estos casos es el pre-blanqueo, o *prewhitening* en inglés. El *pre-blanqueo* de una serie es el proceso de reemplazarla por los residuos (ruido blanco) que se obtienen al ajustarle un modelo $ARIMA(p, d, q)$. La idea práctica es estimar la FCC entre las variables X e Y pre-blanqueadas, realizando el pre-blanqueo sobre la variable X y luego utilizar esa transformación para pre-blanquear Y. Se asume que Y pre-blanqueada es estacionaria a pesar de sólo haber obtenido los residuos para la serie X.
+Por este motivo, es necesario desarrollar un método que permita separar la asociación lineal entre las variables $X$ e $Y$ de sus autocorrelaciones. Un elemento útil en estos casos es el pre-blanqueo, o *prewhitening* en inglés. El *pre-blanqueo* de una serie es el proceso de reemplazarla por los residuos (ruido blanco) que se obtienen al ajustarle un modelo $ARIMA(p, d, q)$. La idea práctica es estimar la FCC entre las variables $X$ e $Y$ pre-blanqueadas, realizando el pre-blanqueo sobre la variable $X$ y luego utilizar esa transformación para pre-blanquear $Y$. Se asume que $Y$ pre-blanqueada es estacionaria a pesar de sólo haber obtenido los residuos para la serie $X$. 
 
 El proceso de pre-blanqueo tiene dos ventajas. La primera es que este procedimiento es una operación lineal, esto garantiza que la relación entre las series originales se preservará tras realizarlo. 
 La segunda es que es válido evaluar si los coeficientes de la FCC son estadísticamente distintos de cero, comparando los coeficientes de FCCM de las series pre-blanqueadas con el umbral $1.96/\sqrt{T}$ (Cryer-Chan, 2008).
+
+
+En cuanto a la implemetación computacional de este proceso de pre-blanquo, se realizaron dos funciones en R. La primera es `ccf_preblanqueadas()` la cual devuelve la FCCM entre dos series sometidas previamente a pre-blanqueo. Ésta toma la serie $X$, le ajusta un modelo $ARIMA(p, d, q)$ y preserva los residuos. Luego utilizando esa misma transformación, que surge del modelo de $X$, obtiene los residuos de $Y$. Finalmente retorna la FCCM entre los residuos de las series. La segunda función es `correlaciones_preblanqueadas()` que tiene por objetivo devolver en una figura, gráficos de dispersión entre una serie $Y$ y cada una de las series $X$. Una vez invocada la función, lo primero que realiza es un proceso iterativo. Para cada serie $X$, ajusta un modelo $ARIMA(p, d, q)$, obtiene los residuos y utilizando ese mismo filtro también obtiene los residuos de $Y$, guarda estos dos vectores y presenta el gráfico de dispersión junto a la estimación del coeficiente de Pearson. Realiza lo mismo para cada $X$, hasta obtener cada uno de los gráficos de dispersión de $Y$ vs $X$ pre-blanqueadas y finalizar devolviendo la figura.
+
 
 
 
@@ -1742,13 +1757,10 @@ En primer lugar, se estimó la FCC entre estas dos series. Éstas fueron previam
 #| label: fig-ccf_arg_usa
 #| fig-cap: "FCCM del *Ag Barometer Austral* y el *Ag Economy Barometer* pre-blanqueados en el período noviembre 2018 - enero 2026"
 
-# ddf agba y ageb !!! (falta poner linea negra en y=0 y chekear fc)
+# ccf agba y ageb !!! 
 d_homogeneo |>  
-  mutate(dif_agba = difference((`Ag Barometer Austral`)),
-         dif_ageb = difference((`Ag Economy Barometer`))) |> 
-  filter(!is.na(dif_agba)) |> 
-  ccf_preblanqueadas(x = dif_ageb, 
-                       y = dif_agba, 
+  ccf_preblanqueadas(x = `Ag Economy Barometer`, 
+                       y = `Ag Barometer Austral`, 
                        lag_max = 18,
                        lab_x = 'Ag Economy Barometer',
                        lab_y = 'Ag Barometer Austral',
@@ -1758,15 +1770,7 @@ d_homogeneo |>
 
 
 
-<!-- interpretacion ccf arg vs usa, en general no veo q haya relacion, no se bien q decir igual -->
-
-
-
-
 <!-- test cointegracion, engle-granger -->
-
-
-
 
 
 
@@ -1815,11 +1819,8 @@ Descartada la relación entre las percepciones de Argentina y las de Estados Uni
 d |> 
   filter(!is.na(`Ag Barometer Austral`)) |> 
   as_tsibble(index = Fecha) |>  
-  mutate(dif_agba = difference((`Ag Barometer Austral`)),
-         dif_cond = difference((`Condiciones presentes Arg`))) |> 
-  filter(!is.na(dif_agba)) |> 
-  ccf_preblanqueadas(x = dif_cond, 
-                       y = dif_agba, 
+  ccf_preblanqueadas(x = `Condiciones presentes Arg`, 
+                       y = `Ag Barometer Austral`, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
                        lab_y = 'Ag Barometer Austral',
@@ -1834,11 +1835,8 @@ d |>
 d |> 
   filter(!is.na(`Ag Barometer Austral`)) |> 
   as_tsibble(index = Fecha) |>  
-  mutate(dif_agba = difference((`Ag Barometer Austral`)),
-         dif_exp = difference((`Expectativas futuras Arg`))) |> 
-  filter(!is.na(dif_agba)) |> 
-  ccf_preblanqueadas(x = dif_exp, 
-                       y = dif_agba, 
+  ccf_preblanqueadas(x = `Expectativas futuras Arg`, 
+                       y = `Ag Barometer Austral`, 
                        lag_max = 18,
                        lab_x = 'Expectativas futuras',
                        lab_y = 'Ag Barometer Austral',
@@ -1855,14 +1853,11 @@ d |>
 d |> 
   filter(!is.na(`Ag Barometer Austral`)) |> 
   as_tsibble(index = Fecha) |>  
-  mutate(dif_cond = difference((`Condiciones presentes Arg`)),
-         dif_exp = difference((`Expectativas futuras Arg`))) |> 
-  filter(!is.na(dif_cond)) |> 
-  ccf_preblanqueadas(x = dif_cond, 
-                       y = dif_exp, 
+  ccf_preblanqueadas(x = `Expectativas futuras Arg`, 
+                       y = `Condiciones presentes Arg`, 
                        lag_max = 18,
-                       lab_x = 'Condiciones presentes',
-                       lab_y = 'Expectativas futuras',
+                       lab_x = 'Expectativas futuras',
+                       lab_y = 'Condiciones presentes',
                        fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral')
 ```
 
@@ -1891,11 +1886,8 @@ Análogamente al caso local, se estudió la relación entre los indicadores esta
 #| fig-cap: "FCCM del *Ag Economy Barometer* y las Condiciones presentes pre-blanqueados"
 
 d |> 
-  mutate(dif_ageb = difference((`Ag Economy Barometer`)),
-         dif_cond = difference((`Condiciones presentes EEUU`))) |> 
-  filter(!is.na(dif_ageb)) |> 
-  ccf_preblanqueadas(x = dif_cond, 
-                       y = dif_ageb, 
+  ccf_preblanqueadas(x = `Condiciones presentes EEUU`, 
+                       y = `Ag Economy Barometer`, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
                        lab_y = 'Ag Economy Barometer',
@@ -1912,11 +1904,8 @@ d |>
 
 
 d |> 
-  mutate(dif_ageb = difference((`Ag Economy Barometer`)),
-         dif_exp = difference((`Expectativas futuras EEUU`))) |> 
-  filter(!is.na(dif_ageb)) |> 
-  ccf_preblanqueadas(x = dif_exp, 
-                       y = dif_ageb, 
+  ccf_preblanqueadas(x = `Expectativas futuras EEUU`, 
+                       y = `Ag Economy Barometer`, 
                        lag_max = 18,
                        lab_x = 'Expectativas futuras',
                        lab_y = 'Ag Economy Barometer',
@@ -1932,11 +1921,8 @@ d |>
 
 
 d |> 
-  mutate(dif_cond = difference((`Condiciones presentes EEUU`)),
-         dif_exp = difference((`Expectativas futuras EEUU`))) |> 
-  filter(!is.na(dif_cond)) |> 
-  ccf_preblanqueadas(x = dif_cond, 
-                       y = dif_exp, 
+  ccf_preblanqueadas(x = `Condiciones presentes EEUU`, 
+                       y = `Expectativas futuras EEUU`, 
                        lag_max = 18,
                        lab_x = 'Condiciones presentes',
                        lab_y = 'Expectativas futuras',

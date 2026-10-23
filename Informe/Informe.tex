@@ -187,6 +187,7 @@
   \usepackage{chngcntr}
   \counterwithin{figure}{subsection}
   \counterwithin{table}{subsection}
+  \counterwithin{equation}{subsection}
   
   
   
@@ -316,12 +317,11 @@ técnicas exploratorias, sería interesante en futuras líneas de
 investigación incorporar métodos analíticos que aporten mayor solidez a
 las conclusiones.
 
-\textbf{Palabras clave:} \emph{Ag Barometer}, productores, series
-temporales, asociaciones, variables económicas, elecciones
-presidenciales.
+\textbf{\emph{Palabras clave:}} confianza, productor agropecuario,
+series de tiempo, asociaciones, Argentina, Estados Unidos.
 
-\emph{\textbf{Keywords:} Ag Barometer, farmers, time series,
-associations, economic variables, presidential elections}.
+\emph{\textbf{Keywords:} sentiment, farmers, time series, associations,
+Argentina, United States}.
 
 \newpage
 
@@ -334,15 +334,15 @@ associations, economic variables, presidential elections}.
 
 Todo lo que hoy la raza humana ingiere se deriva, en su mayoría, de la
 agricultura o de la ganadería, es decir, del sector agropecuario. Su
-crecimiento incrementa las productividades, disminuye los precios de los
-alimentos, aumenta el empleo agrícola y controla la inflación, todo esto
-contribuye al progreso de la sociedad. Por estas razones, el sector
-agropecuario es fundamental para sociedades consideradas no
-desarrolladas (Bula, 2020). En este sentido, si bien el sector es
-importante, en cada país se desenvuelve en distintas condiciones debido
-a diferencias en sus entornos económicos, financieros y climáticos. Por
-tal motivo, resulta de interés disponer de datos que permitan realizar
-comparaciones de distintas economías.
+crecimiento genera divisas, incrementa las productividades disminuyendo
+los precios de los alimentos y aumenta el empleo, todo esto contribuye
+al progreso de la sociedad. Por estas razones, el sector agropecuario es
+fundamental para sociedades consideradas no desarrolladas (Bula, 2020).
+En este sentido, si bien el sector es importante, en cada país se
+desenvuelve en distintas condiciones debido a diferencias en sus
+entornos económicos, financieros y climáticos. Por tal motivo, resulta
+de interés disponer de datos que permitan realizar comparaciones de
+distintas economías.
 
 El Centro de Agronegocios y Alimentos (CEAg) de la Universidad Austral
 sede Rosario desarrolla un índice denominado \emph{Ag Barometer Austral}
@@ -719,9 +719,9 @@ caractericen a cada una de las variables que lo componen.
 En primer lugar, se define a la \emph{función de medias} del proceso
 como
 
-\[
+\begin{equation}\phantomsection\label{eq-fc_de_medias}{
 E(z_t) = \mu_t
-\]
+}\end{equation}
 
 Cuando todas las variables \(z_t\) tienen la misma media \(\mu\), es
 decir, \(E(z_t) = \mu \quad \forall t\), se dice que el proceso es
@@ -729,9 +729,9 @@ decir, \(E(z_t) = \mu \quad \forall t\), se dice que el proceso es
 
 Se denomina \emph{función de variancias} del proceso a
 
-\[
+\begin{equation}\phantomsection\label{eq-fc_de_variancias}{
 V(z_t) = \sigma^2_t
-\]
+}\end{equation}
 
 El proceso se dice \emph{estacionario en variancia} cuando todas las
 variables tienen la misma variancia:
@@ -742,18 +742,18 @@ La dependencia lineal entre variables del proceso se representa mediante
 las funciones de covariancia y correlación. En este sentido, se define a
 la \emph{función de autocovariancias} del proceso como
 
-\[
+\begin{equation}\phantomsection\label{eq-fc_de_covariancias}{
 \gamma(t, t+j) = cov(z_t, z_{t+j}) = E[(z_t - \mu_t)(z_{t+j} - \mu_{t+j})] \quad j \in \mathbb{Z}
-\]
+}\end{equation}
 
 En particular, se verifica que:
 \(\gamma(t,t) = cov(z_t, z_t) = V(z_t) = \sigma^2_t\).
 
 Por último, se llama \emph{función de autocorrelaciones} del proceso a
 
-\[
+\begin{equation}\phantomsection\label{eq-acf_general}{
 \rho(t, t+j) = cor(z_t, z_{t+j}) = \dfrac{cov(z_t, z_{t+j})}{\sqrt{V(z_t)} \sqrt{V(z_{t+j})}} = \dfrac{\gamma(t, t+j)}{\sqrt{\gamma(t,t)} \sqrt{\gamma({t+j, t+j})}} = \dfrac{\gamma(t, t+j)}{\sigma_t \sigma_{t+j}}
-\]
+}\end{equation}
 
 Obtener la distribución de probabilidad del proceso, y así disponer de
 las características de cada variable (media, variancia, etc), es posible
@@ -762,13 +762,13 @@ suponer que cada año se observa una realización del mismo proceso, o
 técnicas que pueden generarse en un laboratorio. Sin embargo, en muchas
 otras aplicaciones, como ocurre con las variables económicas, sólo se
 puede observar una realización del proceso. Por ejemplo, si se observa
-la tasa de inflación en Argentina, no es posible volver atrás en el
-tiempo para generar otra realización. Conceptualmente el proceso
-estocástico existe, pero no es posible obtener varias realizaciones del
-mismo. Para poder estimar las características de cada variable \(z_t\)
-del proceso a partir de esta única realización, es necesario suponer que
-la evolución de estas observaciones es estable a lo largo del tiempo.
-Esto conduce al concepto de estacionariedad.
+la tasa de inflación en Argentina elaborada por el INDEC, no es posible
+volver atrás en el tiempo para generar otra realización. Conceptualmente
+el proceso estocástico existe, pero no es posible obtener varias
+realizaciones del mismo. Para poder estimar las características de cada
+variable \(z_t\) del proceso a partir de esta única realización, es
+necesario suponer que la evolución de estas observaciones es estable a
+lo largo del tiempo. Esto conduce al concepto de estacionariedad.
 
 Se dice que un proceso estocástico es \emph{estacionario} (débil) si la
 media, variancia, covariancia/correlación son estables a lo largo del
@@ -803,12 +803,15 @@ En Wei (2006, pp.~10-11) se define para un proceso estacionario a la:
 \begin{itemize}
 \tightlist
 \item
-  \emph{función de autocovariancia} a la anteriormente presentada
-  \(\gamma_k = cov(z_t, z_{t-k}) = E[(z_t - \mu)(z_{t-k} - \mu)]\)
-\item
-  \emph{función de autocorrelación} (FAC) a
-  \(\rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}\)
+  \emph{función de autocovariancia}:
 \end{itemize}
+
+\begin{equation}\phantomsection\label{eq-fc_autocov_estac}{
+\gamma_k = cov(z_t, z_{t-k}) = E[(z_t - \mu)(z_{t-k} - \mu)]
+}\end{equation} - \emph{función de autocorrelación} (FAC):
+\begin{equation}\phantomsection\label{eq-acf}{
+\rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}
+}\end{equation}
 
 Es trivial verificar que para procesos estacionarios:
 
@@ -831,8 +834,9 @@ después de que la dependencia lineal de las variables
 \(z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1}\) haya sido eliminada. Esta
 correlación condicional
 
-\[cor(z_t, z_{t-k} | z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1})\] es
-denominada \emph{función de autocorrelación parcial} (FACP).
+\begin{equation}\phantomsection\label{eq-pacf}{cor(z_t, z_{t-k} | z_{t-k+1}, z_{t-k+2}, \dots, z_{t-1})}\end{equation}
+
+es denominada \emph{función de autocorrelación parcial} (FACP).
 
 Se verifica que el primer coeficiente de la FAC es idéntico al primero
 de la FACP.
@@ -888,9 +892,9 @@ repentinos (Hyndman-Athanasopoulos, 2021, secc. 9.1).
 
 De Ecuación~\ref{eq-rw}, se desprende que
 
-\[
+\begin{equation}\phantomsection\label{eq-dif_rw}{
 z_t - z_{t-1} = \mu + a_t
-\]
+}\end{equation}
 
 si \(z_t\) es un paseo aleatorio, entonces su primera diferencia
 (\(z_t - z_{t-1}\)) sigue un ruido blanco con media \(\mu_a + \mu\).
@@ -914,24 +918,24 @@ situación.
 Supóngase que se tienen dos procesos estacionarios \(\{x_t\}\) e
 \(\{y_t\}\). Se define a la \emph{función de covariancias cruzadas} como
 
-\begin{equation}\phantomsection\label{eq-fc_cov}{
+\begin{equation}\phantomsection\label{eq-fc_cov_cruzada}{
 \gamma_{xy}(t, t+k) = cov(x_t, y_{t+k}) \quad k \in \mathbb{Z}
 }\end{equation}
 
-La Ecuación~\ref{eq-fc_cov} mide la relación lineal entre las variables
-\(x_t\) e \(y_{t+k}\).
+La Ecuación~\ref{eq-fc_cov_cruzada} mide la relación lineal entre las
+variables \(x_t\) e \(y_{t+k}\).
 
 Se verifica que: \(\gamma_{xy}(t, t+k) = \gamma_{yx}(t+k, t)\)
 
 Dos procesos \(\{x_t\}\) e \(\{y_t\}\) son \emph{conjuntamente
 estacionarios} si cada uno de ellos es estacionario y las covariancias
 cruzadas sólo dependen del retardo entre las variables, \(k\), y no del
-instante inicial considerado. Entonces la Ecuación~\ref{eq-fc_cov} se
-simplifica a
+instante inicial considerado. Entonces la
+Ecuación~\ref{eq-fc_cov_cruzada} se simplifica a
 
-\[
+\begin{equation}\phantomsection\label{eq-fc_cov_cruz_simplificada}{
 \gamma_{xy}(t, t+k) = \gamma_{xy}(k) = cov(x_t, y_{t+k})
-\]
+}\end{equation}
 
 Esta función no varía al intercambiar las variables y el signo del
 retardo simultáneamente: \(\gamma_{xy}(k) = \gamma_{yx}(-k)\)
@@ -956,11 +960,11 @@ tipos de relaciones:
   Si \(k=0\), \(\rho_{xy}(0)\) mide la relación contemporánea o
   instantánea entre \(x_t\) e \(y_{t}\).
 \item
-  Si \(k>0\), \(\rho_{xy}(k)\) mide cómo los valores de \(x_t\) influyen
-  sobre los valores futuros \(y_{t+k}\) (Peña, 2010, pp.~499-505).
+  Si \(k>0\), \(\rho_{xy}(k)\) mide la asociación entre los valores de
+  \(x_t\) y los valores futuros \(y_{t+k}\) (Peña, 2010, pp.~499-505).
 \item
-  Si \(k<0\), \(\rho_{xy}(k)\) representa cómo los valores pasados de
-  \(y_{t-k}\) influyen sobre los valores \(x_{t}\).
+  Si \(k<0\), \(\rho_{xy}(k)\) representa la asociación entre los
+  valores pasados de \(y_{t-k}\) y los valores \(x_{t}\).
 \end{itemize}
 
 Peña (2010) presenta las siguientes propiedades:
@@ -994,15 +998,16 @@ estructuras de autocorrelación presentes en las series no estacionarias
 dificulta explorar la relación entre ellas.
 
 Por este motivo, es necesario desarrollar un método que permita separar
-la asociación lineal entre las variables X e Y de sus autocorrelaciones.
-Un elemento útil en estos casos es el pre-blanqueo, o
+la asociación lineal entre las variables \(X\) e \(Y\) de sus
+autocorrelaciones. Un elemento útil en estos casos es el pre-blanqueo, o
 \emph{prewhitening} en inglés. El \emph{pre-blanqueo} de una serie es el
 proceso de reemplazarla por los residuos (ruido blanco) que se obtienen
 al ajustarle un modelo \(ARIMA(p, d, q)\). La idea práctica es estimar
-la FCC entre las variables X e Y pre-blanqueadas, realizando el
-pre-blanqueo sobre la variable X y luego utilizar esa transformación
-para pre-blanquear Y. Se asume que Y pre-blanqueada es estacionaria a
-pesar de sólo haber obtenido los residuos para la serie X.
+la FCC entre las variables \(X\) e \(Y\) pre-blanqueadas, realizando el
+pre-blanqueo sobre la variable \(X\) y luego utilizar esa transformación
+para pre-blanquear \(Y\). Se asume que \(Y\) pre-blanqueada es
+estacionaria a pesar de sólo haber obtenido los residuos para la serie
+\(X\).
 
 El proceso de pre-blanqueo tiene dos ventajas. La primera es que este
 procedimiento es una operación lineal, esto garantiza que la relación
@@ -1010,6 +1015,25 @@ entre las series originales se preservará tras realizarlo. La segunda es
 que es válido evaluar si los coeficientes de la FCC son estadísticamente
 distintos de cero, comparando los coeficientes de FCCM de las series
 pre-blanqueadas con el umbral \(1.96/\sqrt{T}\) (Cryer-Chan, 2008).
+
+En cuanto a la implemetación computacional de este proceso de
+pre-blanquo, se realizaron dos funciones en R. La primera
+es\texttt{ccf\_preblanqueadas()} la cual presenta la FCCM entre dos
+series. Ésta toma la serie \(X\), le ajusta un modelo autorregresivo y
+preserva los residuos. Luego utilizando esa misma transformación, que
+surge del modelo de \(X\), calcula los residuos de \(Y\). Si \(X\) e
+\(Y\) no son estacionarias se deben ingresar las series diferenciadas a
+argumento para la función, esto equivale a pre-blanquear en base a un
+modelo \(ARIMA\). Finalmente presenta la FCC entre los residuos de las
+series. La segunda función es \texttt{correlaciones\_preblanqueadas()}
+cuyo objetivo es presentar en una figura, gráficos de dispersión entre
+una serie \(Y\) y cada una de las series \(X\). Antes de devolver la
+figura, la función tiene implementado un proceso iterativo. Para cada
+serie \(X\), ajusta un modelo \(ARIMA\), obtiene los residuos y
+utilizando ese mismo filtro también obtiene los residuos de \(Y\),
+guarda estos dos vectores y presenta el gráfico de dispersión junto a la
+estimación del coeficiente de Pearson. Realiza esto para cada uno de las
+series \(X\).
 
 \newpage
 
@@ -2132,18 +2156,18 @@ Jones} y \emph{Nasdaq} de la bolsa de \emph{New York}. Un aumento en
 estas variables podría referirse a un crecimiento global de la economía,
 lo cual podría producir un aumento en la confianza del productor.
 
-Por otro lado, se agrega al análisis el Índice de la Actividad de la
-Cadena Agropecuaria (IACA) de la Bolsa de Comercio de Rosario. En
-principio, podría esperarse que a mayor actividad, se genere mayor
-confianza en el productor.
+Por otro lado, se agregan los índices de confianza del consumidor
+elaborados por las universidades Torcuato Di tella y Michigan. En este
+caso podría esperarse que ambos índices se muevan en la misma dirección.
 
-Finalmente se suman los índices de confianza del consumidor elaborados
-por las universidades Torcuato Di tella y Michigan. En este caso podría
-esperarse que ambos índices se muevan en la misma dirección.
+Finalmente se suma al análisis el Índice de la Actividad de la Cadena
+Agropecuaria (IACA) de la Bolsa de Comercio de Rosario. En principio,
+podría esperarse que a mayor actividad, se genere mayor confianza en el
+productor argentino.
 
 A continuación se presentan figuras con las mismas particularidades
-anteriormente mencionadas que permitan analizar relación del \emph{Ag
-Barometer} con estas variables.
+anteriormente mencionadas que permitan analizar de manera gráfica si el
+\emph{Ag Barometer} y estas variables están asociados.
 
 \begin{figure}
 
