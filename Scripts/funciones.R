@@ -32,29 +32,29 @@ library(ggrepel)
 
 ccf_preblanqueadas <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = NULL, fuente = NULL) {
   
-  x_var <- enquo(x) 
+  x_var <- enquo(x) # permite ingresar nombres de columnas q contengan espacios
   y_var <- enquo(y)
   
-  x_vec <- data |> pull({{ x }}) 
+  x_vec <- data |> pull({{ x }}) # convierte la col x en vector numerico
   y_vec <- data |> pull({{ y }})
   
-  # 1. Limpieza de NAs con complete.cases (igual que en tu función 2)
-  validos <- complete.cases(x_vec, y_vec)
+  validos <- complete.cases(x_vec, y_vec) # saco los NA
   x_val <- x_vec[validos]
   y_val <- y_vec[validos]
   
-  # 2. Ajustar ARIMA a X usando auto.arima (maneja p, d, q automáticamente)
-  fit_x <- auto.arima(x_val, ic = "aicc")
+  # busco el mejor arima(p,d,q) para X y me guardo los residuos
+  fit_x <- auto.arima(x_val, ic = "aicc", seasonal = F)
   x_whitened <- residuals(fit_x)
   
-  # 3. Usar exactamente el mismo modelo para Y
+  # aplico el la transformacion q use para obtener los residuos de X, para
+  # obtener los residuos de Y
   fit_y <- Arima(y_val, model = fit_x)
   y_whitened <- residuals(fit_y)
   
-  # 4. Calcular la FCCM (Cross-Correlation Function) entre los residuos
+  # ccf entre los residuos
   ccf_res <- ccf(x_whitened, y_whitened, lag.max = lag_max, plot = FALSE)
   
-  # 5. Armar el dataframe para el gráfico
+  # armo un data para devolver el grafico
   df_plot <- data.frame(
     lag = as.numeric(ccf_res$lag),
     ccf = as.numeric(ccf_res$acf)
@@ -68,7 +68,7 @@ ccf_preblanqueadas <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = N
   caption <- paste0("x = ", lab_x, "\ny = ", lab_y)
   if (!is.null(fuente)) caption <- paste0(caption, "\n", fuente)
   
-  # 6. Gráfico
+  # graf
   p <- ggplot(df_plot, aes(lag, ccf)) +
     geom_col(width = 0.15, fill = "black") +
     geom_hline(yintercept = c(-ic, ic), linetype = "dashed", color = "#666666") +
@@ -82,7 +82,7 @@ ccf_preblanqueadas <- function(data, x, y, lag_max = 18, lab_x = NULL, lab_y = N
     ) +
     theme_bw()
   
-  return(list(grafico = p, fit_x = fit_x, fit_y = fit_y, ccf_values = ccf_res))
+  return(p)
 }
 
 
@@ -110,10 +110,7 @@ correlaciones_preblanqueadas <- function(df, y_col, x_cols, fuente = NULL) {
     # fuente: str (opcional): texto de la fuente, se agrega en una nueva linea
     # debajo del caption del grafico
   
-  # Para obtener el grafico se hace: 
-  # correlaciones_preblanqueadas(df, y_col, x_cols)$grafico
-  
-  # creo lista en donde me voy a guardar cada X_j e Y preblanqueadas
+  # creo lista en donde guardo cada X_j e Y preblanqueadas (por el modelo de X_j)
   lista_preblanqueada <- list()
   y_original <- df[[y_col]]
   
@@ -122,7 +119,7 @@ correlaciones_preblanqueadas <- function(df, y_col, x_cols, fuente = NULL) {
     validos <- complete.cases(x, y_original) # se queda con los x_t e y_t q no son NA
     
     # ajusto ARIMA a X 
-    fit_x <- auto.arima(x[validos], ic = "aicc")
+    fit_x <- auto.arima(x[validos], ic = "aicc", seasonal = F)
     x_whitened <- residuals(fit_x)
     
     # uso eso misma transformacion para Y
@@ -168,7 +165,7 @@ correlaciones_preblanqueadas <- function(df, y_col, x_cols, fuente = NULL) {
     theme_bw(base_size = 10) +
     theme(axis.title.x = element_blank())
   
-  return(list(datos = d_pre_long, correlaciones = df_cor_pre, grafico = p))
+  return(p)
 }
 
 

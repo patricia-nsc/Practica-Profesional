@@ -547,7 +547,7 @@ La @eq-fc_cov_cruzada mide la relación lineal entre las variables $x_t$ e $y_{t
 
 Se verifica que: $\gamma_{xy}(t, t+k) = \gamma_{yx}(t+k, t)$
 
-Dos procesos $\{x_t\}$ e $\{y_t\}$ son *conjuntamente estacionarios* si cada uno de ellos es estacionario y las covariancias cruzadas sólo dependen del retardo entre las variables, $k$, y no del instante inicial considerado. Entonces la @eq-fc_cov_cruzada se simplifica a 
+Tal como puede presentarse el concepto de estacionariedad para un proceso, éste puede extenderse en el caso de más de un proceso. En este sentido, dos procesos $\{x_t\}$ e $\{y_t\}$ son *conjuntamente estacionarios* si cada uno de ellos es estacionario y las covariancias cruzadas sólo dependen del retardo entre las variables, $k$, y no del instante inicial considerado. Entonces la @eq-fc_cov_cruzada se simplifica a 
 
 $$
 \gamma_{xy}(t, t+k) = \gamma_{xy}(k) = cov(x_t, y_{t+k})
@@ -589,10 +589,9 @@ El proceso de pre-blanqueo tiene dos ventajas. La primera es que este procedimie
 La segunda es que es válido evaluar si los coeficientes de la FCC son estadísticamente distintos de cero, comparando los coeficientes de FCCM de las series pre-blanqueadas con el umbral $1.96/\sqrt{T}$ (Cryer-Chan, 2008).
 
 
-En cuanto a la implemetación computacional de este proceso de pre-blanquo, se realizaron dos funciones en R. La primera es `ccf_preblanqueadas()` la cual devuelve la FCCM entre dos series sometidas previamente a pre-blanqueo. Ésta toma la serie $X$, le ajusta un modelo $ARIMA(p, d, q)$ y preserva los residuos. Luego utilizando esa misma transformación, que surge del modelo de $X$, obtiene los residuos de $Y$. Finalmente retorna la FCCM entre los residuos de las series. La segunda función es `correlaciones_preblanqueadas()` que tiene por objetivo devolver en una figura, gráficos de dispersión entre una serie $Y$ y cada una de las series $X$. Una vez invocada la función, lo primero que realiza es un proceso iterativo. Para cada serie $X$, ajusta un modelo $ARIMA(p, d, q)$, obtiene los residuos y utilizando ese mismo filtro también obtiene los residuos de $Y$, guarda estos dos vectores y presenta el gráfico de dispersión junto a la estimación del coeficiente de Pearson. Realiza lo mismo para cada $X$, hasta obtener cada uno de los gráficos de dispersión de $Y$ vs $X$ pre-blanqueadas y finalizar devolviendo la figura.
+En cuanto a la implemetación computacional de este proceso de pre-blanquo, se programaron dos funciones en R. La primera es `ccf_preblanqueadas()` la cual devuelve la FCCM entre dos series sometidas previamente a pre-blanqueo. Ésta toma la serie $X$, le ajusta un modelo $ARIMA(p, d, q)$[^auto.arima] y preserva los residuos. Luego utilizando esa misma transformación, que surge del modelo de $X$, obtiene los residuos de $Y$. De esta manera no se ajusta otro modelo para $Y$, para ambas series se utiliza el ajuste buscado para $X$. Finalmente `ccf_preblanqueadas()` retorna la FCCM entre los residuos de las series. La segunda función es `correlaciones_preblanqueadas()` que tiene por objetivo, devolver en una figura, gráficos de dispersión entre una serie $Y$ y cada una de las series $X$. Lo primero que realiza es un proceso que itera a través de las variables $X$. Para una de ellas, ajusta un modelo $ARIMA(p, d, q)$, obtiene los residuos y utilizando ese mismo filtro también obtiene los residuos de $Y$, guarda estos dos vectores y presenta el gráfico de dispersión entre ellos junto a la estimación del coeficiente de Pearson. Realiza lo mismo para cada $X$, hasta obtener cada uno de los gráficos de dispersión de $Y$ vs $X$ pre-blanqueadas y agrupándolos en la figura que devuelve.
 
-
-
+[^auto.arima]: El modelo que se ajusta para la serie $X$ es el sugerido por la función `auto.arima()` implementada por Hyndman-Khandakar (2008).
 
 
 
@@ -1623,7 +1622,7 @@ El *Ag Economy Barometer* mediano (@fig-boxplot_usa) parece seguir un patrón si
 
 
 
-Se realizó el test ADF y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que el *Ag Economy Barometer* no es estacionario ($p-value=$ `r pv_ageb_adf`). Sin embargo, al realizar el test KPSS con el mismo nivel de significación, se concluye lo opuesto ($p-value=$ `r pv_ageb_kpss`). Ante esta discrepancia, retomando los hechos de que el primer coeficiente de la FACPM (@fig-acf_ageb) tiene una estimación de aproximadamente 0.8 y de que hay varios bastones significativos alrededor del retardo 58, finalmente se consideró al *Ag Economy Barometer* como no estacionario.
+Se realizó el test ADF y se concluye con un nivel de significación del 5% y en base a la evidencia muestral que el *Ag Economy Barometer* no es estacionario ($p-value=$ `r pv_ageb_adf`). Sin embargo, al realizar el test KPSS con el mismo nivel de significación, se concluye lo opuesto ($p-value=$ `r pv_ageb_kpss`). Ante esta discrepancia, retomando el hecho de que el primer coeficiente, tanto de la FACM como de la FACPM (@fig-acf_ageb) tienen una estimación de aproximadamente 0.8, finalmente se consideró al *Ag Economy Barometer* como no estacionario.
 
 
 Con el fin de ahondar más en las características presentes en esta serie, también se analiza su primera diferencia a partir de la @fig-acf_ageb_dif1. La mayoría de los bastones de la FACM son, de manera individual, no significativos excepto por dos de ellos. Estos últimos, a pesar de ser significativos, están asociados a estimaciones alrededor de -0.2 dejando en duda su relevancia práctica. Lo mismo ocurre con un rezago en la FACPM. Es decir, este criterio de evaluar individualmente la significación de cada coeficiente no conduce a conclusiones claras acerca de la estructura temporal de la diferencia. Por tal motivo, se recurrió a otro tipo de recursos. Se llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box sobre la serie diferenciada, obteniéndose que ésta es estacionaria ($p-value=$ `r pv_ageb_dif1_adf`, $p-value=$ `r pv_ageb_dif1_kpss`) y que los primeros 20 coeficientes de su FAC son nulos ($p-value=$ `r pv_ageb_dif1_ljung`), a partir de la evidencia muestral con un 5% de nivel de significación. Estos resultados conducen a que la serie diferenciada sigue un ruido blanco y que consecuentemente el *Ag Economy Barometer* sigue el patrón de paseo aleatorio.
@@ -2016,7 +2015,7 @@ correlaciones_preblanqueadas(
   y_col = "Ag Barometer Austral", 
   x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)],
   fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'
-)$grafico
+)
 ```
 
 
@@ -2076,7 +2075,7 @@ correlaciones_preblanqueadas(
   y_col = "Ag Economy Barometer", 
   x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)],
   fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue'
-)$grafico
+)
 ```
 
 
@@ -2168,7 +2167,7 @@ correlaciones_preblanqueadas(
   y_col = "Ag Barometer Austral", 
   x_cols = names(d_completo_arg)[3:ncol(d_completo_arg)],
   fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Austral'
-)$grafico
+)
 ```
 
 
@@ -2228,7 +2227,7 @@ correlaciones_preblanqueadas(
   y_col = "Ag Economy Barometer", 
   x_cols = names(d_completo_eeuu)[3:ncol(d_completo_eeuu)],
   fuente = 'Fuente: Elaboración propia en base a datos de la Universidad Purdue'
-)$grafico
+)
 ```
 
 
@@ -2952,6 +2951,8 @@ Enders, W. (2014). *Applied econometric time series*. ($4^a$ ed.). John Wiley & 
 Federal Reserve Bank of St. Louis. (2026). Federal Reserve Economic Data (FRED) [Conjunto de datos]. https://fred.stlouisfed.org/ 
 
 Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* ($3^a$ ed.). OTexts. https://otexts.com/fpp3/
+
+Hyndman, R. J., & Khandakar, Y. (2008). *Automatic Time Series Forecasting: the forecast Package for R*, Journal of Statistical Software. doi: 10.18637/jss.v027.i03
 
 Lütkepohl, H., & Krätzig, M. (Eds.). (2004). *Applied Time Series Econometrics*. Cambridge University Press.
 

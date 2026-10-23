@@ -803,15 +803,21 @@ En Wei (2006, pp.~10-11) se define para un proceso estacionario a la:
 \begin{itemize}
 \tightlist
 \item
-  \emph{función de autocovariancia}:
+  \emph{función de autocovariancia}
 \end{itemize}
 
 \begin{equation}\phantomsection\label{eq-fc_autocov_estac}{
 \gamma_k = cov(z_t, z_{t-k}) = E[(z_t - \mu)(z_{t-k} - \mu)]
-}\end{equation} - \emph{función de autocorrelación} (FAC):
-\begin{equation}\phantomsection\label{eq-acf}{
-\rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}
 }\end{equation}
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{función de autocorrelación} (FAC)
+  \begin{equation}\phantomsection\label{eq-acf}{
+  \rho_k = cor(z_t, z_{t-k}) = \dfrac{cov(z_t, z_{t-k})}{\sqrt{V(z_t)} \sqrt{V(z_{t-k})}} = \dfrac{\gamma_k}{\gamma_0}
+  }\end{equation}
+\end{itemize}
 
 Es trivial verificar que para procesos estacionarios:
 
@@ -890,7 +896,7 @@ Es típico de los paseos aleatorios presentar largos períodos en los
 cuales se observa una aparente tendencia y/o que tengan cambios
 repentinos (Hyndman-Athanasopoulos, 2021, secc. 9.1).
 
-De Ecuación~\ref{eq-rw}, se desprende que
+De la Ecuación~\ref{eq-rw}, se desprende que
 
 \begin{equation}\phantomsection\label{eq-dif_rw}{
 z_t - z_{t-1} = \mu + a_t
@@ -927,7 +933,9 @@ variables \(x_t\) e \(y_{t+k}\).
 
 Se verifica que: \(\gamma_{xy}(t, t+k) = \gamma_{yx}(t+k, t)\)
 
-Dos procesos \(\{x_t\}\) e \(\{y_t\}\) son \emph{conjuntamente
+Tal como puede presentarse el concepto de estacionariedad para un
+proceso, éste puede extenderse en el caso de más de un proceso. En este
+sentido, dos procesos \(\{x_t\}\) e \(\{y_t\}\) son \emph{conjuntamente
 estacionarios} si cada uno de ellos es estacionario y las covariancias
 cruzadas sólo dependen del retardo entre las variables, \(k\), y no del
 instante inicial considerado. Entonces la
@@ -1017,23 +1025,27 @@ distintos de cero, comparando los coeficientes de FCCM de las series
 pre-blanqueadas con el umbral \(1.96/\sqrt{T}\) (Cryer-Chan, 2008).
 
 En cuanto a la implemetación computacional de este proceso de
-pre-blanquo, se realizaron dos funciones en R. La primera
-es\texttt{ccf\_preblanqueadas()} la cual presenta la FCCM entre dos
-series. Ésta toma la serie \(X\), le ajusta un modelo autorregresivo y
+pre-blanquo, se programaron dos funciones en R. La primera es
+\texttt{ccf\_preblanqueadas()} la cual devuelve la FCCM entre dos series
+sometidas previamente a pre-blanqueo. Ésta toma la serie \(X\), le
+ajusta un modelo \(ARIMA(p, d, q)\)\footnote{El modelo que se ajusta
+  para la serie \(X\) es el sugerido por la función
+  \texttt{auto.arima()} implementada por Hyndman-Khandakar (2008).} y
 preserva los residuos. Luego utilizando esa misma transformación, que
-surge del modelo de \(X\), calcula los residuos de \(Y\). Si \(X\) e
-\(Y\) no son estacionarias se deben ingresar las series diferenciadas a
-argumento para la función, esto equivale a pre-blanquear en base a un
-modelo \(ARIMA\). Finalmente presenta la FCC entre los residuos de las
-series. La segunda función es \texttt{correlaciones\_preblanqueadas()}
-cuyo objetivo es presentar en una figura, gráficos de dispersión entre
-una serie \(Y\) y cada una de las series \(X\). Antes de devolver la
-figura, la función tiene implementado un proceso iterativo. Para cada
-serie \(X\), ajusta un modelo \(ARIMA\), obtiene los residuos y
-utilizando ese mismo filtro también obtiene los residuos de \(Y\),
-guarda estos dos vectores y presenta el gráfico de dispersión junto a la
-estimación del coeficiente de Pearson. Realiza esto para cada uno de las
-series \(X\).
+surge del modelo de \(X\), obtiene los residuos de \(Y\). De esta manera
+no se ajusta otro modelo para \(Y\), para ambas series se utiliza el
+ajuste buscado para \(X\). Finalmente \texttt{ccf\_preblanqueadas()}
+retorna la FCCM entre los residuos de las series. La segunda función es
+\texttt{correlaciones\_preblanqueadas()} que tiene por objetivo,
+devolver en una figura, gráficos de dispersión entre una serie \(Y\) y
+cada una de las series \(X\). Lo primero que realiza es un proceso que
+itera a través de las variables \(X\). Para una de ellas, ajusta un
+modelo \(ARIMA(p, d, q)\), obtiene los residuos y utilizando ese mismo
+filtro también obtiene los residuos de \(Y\), guarda estos dos vectores
+y presenta el gráfico de dispersión entre ellos junto a la estimación
+del coeficiente de Pearson. Realiza lo mismo para cada \(X\), hasta
+obtener cada uno de los gráficos de dispersión de \(Y\) vs \(X\)
+pre-blanqueadas y agrupándolos en la figura que devuelve.
 
 \newpage
 
@@ -1835,11 +1847,11 @@ Se realizó el test ADF y se concluye con un nivel de significación del
 5\% y en base a la evidencia muestral que el \emph{Ag Economy Barometer}
 no es estacionario (\(p-value=\) 0.0712). Sin embargo, al realizar el
 test KPSS con el mismo nivel de significación, se concluye lo opuesto
-(\(p-value=\) 0.1000). Ante esta discrepancia, retomando los hechos de
-que el primer coeficiente de la FACPM (Figura~\ref{fig-acf_ageb}) tiene
-una estimación de aproximadamente 0.8 y de que hay varios bastones
-significativos alrededor del retardo 58, finalmente se consideró al
-\emph{Ag Economy Barometer} como no estacionario.
+(\(p-value=\) 0.1000). Ante esta discrepancia, retomando el hecho de que
+el primer coeficiente, tanto de la FACM como de la FACPM
+(Figura~\ref{fig-acf_ageb}) tienen una estimación de aproximadamente
+0.8, finalmente se consideró al \emph{Ag Economy Barometer} como no
+estacionario.
 
 Con el fin de ahondar más en las características presentes en esta
 serie, también se analiza su primera diferencia a partir de la
@@ -2608,6 +2620,10 @@ Federal Reserve Bank of St.~Louis. (2026). Federal Reserve Economic Data
 
 Hyndman, R. J., \& Athanasopoulos, G. (2021). \emph{Forecasting:
 Principles and practice} (\(3^a\) ed.). OTexts. https://otexts.com/fpp3/
+
+Hyndman, R. J., \& Khandakar, Y. (2008). \emph{Automatic Time Series
+Forecasting: the forecast Package for R}, Journal of Statistical
+Software. doi: 10.18637/jss.v027.i03
 
 Lütkepohl, H., \& Krätzig, M. (Eds.). (2004). \emph{Applied Time Series
 Econometrics}. Cambridge University Press.
