@@ -6,10 +6,10 @@ library(ggplot2)
 library(tsibble)
 library(ggrepel)
 library(dplyr)
-library(TSA)            # 3 librerias q uso p crear ccf_preblanqueadas() + ggplot2
+library(TSA)       # 3 librerias para crear ccf_preblanqueadas() + ggplot2
 library(dplyr)
 library(rlang)
-library(ggplot2)   # para la fc 3 de la app
+library(ggplot2)  
 library(dplyr)
 library(tidyr)
 library(tsibble)

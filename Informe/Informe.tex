@@ -1406,14 +1406,26 @@ IACA & Índice de Actividad de la Cadena Agropecuaria & Bolsa de Comercio de Ros
 Una vez que se obtuvieron todas las series de las universidades junto
 con las buscadas de forma independiente y realizadas las tareas
 inherentes al manejo de datos, se construyó la base de datos
-\texttt{base\_construida.xlsx}, con el software R, que permitió realizar
-el análisis.
+\texttt{base\_construida.xlsx}, con el \emph{software} R, que permitió
+realizar el análisis.
 
 La mencionada base cuenta con 126 observaciones y 28 variables, una
 corresponde a la fecha de cada observación, seis son los índices bajo
 estudio relevados por las universidades y las 21 restantes son las
-sugeridas por los especialistas. Excepto la fecha que es cualitativa
-ordinal, el resto de las variables son cuantitativas continuas.
+variables económicas. Excepto la fecha que es cualitativa ordinal, el
+resto de las variables son cuantitativas continuas. Las tres series
+argentinas son de periodicidad bimestral y quedan conformadas por 44
+observaciones cada una en el período noviembre 2018 - enero 2026. Sin
+embargo, los tres indicadores norteamericanos son mensuales, y presentan
+126 observaciones para el período octubre 2015 - marzo 2026, al igual
+que los índices económicos.
+
+Dado que el carácter de los análisis realizados en este documento es
+exploratorio, en la mayoría de este trabajo no fue necesario
+compatibilizar las periodicidades de las series. No obstante, al
+comparar la confianza del productor argentino vs.~estadounidense sí fue
+necesario obtener un período común, lo cual fue explicitado en la
+Sección~\ref{sec-analisis_biv}.
 
 \newpage
 
@@ -1871,7 +1883,7 @@ nivel de significación. Estos resultados conducen a que la serie
 diferenciada sigue un ruido blanco y que consecuentemente el \emph{Ag
 Economy Barometer} sigue el patrón de paseo aleatorio.
 
-\subsection{Análisis bivariado}\label{anuxe1lisis-bivariado}
+\subsection{Análisis bivariado}\label{sec-analisis_biv}
 
 Superada la etapa de análisis univariado, se aborda el estudio
 bivariado. Este apartado presenta un estudio comparativo entre las
