@@ -457,7 +457,7 @@ de campo, qué preguntas se realizan en cada edición y cómo se utilizan
 estas últimas para construir los indicadores.
 
 \subsection{\texorpdfstring{Características del \emph{Ag Barometer
-Austral}}{Características del Ag Barometer Austral}}\label{caracteruxedsticas-del-ag-barometer-austral}
+Austral}}{Características del Ag Barometer Austral}}\label{sec-materiales_arg}
 
 La población está conformada por productores de la Pampa Húmeda
 abarcando las provincias de Buenos Aires, Córdoba, Entre Ríos y Santa
@@ -572,7 +572,7 @@ Expectativas futuras & $Q_2$, $Q_3$, $Q_4$ & Percepciones futuras \\
 \end{table}%
 
 \subsection{\texorpdfstring{Características del \emph{Ag Economy
-Barometer}}{Características del Ag Economy Barometer}}\label{caracteruxedsticas-del-ag-economy-barometer}
+Barometer}}{Características del Ag Economy Barometer}}\label{sec-materiales_eeuu}
 
 Si bien los dos índices, \emph{Ag Barometer Austral} y \emph{Ag Economy
 Barometer}, comparten el objetivo de medir la confianza de los
@@ -1420,12 +1420,13 @@ embargo, los tres indicadores norteamericanos son mensuales, y presentan
 126 observaciones para el período octubre 2015 - marzo 2026, al igual
 que los índices económicos.
 
-Dado que el carácter de los análisis realizados en este documento es
-exploratorio, en la mayoría de este trabajo no fue necesario
-compatibilizar las periodicidades de las series. No obstante, al
-comparar la confianza del productor argentino vs.~estadounidense sí fue
-necesario obtener un período común, lo cual fue explicitado en la
-Sección~\ref{sec-analisis_biv}.
+Dado que los análisis realizados en este documento son, en mayor parte,
+de carácter exploratorio, no fue necesario compatibilizar las
+periodicidades de las series. No obstante, el único análisis en toda la
+práctica profesional que sí requirió compatibilización, fue la
+comparación de la confianza del productor argentino vs.~estadounidense.
+El criterio empleado en ese caso fue explicitado en una nota al pie de
+página en la Sección~\ref{sec-analisis_biv}.
 
 \newpage
 
@@ -1866,22 +1867,17 @@ el primer coeficiente, tanto de la FACM como de la FACPM
 estacionario.
 
 Con el fin de ahondar más en las características presentes en esta
-serie, también se analiza su primera diferencia a partir de la
-Figura~\ref{fig-acf_ageb_dif1}. La mayoría de los bastones de la FACM
-son, de manera individual, no significativos excepto por dos de ellos.
-Estos últimos, a pesar de ser significativos, están asociados a
-estimaciones alrededor de -0.2 dejando en duda su relevancia práctica.
-Lo mismo ocurre con un rezago en la FACPM. Es decir, este criterio de
-evaluar individualmente la significación de cada coeficiente no conduce
-a conclusiones claras acerca de la estructura temporal de la diferencia.
-Por tal motivo, se recurrió a otro tipo de recursos. Se llevaron a cabo
-las pruebas de ADF, KPSS y Ljung-Box sobre la serie diferenciada,
-obteniéndose que ésta es estacionaria (\(p-value=\) 0.0100, \(p-value=\)
-0.1000) y que los primeros 20 coeficientes de su FAC son nulos
-(\(p-value=\) 0.7044), a partir de la evidencia muestral con un 5\% de
-nivel de significación. Estos resultados conducen a que la serie
-diferenciada sigue un ruido blanco y que consecuentemente el \emph{Ag
-Economy Barometer} sigue el patrón de paseo aleatorio.
+serie, también se analiza su primera diferencia. Se observa que si bien
+la mayoría de los coeficientes de la FAC y de la FACP no son
+signficativos, hay algunos que de manera individual son
+significativamente distintos de cero (Figura~\ref{fig-acf_ageb_dif1}).
+Seguidamente se llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box,
+obteniéndose que esta serie es estacionaria (\(p-value=\) 0.0100,
+\(p-value=\) 0.1000) y que los primeros 20 coeficientes de su FAC son
+nulos de manera conjunta (\(p-value=\) 0.7044), a partir de la evidencia
+muestral con un 5\% de nivel de significación. Estos resultados conducen
+a que la serie diferenciada sigue un ruido blanco y que consecuentemente
+el \emph{Ag Economy Barometer} sigue el patrón de paseo aleatorio.
 
 \subsection{Análisis bivariado}\label{sec-analisis_biv}
 
@@ -1960,14 +1956,18 @@ Todos los rezagos de la Figura~\ref{fig-ccf_arg_usa} son no
 significativos, sugiriendo que ningún índice influye sobre el otro. En
 segundo lugar, se realizó la prueba de Engle-Granger\footnote{Tanto para
   estimar la FCC como para poder realizar la prueba es necesario que las
-  dos series tengan la misma longitud y periodicidad. En este sentido,
-  sólo se utilizaron 44 datos estadounidenses los cuales representan un
-  34.92\% de la totalidad.} (Enders, 2014, secc. 6.1) y se concluye en
-base a la evidencia muestral que los \emph{Barometers} no están
-cointegrados (\(p-value > 0.1000\)). Considerando los resultados de
-estos dos recursos empleados, se concluyó que la confianza de los
-productores argentinos no está asociada a la de los productores
-norteamericanos.
+  dos series tengan la misma longitud y periodicidad. Por esta razón,
+  ambas series fueron consideradas sobre el período común noviembre 2018
+  - enero 2026 y con periodicidad bimestral. En este sentido, sólo se
+  utilizaron 44 datos estadounidenses los cuales representan un 34.92\%
+  de la totalidad. Considerando que esta es la única parte de todos los
+  análisis realizados, en el que fue necesario que las series tengan
+  período común, se decidió compatibilizarlas de esta forma ya que es la
+  más práctica.} (Enders, 2014, secc. 6.1) y se concluye en base a la
+evidencia muestral que los \emph{Barometers} no están cointegrados
+(\(p-value > 0.1000\)). Considerando los resultados de estos dos
+recursos empleados, se concluyó que la confianza de los productores
+argentinos no está asociada a la de los productores norteamericanos.
 
 \subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
 
@@ -2020,16 +2020,26 @@ Expectativas futuras argentinas pre-blanqueadas}
 
 \end{figure}%
 
-El \emph{Ag Barometer Austral} mantiene una relación contemporánea con
-las condiciones presentes como se puede apreciar en la
-Figura~\ref{fig-ccf_arg1}. Es decir, las percepciones de los productores
-argentinos están asociadas con su situación actual. Asimismo, se destaca
-una relación contemporánea moderada entre la confianza y las
-Expectativas futuras (Figura~\ref{fig-ccf_arg2}), así como entre las
-Condiciones presentes y las Expectativas (Figura~\ref{fig-ccf_arg3}). El
-hecho de que las tres estimaciones de las FCC en el retardo cero son
-significativas y positivas conlleva a concluir que las tres evolucionan
-juntas.
+Se pueden apreciar dos características. La primera es que el \emph{Ag
+Barometer Austral} mantiene una relación contemporánea con las
+Condiciones presentes como se puede apreciar en la
+Figura~\ref{fig-ccf_arg1}, también con las Expectativas futuras
+(Figura~\ref{fig-ccf_arg2}), de igual manera ocurre entre las
+Condiciones presentes y las Expectativas futuras
+(Figura~\ref{fig-ccf_arg3}). El hecho de que las tres estimaciones de
+las FCC en el retardo cero son significativas y positivas conlleva a
+concluir que las tres series evolucionan juntas. Sin embargo, este
+resultado era de esperar ya que los índices de Condiciones y
+Expectativas son elaborados a partir de algunas de las cinco preguntas
+fijas y de la misma manera que el \emph{Ag Barometer}
+(Sección~\ref{sec-materiales_arg}, Tabla~\ref{tbl-preguntas_agb}). La
+segunda característica es que, a partir de los datos relevados, las
+Expectativas futuras de los productores argentinos no anticipan sus
+Condiciones presentes de posteriores relevamientos, dado que los
+coeficientes de la FCC en los rezagos positivos no son significativos
+(Figura~\ref{fig-ccf_arg3}). En otras palabras, según la información
+disponible hasta el momento, las proyecciones que tienen los productores
+sobre sus percepciones a futuro no se terminan materializando.
 
 \subsubsection{Análisis de los índices norteamericanos}\label{ccfs_usa}
 
@@ -2081,18 +2091,19 @@ Expectativas futuras en Estados Unidos pre-blanqueadas}
 
 \end{figure}%
 
-Según la Figura~\ref{fig-ccf_usa1}, a medida que la confianza de los
-productores norteamericanos aumenta (o disminuye), sus Condiciones
-presentes también. De igual manera ocurre entre el \emph{Ag Economy
-Barometer} con las Expectativas futuras (Figura~\ref{fig-ccf_usa2}) y
-entre las Condiciones presentes con las Expectativas futuras
-(Figura~\ref{fig-ccf_usa3}). En otras palabras, los tres índices
-evolucionan juntos a través del tiempo.
-
-Otro aspecto a destacar de las tres FCCM, es que en los tres casos el
-único rezago significativo es el cero. Esto quiere decir que si bien las
-tres series están relacionadas, las asociaciones sólo son contemporáneas
-y no hay ningún índice que anticipe el comportamiento futuro de otro.
+Según la evidencia disponible, se observan las mismas características
+que en el caso local. En primer lugar, como los tres coeficientes del
+rezago cero son significativamente distintos de cero
+(Figura~\ref{fig-ccf_usa1}, Figura~\ref{fig-ccf_usa2} y
+Figura~\ref{fig-ccf_usa3}), los tres indicadores norteamericanos
+evolucionan juntos. Sin embargo, tal como ocurre en el caso argentino,
+esta asociación contemporánea entre el \emph{Ag Economy Barometer},
+Condiciones presentes y Expectativas futuras era de esperar dada la
+contrucción de estso índices (Sección~\ref{sec-materiales_eeuu}). La
+segunda características es que las expectativas que tienen los
+productores a futuro no anticipan sus Condiciones presentes de
+relevamientos posteriores, ya que los coeficientes de la FCC de rezagos
+positivos son significativamente nulos (Figura~\ref{fig-ccf_usa3}).
 
 \subsubsection{Análisis de variables
 económicas}\label{anuxe1lisis-de-variables-econuxf3micas}
@@ -2123,16 +2134,16 @@ los productores de cierto mes podría estar relacionada con los precios
 del mes anterior. La segunda particularidad está vinculada a la no
 estacionariedad de las series. Es muy común que variables económicas
 como tasas de interés, precios, etc, sean no estacionarias (Tsay, 2010,
-pp.~71-72). Por tal motivo se asumió que todas las variables buscadas
-tienen una raíz unitaria. Además, el propio \emph{Ag Barometer Austral}
-tampoco es estacionario como se probó en la Sección~\ref{sec-univ_arg}.
-En consecuencia, a la hora de intentar medir la asociación entre la
+pp.~71-72). Además, el propio \emph{Ag Barometer Austral} tampoco es
+estacionario como se probó en la Sección~\ref{sec-univ_arg}. En
+consecuencia, a la hora de intentar medir la asociación entre la
 confianza de los productores y estas variables, se podría estar
 obteniendo un alto valor de correlación, no porque las variables estén
 asociadas, sino debido a la fuerte estructura de autocorrelación de las
-series (Cryer-Chan, 2008). Para no obtener estas correlaciones espurias,
-se realizó el proceso de pre-blanqueo previo a cada gráfico de
-dispersión en todas las figuras.
+series (Cryer-Chan, 2008). A los fines de responder al objetivo
+exploratorio y homogeneizar el tratamiento, se decidió aplicar
+pre-blanqueo sistemáticamente a las series antes de analizar las
+posibles asociaciones.
 
 \begin{figure}
 
@@ -2162,8 +2173,9 @@ Economy Barometer} y los \emph{commodities} pre-blanqueados}
 
 Tal como puede observarse en la Figura~\ref{fig-commodities_arg} y en la
 Figura~\ref{fig-commodities_usa}, las asociaciones con los precios son
-débiles. Esto significa que el \emph{Ag Barometer} no está relacionado a
-fenómenos vinculados a los precios de producción ni con los insumos.
+débiles. Esto significa que según los datos disponibles y el enfoque
+exploratorio utilizado, no se observa evidencia de relación lineal entre
+el \emph{Ag Barometer} y los precios de producción o con los insumos.
 Ante estos resultados, se propone incorporar al análisis un segundo
 conjunto de variables de índole financiera, actividad y de confianza
 general.
@@ -2219,11 +2231,12 @@ Economy Barometer} y otras variables económicas pre-blanqueadas}
 
 \end{figure}%
 
-En base a la inspección gráfica de la
+En base a la información disponible y a la inspección gráfica de la
 Figura~\ref{fig-vars_economicas_arg} y la
 Figura~\ref{fig-vars_economicas_usa}, se deduce que la confianza de los
-productores tampoco estaría asociada a fenómenos vinculados a tasas de
-interés, índices bursátiles ni de confianza/actividad.
+productores tampoco estaría asociada de manera lineal a fenómenos
+vinculados a tasas de interés, índices bursátiles ni de
+confianza/actividad.
 
 \subsubsection{Análisis de eventos}\label{anuxe1lisis-de-eventos}
 
@@ -2290,8 +2303,11 @@ observó una tendencia creciente repentina y efímera en 2020
 elección presidencial (Figura~\ref{fig-elecciones_usa}). Durante ese
 mismo año, los valores de confianza de los productores exhibieron,
 aparentemente, una mayor dispersión (Figura~\ref{fig-boxplot_usa}). Esta
-exploración visual en conjunto, sugiere que el \emph{Ag Barometer} se ve
-alterado por efectos políticos.
+exploración visual en conjunto, sugiere que los cambios en la dinámica
+de las series ocurren alrededor de ciertos procesos electorales.
+Considerando el carácter observacional del análisis, estos resultados no
+permiten concluir que la causa de dichos cambios sea debida a
+acontecimientos políticos.
 
 Puede destacarse también una diferencia entre la confianza de ambos
 países. Los cambios en Argentina no siguen el mismo comportamiento que
@@ -2305,9 +2321,11 @@ Alberto Fernández en 2019, se produjo la baja más abrupta histórica de
 la serie, generando al año siguiente la confianza promedio más baja de
 todo el período, y el pesimismo se sostuvo durante todo su mandato
 (Figura~\ref{fig-acf_prom}). En cambio, al ganar Javier Milei en 2023,
-la confianza comenzó a crecer, pasando del pesimismo al optimismo. Esto
-podría explicarse por la heterogeneidad ideológica entre los partidos
-políticos argentinos.
+la confianza comenzó a crecer, pasando del pesimismo al optimismo. Es
+decir que alrededor de las elecciones presidenciales, los patrones en la
+confianza difieren entre ambos países. No obstante, el reducido número
+de elecciones comprendidas en el período analizado impide establecer
+patrones generales acerca de la dirección de los cambios.
 
 \begin{figure}
 
