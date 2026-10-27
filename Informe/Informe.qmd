@@ -49,7 +49,7 @@ Principalmente su desarrollo fue realizado en base a los índices de confianza r
 
 
 
-Con el fin de responder a los objetivos planteados, en primer lugar, para estudiar la dinámica del *Ag Barometer Austral* y el *Ag Economy Barometer* se realizó un análisis univariado sugiriendo que, a partir de la inspección gráfica, ambas series exhiben cambios repentinos, no presentarían variancia constante, ni pauta estacional. Adicionalmente, se probó que ambas son no estacionarias (poseen una raíz unitaria) y particularmente se comportan como paseo aleatorio. 
+Con el fin de responder a los objetivos planteados, en primer lugar, para estudiar la dinámica del *Ag Barometer Austral* y el *Ag Economy Barometer* se realizó un análisis univariado sugiriendo que, a partir de la inspección gráfica, ambas series exhiben cambios repentinos, no presentarían variancia constante, ni pauta estacional. Adicionalmente, se encontró que ambas son no estacionarias (poseen una raíz unitaria) y particularmente se comportan como paseo aleatorio. 
 
 
 Luego se realizó un análisis bivariado del cual se desprenden tres resultados principales. Primero se aplicaron técnicas de correlación cruzada y análisis de rezagos que permiten hablar de ausencia de asociación lineal entre la confianza de productores argentinos y la de los norteamericanos. En segundo lugar, el rezago utilizado y las técnicas para evitar correlaciones espurias, señalarían que las percepciones del productor no presentarían relación lineal con factores económicos. Finalmente, la inspección gráfica posibilita vislumbrar que los cambios repentinos en la confianza del productor coinciden temporalmente con algunos procesos electorales.
@@ -359,6 +359,7 @@ En Estados Unidos también se calculan los indicadores Condiciones presentes y E
 En la Universidad de *Purdue* también construyen, aparte de los tres índices ya mencionados, el indicador "Inversión del capital agrícola" en base a la quinta pregunta ($Q_5$). Sin embargo no fue tenido en cuenta en el trabajo por no ser relevado a nivel local.
 
 
+\newpage
 
 ## Los datos
 
@@ -597,7 +598,7 @@ El proceso de pre-blanqueo tiene dos ventajas. La primera es que este procedimie
 La segunda es que es válido evaluar si los coeficientes de la FCC son estadísticamente distintos de cero, comparando los coeficientes de FCCM de las series pre-blanqueadas con el umbral $1.96/\sqrt{T}$ (Cryer-Chan, 2008).
 
 
-En cuanto a la implemetación computacional de este proceso de pre-blanquo, se programaron dos funciones en R. La primera es `ccf_preblanqueadas()` la cual devuelve la FCCM entre dos series sometidas previamente a pre-blanqueo. Ésta toma la serie $X$, le ajusta un modelo $ARIMA(p, d, q)$[^auto.arima] y preserva los residuos. Luego utilizando esa misma transformación, que surge del modelo de $X$, obtiene los residuos de $Y$. De esta manera no se ajusta otro modelo para $Y$, para ambas series se utiliza el ajuste buscado para $X$. Finalmente `ccf_preblanqueadas()` retorna la FCCM entre los residuos de las series. La segunda función es `correlaciones_preblanqueadas()` que tiene por objetivo, devolver en una figura, gráficos de dispersión entre una serie $Y$ y cada una de las series $X$. Lo primero que realiza es un proceso que itera a través de las variables $X$. Para una de ellas, ajusta un modelo $ARIMA(p, d, q)$, obtiene los residuos y utilizando ese mismo filtro también obtiene los residuos de $Y$, guarda estos dos vectores y presenta el gráfico de dispersión entre ellos junto a la estimación del coeficiente de Pearson. Realiza lo mismo para cada $X$, hasta obtener cada uno de los gráficos de dispersión de $Y$ vs $X$ pre-blanqueadas y agrupándolos en la figura que devuelve.
+En cuanto a la implementación computacional de este proceso de pre-blanqueo, se programaron dos funciones en R. La primera es `ccf_preblanqueadas()` la cual devuelve la FCCM entre dos series sometidas previamente a pre-blanqueo. Ésta toma la serie $X$, le ajusta un modelo $ARIMA(p, d, q)$[^auto.arima] y preserva los residuos. Luego utilizando esa misma transformación, que surge del modelo de $X$, obtiene los residuos de $Y$. De esta manera no se ajusta otro modelo para $Y$, para ambas series se utiliza el ajuste buscado para $X$. Finalmente `ccf_preblanqueadas()` retorna la FCCM entre los residuos de las series. La segunda función es `correlaciones_preblanqueadas()` que tiene por objetivo, devolver en una figura, gráficos de dispersión entre una serie $Y$ y cada una de las series $X$. Lo primero que realiza es un proceso que itera a través de las variables $X$. Para una de ellas, ajusta un modelo $ARIMA(p, d, q)$, obtiene los residuos y utilizando ese mismo filtro también obtiene los residuos de $Y$, guarda estos dos vectores y presenta el gráfico de dispersión entre ellos junto a la estimación del coeficiente de Pearson. Realiza lo mismo para cada $X$, hasta obtener cada uno de los gráficos de dispersión de $Y$ vs $X$ pre-blanqueadas y agrupándolos en la figura que devuelve.
 
 [^auto.arima]: El modelo que se ajusta para la serie $X$ es el sugerido por la función `auto.arima()` implementada por Hyndman-Khandakar (2008).
 
@@ -898,7 +899,7 @@ Considerando estos aspectos, queda de manifiesto que no es necesario emplear rec
 ## Búsqueda de variables económicas
 
 
-Además de los índices ya considerados en la base, resultó necesario incorporar otras variables con el fin de estudiar qué fenómenos podrían estar vinculados al *Ag Barometer*. La búsqueda de estos factores fue guíada por los economistas del Centro de Agronegocios, y pueden agruparse en las siguientes categorías:
+Además de los índices ya considerados en la base, resultó necesario incorporar otras variables con el fin de estudiar qué fenómenos podrían estar vinculados al *Ag Barometer*. La búsqueda de estos factores fue guaada por los economistas del Centro de Agronegocios, y pueden agruparse en las siguientes categorías:
 
 -   Precios de la producción: Precio internacional de la soja, maíz, trigo, sorgo, carne vacuna, porcina y aviar
 -   Insumos: Precio internacional de la urea, petróleo y gas natural
@@ -1287,11 +1288,11 @@ A simple vista, viendo los valores que toma el *Ag Barometer Austral* en la @fig
 
 
 
-En gran parte del período de relevamiento, a partir del 2020, el *Ag Barometer Austral* medio, @fig-acf_prom, parece ir aumentando a medida que pasa el tiempo, empezando por una confianza media baja, evolucionando, y observándose un promedio alta al final del período. 
+En gran parte del período de relevamiento, a partir del 2020, el *Ag Barometer Austral* medio, @fig-acf_prom, parece ir aumentando a medida que pasa el tiempo, empezando por una confianza media baja, evolucionando, y observándose un promedio alto al final del período. 
 
-En la @fig-fideos_agba se puede ver que hay años como el 2020, 2021, 2022 que la confianza es baja; hay otros años en que el sentimiento es alta como en el 2024 y en el 2025; en el 2019 la confianza aumentaba hasta un momento en el cual pasó drásticamente de alta a baja; se observa finalmente que en el 2023 las percepciones presentan una tendencia a crecer. 
+En la @fig-fideos_agba se puede ver que hay años como el 2020, 2021, 2022 que la confianza es baja; hay otros años en que el sentimiento es alto como en el 2024 y en el 2025; en el 2019 la confianza aumentaba hasta un momento en el cual pasó drásticamente de alta a baja; se observa finalmente que en el 2023 las percepciones presentan una tendencia a crecer. 
 En la @fig-subseries_agba, en todos los meses parecería ocurrir que, el *Ag Barometer Austral* medio oscila alrededor del valor neutro 100 y que los valores presentan dispersiones similares. 
-Todas estas observaciones conllevarían a concluir que el comportamiento del *Ag Barometer Austral* parecería ser distinto en cada año y similar en los seis meses. En consecuencia, no parece presentar un patrón estacional.
+Todas estas observaciones llevarían a concluir que el comportamiento del *Ag Barometer Austral* parecería ser distinto en cada año y similar en los seis meses. En consecuencia, no parece presentar un patrón estacional.
 
 Se pueden observar en la @fig-boxplot_arg dos características sobre la serie. La primera es que, desde el 2020 en adelante, el *Ag Barometer Austral* mediano parece crecer con el correr de los años. La segunda es que, sin considerar los años 2018 y 2026 por solo tener una observación, los valores de este índice no parecen variar de manera similar en todos los años. En el 2021 las observaciones no parecen variar mucho; los valores parecen tener dispersiones similares en los años 2020, 2022, 2024, 2025; y en el año 2019, seguido del 2023, es cuando las percepciones parecen presentar mayor volatilidad. Esto querría decir que la variancia del sentimiento no parece ser constante a través de los años, observándose en 2019 los valores más dispersos. Fusionando estos dos aspectos, también podría decirse que no parece  haber relación entre la mediana y la variancia.
 
@@ -1618,12 +1619,12 @@ En promedio (@fig-ageb_prom), la confianza de los norteamericanos aumentó en co
 
 
 
-El comportamiento del *Ag Economy Barometer* no parece presentar un patrón inter-anual que se repita todos los años (@fig-fideos_ageb). Esto queda de manifiesto al comparar algunas trayectorias anuales. Mientras que en 2016 el índice oscila en torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala hasta un máximo en octubre; en contraste, en 2021 comienza con valores similares al 2020 pero alcanza su pico abril para luego mantener una tendencia decreciente durante el resto del año.
+El comportamiento del *Ag Economy Barometer* no parece presentar un patrón inter-anual que se repita todos los años (@fig-fideos_ageb). Esto queda de manifiesto al comparar algunas trayectorias anuales. Mientras que en 2016 el índice oscila en torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala hasta un máximo en octubre; en contraste, en 2021 comienza con valores similares al 2020 pero alcanza su pico en abril para luego mantener una tendencia decreciente durante el resto del año.
 
 
 
 
-En la @fig-subseries_ageb, se aprecia en todos los meses que: la confianza promedio es de alrededor 130 puntos y que las percepciones presentan variaciones similares. Estos dos últimos aspectos conllevarían a concluir que el sentimiento de los norteamericanos no parece tener una componente estacional.
+En la @fig-subseries_ageb, se aprecia en todos los meses que: la confianza promedio es de alrededor 130 puntos y que las percepciones presentan variaciones similares. Estos dos últimos aspectos llevarían a concluir que el sentimiento de los norteamericanos no parece tener una componente estacional.
 
 
 
@@ -1637,7 +1638,7 @@ Se realizó el test ADF y se concluye con un nivel de significación del 5% y en
 
 
 
-Con el fin de ahondar más en las características presentes en esta serie, también se analiza su primera diferencia. Se observa que si bien la mayoría de los coeficientes de la FAC y de la FACP no son signficativos, hay algunos que de manera individual son significativamente distintos de cero (@fig-acf_ageb_dif1). Seguidamente se llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box, obteniéndose que esta serie es estacionaria ($p-value=$ `r pv_ageb_dif1_adf`, $p-value=$ `r pv_ageb_dif1_kpss`) y que los primeros 20 coeficientes de su FAC son nulos de manera conjunta ($p-value=$ `r pv_ageb_dif1_ljung`), a partir de la evidencia muestral con un 5% de nivel de significación. Estos resultados conducen a que la serie diferenciada sigue un ruido blanco y que consecuentemente el *Ag Economy Barometer* sigue el patrón de paseo aleatorio.
+Con el fin de ahondar más en las características presentes en esta serie, también se analiza su primera diferencia. Se observa que si bien la mayoría de los coeficientes de la FAC y de la FACP no son significativos, hay algunos que de manera individual son significativamente distintos de cero (@fig-acf_ageb_dif1). Seguidamente se llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box, obteniéndose que esta serie es estacionaria ($p-value=$ `r pv_ageb_dif1_adf`, $p-value=$ `r pv_ageb_dif1_kpss`) y que los primeros 20 coeficientes de su FAC son nulos de manera conjunta ($p-value=$ `r pv_ageb_dif1_ljung`), a partir de la evidencia muestral con un 5% de nivel de significación. Estos resultados conducen a que la serie diferenciada sigue un ruido blanco y que consecuentemente el *Ag Economy Barometer* sigue el patrón de paseo aleatorio.
 
 
 
@@ -1878,7 +1879,7 @@ d |>
 
 
 
-Se pueden apreciar dos características. La primera es que el *Ag Barometer Austral* mantiene una relación contemporánea con las Condiciones presentes como se puede apreciar en la @fig-ccf_arg1, también con las Expectativas futuras (@fig-ccf_arg2), de igual manera ocurre entre las Condiciones presentes y las Expectativas futuras (@fig-ccf_arg3). El hecho de que las tres estimaciones de las FCC en el retardo cero son significativas y positivas conlleva a concluir que las tres series evolucionan juntas. Sin embargo, este resultado era de esperar ya que los índices de Condiciones y Expectativas son elaborados a partir de algunas de las cinco preguntas fijas y de la misma manera que el *Ag Barometer* (@sec-materiales_arg, @tbl-preguntas_agb). La segunda característica es que, a partir de los datos relevados, las Expectativas futuras de los productores argentinos no anticipan sus Condiciones presentes de posteriores relevamientos, dado que los coeficientes de la FCC en los rezagos positivos no son significativos (@fig-ccf_arg3). En otras palabras, según la información disponible hasta el momento, las proyecciones que tienen los productores sobre sus percepciones a futuro no se terminan materializando.
+Se pueden apreciar dos características. La primera es que el *Ag Barometer Austral* mantiene una relación contemporánea con las Condiciones presentes como se puede apreciar en la @fig-ccf_arg1, también con las Expectativas futuras (@fig-ccf_arg2), de igual manera ocurre entre las Condiciones presentes y las Expectativas futuras (@fig-ccf_arg3). El hecho de que las tres estimaciones de las FCC en el retardo cero son significativas y positivas lleva a concluir que las tres series evolucionan juntas. Sin embargo, este resultado era de esperar ya que los índices de Condiciones y Expectativas son elaborados a partir de algunas de las cinco preguntas fijas y de la misma manera que el *Ag Barometer* (@sec-materiales_arg, @tbl-preguntas_agb). La segunda característica es que, a partir de los datos relevados, las Expectativas futuras de los productores argentinos no anticipan sus Condiciones presentes de posteriores relevamientos, dado que los coeficientes de la FCC en los rezagos positivos no son significativos (@fig-ccf_arg3). En otras palabras, según la información disponible hasta el momento, las proyecciones que tienen los productores sobre sus percepciones a futuro no se terminan materializando.
 
 
 
@@ -1947,7 +1948,7 @@ d |>
 
 
 
-Según la evidencia disponible, se observan las mismas características que en el caso local. En primer lugar, como los tres coeficientes del rezago cero son significativamente distintos de cero (@fig-ccf_usa1, @fig-ccf_usa2 y @fig-ccf_usa3), los tres indicadores norteamericanos evolucionan juntos. Sin embargo, tal como ocurre en el caso argentino, esta asociación contemporánea entre el *Ag Economy Barometer*, Condiciones presentes y Expectativas futuras era de esperar dada la contrucción de estso índices (@sec-materiales_eeuu). La segunda características es que las expectativas que tienen los productores a futuro no anticipan sus Condiciones presentes de relevamientos posteriores, ya que los coeficientes de la FCC de rezagos positivos son significativamente nulos (@fig-ccf_usa3).
+Según la evidencia disponible, se observan las mismas características que en el caso local. En primer lugar, como los tres coeficientes del rezago cero son significativamente distintos de cero (@fig-ccf_usa1, @fig-ccf_usa2 y @fig-ccf_usa3), los tres indicadores norteamericanos evolucionan juntos. Sin embargo, tal como ocurre en el caso argentino, esta asociación contemporánea entre el *Ag Economy Barometer*, Condiciones presentes y Expectativas futuras era de esperar dada la construcción de estos índices (@sec-materiales_eeuu). La segunda características es que las expectativas que tienen los productores a futuro no anticipan sus Condiciones presentes de relevamientos posteriores, ya que los coeficientes de la FCC de rezagos positivos son no significativos (@fig-ccf_usa3).
 
 
 
@@ -2109,7 +2110,7 @@ Las primeras son las cotizaciones de los *Federal Funds Rate* y de los Bonos de 
 También se incorporan a este análisis, los índices bursátiles *Dow Jones* y *Nasdaq*. Un aumento en estas variables podría referirse a un crecimiento global de la economía, lo cual podría producir un aumento en la confianza del productor.
 
 
-Por otro lado, se agregan los índices de confianza del consumidor elaborados por las universidades Torcuato Di tella y Michigan. En este caso podría esperarse que a mayor confianza del consumidor, mayor para el productor.
+Por otro lado, se agregan los índices de confianza del consumidor elaborados por las universidades Torcuato Di Tella y Michigan. En este caso podría esperarse que a mayor confianza del consumidor, mayor para el productor.
 
 
 Finalmente se suma al análisis el Índice de la Actividad de la Cadena Agropecuaria (IACA) de la Bolsa de Comercio de Rosario. En principio, podría esperarse que a mayor actividad, se genere mayor confianza en el productor argentino.
@@ -2299,7 +2300,7 @@ graficar_elecciones(
 
 ```{r}
 #| label: fig-elecciones_usa
-#| fig-cap: "Evolución del *Ag Economy Barometer* y resultados de la elecciones presidenciales estadounidenses"
+#| fig-cap: "Evolución del *Ag Economy Barometer* y resultados de las elecciones presidenciales estadounidenses"
 #| fig-height: 4.8
 #| fig-width: 6.3
 
