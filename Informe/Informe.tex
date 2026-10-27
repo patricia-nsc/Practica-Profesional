@@ -11,7 +11,7 @@
 \usepackage[bottom]{footmisc}
 
 % Para que no me trunque las palabras (no separa bien en silabas), q salte de linea
-\usepackage[none]{hyphenat}
+% \usepackage[none]{hyphenat}
 \usepackage{microtype}
 
 \usepackage{graphicx}                  % Para tener 'includegraphics'
@@ -265,6 +265,15 @@
 
 \section*{Agradecimientos}\label{agradecimientos}
 
+En primer lugar, se extiende un sincero agradecimiento a la Universidad
+Austral por la valiosa oportunidad de realizar esta práctica en el
+Centro. El contacto directo con los especialistas habilitó el trabajo
+interdisciplinario y el aprendizaje de temas relacionados a los
+agronegocios que no son abordados en el grado de estadística. Además, la
+posibilidad de analizar datos reales cuyo relevamiento es planificado y
+llevado a cabo por el Centro, y la Universidad \emph{Purdue}, es
+considerada un privilegio.
+
 \newpage
 
 \section*{Resumen}\label{resumen}
@@ -273,54 +282,53 @@ El sector agropecuario es clave en el desarrollo de las sociedades,
 especialmente en las no desarrolladas. Su relevancia varía según el
 país, esto motiva comparar la confianza de los productores entre
 economías. El \emph{Ag Barometer Austral} mide la confianza del
-productor argentino (Universidad Austral, desde 2018) y el \emph{Ag
-Economy Barometer} la del productor norteamericano (Universidad
-\emph{Purdue}, desde 2015). Este trabajo tuvo como objetivo comparar,
-desde una perspectiva exploratoria, la evolución temporal de ambos
-índices y estudiar qué factores están asociados a la confianza de los
-productores.
+productor argentino (Universidad Austral, elaborado desde 2018) y el
+\emph{Ag Economy Barometer} la del productor norteamericano (Universidad
+\emph{Purdue}, elaborado desde 2015). Este trabajo tuvo como objetivo
+comparar, desde una perspectiva exploratoria, la evolución temporal de
+ambos índices y estudiar qué factores están asociados a la confianza de
+los productores.
 
 Principalmente su desarrollo fue realizado en base a los índices de
 confianza relevados por las universidades. Asimismo, se hizo uso de
 variables económicas de sitios como el Banco Mundial, la Reserva Federal
 de Estados Unidos y la Bolsa de Comercio de Rosario.
 
-Para cumplir con los objetivos, se imputaron valores faltantes y se creó
-un conjunto de datos que reuniera la información de Argentina, de
-Estados Unidos y las variables económicas. Posteriormente se realizó un
-análisis exploratorio univariado de los índices para identificar qué
-características tiene cada uno, ya sea estacionariedad, tendencia,
-estacionalidad, volatilidad, etc. Para llevarlo a cabo se presentaron
-diversas figuras y tests. Asimismo, se aplicaron técnicas de correlación
-cruzada y análisis de rezagos para estudiar si estos indicadores están
-relacionados y para analizar, a modo de análisis cuantitativo, si están
-asociados a variables económicas. A su vez, mediante un análisis
-cualitativo se investigó de forma gráfica si ciertos acontecimientos,
-como resultados electorales, Covid-19 o conflictos bélicos, alteran la
-confianza de los productores.
+Con el fin de responder a los objetivos planteados, en primer lugar,
+para estudiar la dinámica del \emph{Ag Barometer Austral} y el \emph{Ag
+Economy Barometer} se realizó un análisis univariado sugiriendo que, a
+partir de la inspección gráfica, ambas series exhiben cambios
+repentinos, no presentarían variancia constante, ni pauta estacional.
+Adicionalmente, se probó que ambas son no estacionarias (poseen una raíz
+unitaria) y particularmente se comportan como paseo aleatorio.
 
-En el análisis univariado se observó que las series exhiben cambios
-repentinos, no presentarían variancia constante, ni pauta estacional, no
-son estacionarias y siguen el patrón de paseo aleatorio. En el análisis
-bivariado, a partir de la exploración de los datos, se observaron tres
-aspectos. El primero es que la confianza de productores argentinos no
-guarda relación con la de los norteamericanos. El segundo es que, en
-ambos países, las percepciones de los productores no estarían asociadas
-a ningún factor económico. El tercero es que, los años en los que se
-registran los cambios abruptos y una mayor volatilidad en las
-percepciones coinciden con los períodos de elecciones presidenciales, lo
-que sugiere que la confianza de los productores se encontraría alterada
-por factores de índole política en ambos países.
+Luego se realizó un análisis bivariado del cual se desprenden tres
+resultados principales. Primero se aplicaron técnicas de correlación
+cruzada y análisis de rezagos que permiten hablar de ausencia de
+asociación lineal entre la confianza de productores argentinos y la de
+los norteamericanos. En segundo lugar, el rezago utilizado y las
+técnicas para evitar correlaciones espurias, señalarían que las
+percepciones del productor no presentarían relación lineal con factores
+económicos. Finalmente, la inspección gráfica posibilita vislumbrar que
+los cambios repentinos en la confianza del productor coinciden
+temporalmente con algunos procesos electorales.
 
-Dado que los resultados presentados se sustentan principalmente en
-técnicas exploratorias, sería interesante en futuras líneas de
+Dichos resultados presentan algunas limitaciones. En primer lugar, todas
+las conclusiones sobre relaciones, por ejemplo entre la confianza del
+productor en Argentina y la de Estados Unidos o entre el \emph{Ag
+Barometer} y las variables económicas, son de carácter lineal. Segundo,
+el análisis del \emph{Ag Barometer} y los factores económicos fue
+llevado a cabo a partir de recursos descriptivos, limitándose a indagar
+una posible relación lineal y para un rezago específico. Por último,
+dado que los hallazgos expuestos se apoyan principalmente en
+herramientas exploratorias, sería interesante en futuras líneas de
 investigación incorporar métodos analíticos que aporten mayor solidez a
 las conclusiones.
 
 \textbf{\emph{Palabras clave:}} confianza, productor agropecuario,
 series de tiempo, asociaciones, Argentina, Estados Unidos.
 
-\emph{\textbf{Keywords:} sentiment, farmers, time series, associations,
+\emph{\textbf{Keywords:} sentiment, farmer, time series, associations,
 Argentina, United States}.
 
 \newpage
@@ -1424,9 +1432,9 @@ Dado que los análisis realizados en este documento son, en mayor parte,
 de carácter exploratorio, no fue necesario compatibilizar las
 periodicidades de las series. No obstante, el único análisis en toda la
 práctica profesional que sí requirió compatibilización, fue la
-comparación de la confianza del productor argentino vs.~estadounidense.
-El criterio empleado en ese caso fue explicitado en una nota al pie de
-página en la Sección~\ref{sec-analisis_biv}.
+comparación de la confianza del productor argentino y la del
+estadounidense. El criterio empleado en ese caso fue explicitado en una
+nota al pie de página en la Sección~\ref{sec-analisis_biv}.
 
 \newpage
 
@@ -1960,10 +1968,10 @@ segundo lugar, se realizó la prueba de Engle-Granger\footnote{Tanto para
   ambas series fueron consideradas sobre el período común noviembre 2018
   - enero 2026 y con periodicidad bimestral. En este sentido, sólo se
   utilizaron 44 datos estadounidenses los cuales representan un 34.92\%
-  de la totalidad. Considerando que esta es la única parte de todos los
-  análisis realizados, en el que fue necesario que las series tengan
-  período común, se decidió compatibilizarlas de esta forma ya que es la
-  más práctica.} (Enders, 2014, secc. 6.1) y se concluye en base a la
+  de la totalidad. Considerando que este es el único análisis de todos
+  los realizados, en el que fue necesario que las series tengan período
+  común, se decidió compatibilizarlas de esta forma ya que es la más
+  pragmática.} (Enders, 2014, secc. 6.1) y se concluye en base a la
 evidencia muestral que los \emph{Barometers} no están cointegrados
 (\(p-value > 0.1000\)). Considerando los resultados de estos dos
 recursos empleados, se concluyó que la confianza de los productores
@@ -2111,12 +2119,13 @@ económicas}\label{anuxe1lisis-de-variables-econuxf3micas}
 Estudiadas las relaciones entre los índices de las universidades, el
 interés se centró en analizar a qué fenómenos podría estar relacionado
 el \emph{Ag Barometer}. En este sentido, se seleccionaron precios
-unitarios de los productos e insumos que se utilizan en su producción
-según la cotización internacional que rige la actividad agropecuaria. En
+unitarios de los productos e insumos que utilizan en su producción según
+la cotización internacional que rige la actividad agropecuaria. En
 principio, es esperable que una mayor cotización internacional de los
-mencionados redunde en un mayor optimismo del productor. Contrariamente,
-un incremento en el valor de los insumos debería impactar negativamente
-en la confianza del productor.
+precios de producción como el maíz, trigo, soja, etc, redunde en un
+mayor optimismo del productor. Contrariamente, un incremento en el valor
+de los insumos, como el precio de la urea, debería impactar
+negativamente en la confianza del productor.
 
 Se presentan gráficos que permitieron analizar la posible existencia de
 relaciones. Éstos tienen dos particularidades. La primera es que cada
@@ -2188,13 +2197,14 @@ de financiación, lo que podría implicar una baja en la confianza del
 productor.
 
 También se incorporan a este análisis, los índices bursátiles \emph{Dow
-Jones} y \emph{Nasdaq} de la bolsa de \emph{New York}. Un aumento en
-estas variables podría referirse a un crecimiento global de la economía,
-lo cual podría producir un aumento en la confianza del productor.
+Jones} y \emph{Nasdaq}. Un aumento en estas variables podría referirse a
+un crecimiento global de la economía, lo cual podría producir un aumento
+en la confianza del productor.
 
 Por otro lado, se agregan los índices de confianza del consumidor
 elaborados por las universidades Torcuato Di tella y Michigan. En este
-caso podría esperarse que ambos índices se muevan en la misma dirección.
+caso podría esperarse que a mayor confianza del consumidor, mayor para
+el productor.
 
 Finalmente se suma al análisis el Índice de la Actividad de la Cadena
 Agropecuaria (IACA) de la Bolsa de Comercio de Rosario. En principio,
@@ -2361,15 +2371,6 @@ En este informe se documentan los análisis que han sido realizados en el
 Centro de Agronegocios y Alimentos de la Universidad Austral con el fin
 de responder los objetivos planteados para esta práctica profesional.
 
-En primer lugar, se extiende un sincero agradecimiento a la Universidad
-Austral por la valiosa oportunidad de realizar esta práctica en el
-Centro. El contacto directo con los especialistas habilitó el trabajo
-interdisciplinario y el aprendizaje de temas relacionados a los
-agronegocios que no son abordados en el grado de estadística. Además, la
-posibilidad de analizar datos reales cuyo relevamiento es planificado y
-llevado a cabo por el Centro, y la Universidad \emph{Purdue}, es
-considerada un privilegio.
-
 Como punto de partida, se logró construir una base de datos que reúne
 las series argentinas, las de Estados Unidos y múltiples variables
 económicas sugeridas por los economistas de la Austral. Este proceso
@@ -2381,33 +2382,42 @@ series temporales de la confianza de los productores agropecuarios de
 Argentina y Estados Unidos. Asimismo, se realizó un análisis bivariado
 para estudiar la posibilidad, mediante visualizaciones gráficas, de que
 exista relación entre los índices de confianza de ambos países,
-asociación con las condiciones presentes y expectativas futuras, y
-relación entre el \emph{Ag Barometer} con las variables económicas y
-ciertos acontecimientos.
+asociación entre los tres índices para cada país y relación entre el
+\emph{Ag Barometer} con las variables económicas y ciertos
+acontecimientos.
 
-Como principales resultados, en cuanto al análisis univariado, se
-observó que las series no son estacionarias y siguen un patrón de paseo
-aleatorio. Respecto al bivariado, primero se concluyó que la confianza
-de los productores argentinos no guarda relación con la de los
-norteamericanos. En segundo lugar, se observó que los tres índices de
-cada país están relacionados entre sí de manera directa y contemporánea,
-no obstante, ninguno anticipa a otro. Como tercer resultado, las
-percepciones de los productores no estarían relacionadas con factores
-económicos como precios, tasas de interés, insumos, índices bursátiles o
-de actividad. Sin embargo, a partir de la inspección gráfica, las
-percepciones parecen verse afectadas frente a resultados de las
-elecciones presidenciales.
+Los resultados obtenidos, en cuanto al análisis univariado, sugieren que
+tanto el \emph{Ag Barometer Austral} como el \emph{Ag Economy Barometer}
+presentan un comportamiento compatible con procesos integrados de orden
+uno, particularmente, con una dinámica de paseo aleatorio. Respecto al
+bivariado, primero se probó que la confianza de los productores
+argentinos no guarda relación lineal con la de los norteamericanos. En
+segundo lugar, se observó que los tres índices de cada país están
+relacionados linealmente entre sí de manera directa y contemporánea,
+acorde a lo esperado, no obstante, las Expectativas futuras de los
+productores no anticipan sus Condiciones presentes de posteriores
+relevamientos. Como tercer resultado, a partir de los recursos meramente
+descriptivos empleados, las percepciones de los productores no estarían
+relacionadas con factores económicos como precios, tasas de interés,
+insumos, índices bursátiles o de actividad. Sin embargo, a partir de la
+inspección gráfica, los cambios repentinos en las percepciones del
+productor presentan coincidencias temporales con ciertas elecciones.
 
-Por último, en cuanto a las limitaciones de este trabajo, es importante
-señalar que las observaciones realizadas sobre la relación entre el
-\emph{Ag Barometer} y las variables económicas o los eventos
-considerados, se sustentan únicamente en un abordaje exploratorio y
-visual. Dicha aproximación gráfica no sería suficiente para concluir con
-rigor estadístico tales asociaciones sugeridas. En consecuencia, para
-futuras líneas de investigación, sería interesante profundizar el
-estudio mediante métodos estadísticos que vayan más allá de lo
-heurístico, tales como la implementación de modelos dinámicos, análisis
-de intervención, etc, que permitan modelar formalmente estos impactos.
+Además de lo anteriormente mencionado, también resulta relevante indicar
+limitaciones de estos resultados. Primero, sólo se investigó la eventual
+relación lineal entre variables, por ejemplo entre la confianza del
+productor en Argentina y la de Estados Unidos. En segundo lugar, a la
+hora de investigar la asociación entre el \emph{Ag Barometer} y los
+factores económicos sólo se tuvieron en cuenta recursos descriptivos,
+limitándose a indagar una posible relación lineal y para un rezago
+específico. Por último, los hallazgos expuestos, en cuanto al estudio de
+factores asociados al \emph{Ag Barometer}, se sustentan en un abordaje
+exploratorio, lo cual no sería suficiente para concluir con rigor
+estadístico tales asociaciones sugeridas. En consecuencia, para futuras
+líneas de investigación, sería interesante profundizar el estudio
+mediante métodos estadísticos que vayan más allá de lo heurístico, tales
+como la implementación de modelos dinámicos, análisis de intervención,
+etc, que permitan modelar formalmente estos impactos.
 
 \newpage
 
@@ -2612,7 +2622,7 @@ patrón de un paseo aleatorio.
 Todo el código que permitió armar la base de datos, llevar a cabo
 pruebas de hipótesis, desarrollar la aplicación, redactar el informe,
 etc, fue realizado con R y se encuentra en el siguiente
-\href{https://github.com/patricia-nsc/Practica-Profesional-Privado}{repositorio}.
+\href{https://github.com/patricia-nsc/Practica-Profesional}{repositorio}.
 
 \newpage
 
