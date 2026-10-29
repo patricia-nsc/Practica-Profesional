@@ -265,14 +265,50 @@
 
 \section*{Agradecimientos}\label{agradecimientos}
 
-En primer lugar, se extiende un sincero agradecimiento a la Universidad
-Austral por la valiosa oportunidad de realizar esta práctica en el
-Centro. El contacto directo con los especialistas habilitó el trabajo
-interdisciplinario y el aprendizaje de temas relacionados a los
-agronegocios que no son abordados en el grado de estadística. Además, la
-posibilidad de analizar datos reales cuyo relevamiento es planificado y
-llevado a cabo por el Centro, y la Universidad \emph{Purdue}, es
-considerada un privilegio.
+Quiero expresar mis más profundos agradecimientos.
+
+En primer lugar, a Nanda y Fede. Gracias por confiar en que yo podría
+hacer este análisis. Gracias por todo el tiempo que invirtieron en leer
+mis intentos y por todas las sugerencias que hacían para juntos lograr
+que este informe alcance su mejor versión. Supongo que no debe ser fácil
+leer este tipo de escritos, noto y valoro muchísimo todo su esfuerzo.
+Gracias por haber estado tan comprometidos, por haberme acompañado en
+este último tiempo. Ojalá muchos otros alumnos también tengan la
+oportunidad de terminar sus carreras junto a ustedes. Siempre voy a
+estar inmensamente agradecida. Ojalá pudiera devolver todo lo que
+recibí.
+
+A la Universidad Austral por la valiosa oportunidad de realizar esta
+práctica en el Centro. Me siento muy afortunada por haber podido
+experimentar el contacto con los especialistas que me permitió vivenciar
+el trabajo interdisciplinario. Especialmente agradezco la posibilidad de
+analizar datos reales relevados por las universidades. Me imagino que
+llevar a cabo un relevamiento sostenido en el tiempo, debe demandar
+mucho trabajo. Por lo que haber podido analizarlos, considero que es un
+gran honor y privilegio.
+
+A cada uno de los profesores que tuve. Gracias por haber sido tan
+generosos con sus conocimientos. Gracias por los apuntes, las consultas
+que ofrecían, las ganas que les ponían a las clases, el siempre estar
+dispuestos a ayudarnos. Estoy convencida de que todo su esmero nos va a
+servir un montón.
+
+A la UNR, en especial a la FCEyE. Es un lugar en el que aprendí una
+cantidad tan grande de cosas que nunca hubiera imaginado, un lugar del
+que me llevo hermosas amistades y sin duda, un lugar en el que crecí.
+
+A mi familia por celebrar cada aprobada, por cada café, por haberme dado
+la oportunidad de dedicarme a estudiar lo que me gusta.
+
+A mis amigos de la vida, en especial a la tía Giuli y Giuli, y a mis
+facuamigos. Gracias por haberle dado color al camino, por las juntadas,
+por los almuerzos en el comedor, por los mates, por las risas. Siempre
+me sentí acompañada y escuchada, en las buenas y en las malas. Mención
+especial para Marian por haberme bancado en situaciones que me
+sobrepasaban, para Karen por haberme introducido al mundo del mate, para
+Pri y Sabi por las miles de fotos y ovaciones en los días especiales.
+
+A Dios, por haber permitido que todo esto suceda.
 
 \newpage
 
@@ -299,8 +335,8 @@ para estudiar la dinámica del \emph{Ag Barometer Austral} y el \emph{Ag
 Economy Barometer} se realizó un análisis univariado sugiriendo que, a
 partir de la inspección gráfica, ambas series exhiben cambios
 repentinos, no presentarían variancia constante, ni pauta estacional.
-Adicionalmente, se probó que ambas son no estacionarias (poseen una raíz
-unitaria) y particularmente se comportan como paseo aleatorio.
+Adicionalmente, se encontró que ambas son no estacionarias (poseen una
+raíz unitaria) y particularmente se comportan como paseo aleatorio.
 
 Luego se realizó un análisis bivariado del cual se desprenden tres
 resultados principales. Primero se aplicaron técnicas de correlación
@@ -650,6 +686,8 @@ En la Universidad de \emph{Purdue} también construyen, aparte de los
 tres índices ya mencionados, el indicador ``Inversión del capital
 agrícola'' en base a la quinta pregunta (\(Q_5\)). Sin embargo no fue
 tenido en cuenta en el trabajo por no ser relevado a nivel local.
+
+\newpage
 
 \subsection{Los datos}\label{los-datos}
 
@@ -1032,8 +1070,8 @@ que es válido evaluar si los coeficientes de la FCC son estadísticamente
 distintos de cero, comparando los coeficientes de FCCM de las series
 pre-blanqueadas con el umbral \(1.96/\sqrt{T}\) (Cryer-Chan, 2008).
 
-En cuanto a la implemetación computacional de este proceso de
-pre-blanquo, se programaron dos funciones en R. La primera es
+En cuanto a la implementación computacional de este proceso de
+pre-blanqueo, se programaron dos funciones en R. La primera es
 \texttt{ccf\_preblanqueadas()} la cual devuelve la FCCM entre dos series
 sometidas previamente a pre-blanqueo. Ésta toma la serie \(X\), le
 ajusta un modelo \(ARIMA(p, d, q)\)\footnote{El modelo que se ajusta
@@ -1324,7 +1362,7 @@ económicas}\label{buxfasqueda-de-variables-econuxf3micas}
 Además de los índices ya considerados en la base, resultó necesario
 incorporar otras variables con el fin de estudiar qué fenómenos podrían
 estar vinculados al \emph{Ag Barometer}. La búsqueda de estos factores
-fue guíada por los economistas del Centro de Agronegocios, y pueden
+fue guaada por los economistas del Centro de Agronegocios, y pueden
 agruparse en las siguientes categorías:
 
 \begin{itemize}
@@ -1613,21 +1651,21 @@ mayores expectativas a futuro respecto de sus condiciones actuales.
 En gran parte del período de relevamiento, a partir del 2020, el
 \emph{Ag Barometer Austral} medio, Figura~\ref{fig-acf_prom}, parece ir
 aumentando a medida que pasa el tiempo, empezando por una confianza
-media baja, evolucionando, y observándose un promedio alta al final del
+media baja, evolucionando, y observándose un promedio alto al final del
 período.
 
 En la Figura~\ref{fig-fideos_agba} se puede ver que hay años como el
 2020, 2021, 2022 que la confianza es baja; hay otros años en que el
-sentimiento es alta como en el 2024 y en el 2025; en el 2019 la
+sentimiento es alto como en el 2024 y en el 2025; en el 2019 la
 confianza aumentaba hasta un momento en el cual pasó drásticamente de
 alta a baja; se observa finalmente que en el 2023 las percepciones
 presentan una tendencia a crecer. En la Figura~\ref{fig-subseries_agba},
 en todos los meses parecería ocurrir que, el \emph{Ag Barometer Austral}
 medio oscila alrededor del valor neutro 100 y que los valores presentan
-dispersiones similares. Todas estas observaciones conllevarían a
-concluir que el comportamiento del \emph{Ag Barometer Austral} parecería
-ser distinto en cada año y similar en los seis meses. En consecuencia,
-no parece presentar un patrón estacional.
+dispersiones similares. Todas estas observaciones llevarían a concluir
+que el comportamiento del \emph{Ag Barometer Austral} parecería ser
+distinto en cada año y similar en los seis meses. En consecuencia, no
+parece presentar un patrón estacional.
 
 Se pueden observar en la Figura~\ref{fig-boxplot_arg} dos
 características sobre la serie. La primera es que, desde el 2020 en
@@ -1843,14 +1881,14 @@ torno a los 100 puntos, en 2019 exhibe un mínimo en mayo para luego
 alcanzar su máximo en julio. Por su parte, en 2020 inicia en niveles
 elevados (aproximadamente 170 puntos), cae a su mínimo en abril y escala
 hasta un máximo en octubre; en contraste, en 2021 comienza con valores
-similares al 2020 pero alcanza su pico abril para luego mantener una
+similares al 2020 pero alcanza su pico en abril para luego mantener una
 tendencia decreciente durante el resto del año.
 
 En la Figura~\ref{fig-subseries_ageb}, se aprecia en todos los meses
 que: la confianza promedio es de alrededor 130 puntos y que las
 percepciones presentan variaciones similares. Estos dos últimos aspectos
-conllevarían a concluir que el sentimiento de los norteamericanos no
-parece tener una componente estacional.
+llevarían a concluir que el sentimiento de los norteamericanos no parece
+tener una componente estacional.
 
 El \emph{Ag Economy Barometer} mediano (Figura~\ref{fig-boxplot_usa})
 parece seguir un patrón similar al promedio
@@ -1877,7 +1915,7 @@ estacionario.
 Con el fin de ahondar más en las características presentes en esta
 serie, también se analiza su primera diferencia. Se observa que si bien
 la mayoría de los coeficientes de la FAC y de la FACP no son
-signficativos, hay algunos que de manera individual son
+significativos, hay algunos que de manera individual son
 significativamente distintos de cero (Figura~\ref{fig-acf_ageb_dif1}).
 Seguidamente se llevaron a cabo las pruebas de ADF, KPSS y Ljung-Box,
 obteniéndose que esta serie es estacionaria (\(p-value=\) 0.0100,
@@ -2035,7 +2073,7 @@ Figura~\ref{fig-ccf_arg1}, también con las Expectativas futuras
 (Figura~\ref{fig-ccf_arg2}), de igual manera ocurre entre las
 Condiciones presentes y las Expectativas futuras
 (Figura~\ref{fig-ccf_arg3}). El hecho de que las tres estimaciones de
-las FCC en el retardo cero son significativas y positivas conlleva a
+las FCC en el retardo cero son significativas y positivas lleva a
 concluir que las tres series evolucionan juntas. Sin embargo, este
 resultado era de esperar ya que los índices de Condiciones y
 Expectativas son elaborados a partir de algunas de las cinco preguntas
@@ -2107,11 +2145,11 @@ Figura~\ref{fig-ccf_usa3}), los tres indicadores norteamericanos
 evolucionan juntos. Sin embargo, tal como ocurre en el caso argentino,
 esta asociación contemporánea entre el \emph{Ag Economy Barometer},
 Condiciones presentes y Expectativas futuras era de esperar dada la
-contrucción de estso índices (Sección~\ref{sec-materiales_eeuu}). La
+construcción de estos índices (Sección~\ref{sec-materiales_eeuu}). La
 segunda características es que las expectativas que tienen los
 productores a futuro no anticipan sus Condiciones presentes de
 relevamientos posteriores, ya que los coeficientes de la FCC de rezagos
-positivos son significativamente nulos (Figura~\ref{fig-ccf_usa3}).
+positivos son no significativos (Figura~\ref{fig-ccf_usa3}).
 
 \subsubsection{Análisis de variables
 económicas}\label{anuxe1lisis-de-variables-econuxf3micas}
@@ -2202,7 +2240,7 @@ un crecimiento global de la economía, lo cual podría producir un aumento
 en la confianza del productor.
 
 Por otro lado, se agregan los índices de confianza del consumidor
-elaborados por las universidades Torcuato Di tella y Michigan. En este
+elaborados por las universidades Torcuato Di Tella y Michigan. En este
 caso podría esperarse que a mayor confianza del consumidor, mayor para
 el productor.
 
@@ -2279,7 +2317,8 @@ Austral} y resultados de las elecciones presidenciales argentinas}
 }
 
 \caption{\label{fig-elecciones_usa}Evolución del \emph{Ag Economy
-Barometer} y resultados de la elecciones presidenciales estadounidenses}
+Barometer} y resultados de las elecciones presidenciales
+estadounidenses}
 
 \end{figure}%
 
@@ -2373,17 +2412,16 @@ de responder los objetivos planteados para esta práctica profesional.
 
 Como punto de partida, se logró construir una base de datos que reúne
 las series argentinas, las de Estados Unidos y múltiples variables
-económicas sugeridas por los economistas de la Austral. Este proceso
-requirió imputación de datos faltantes y trabajo relacionado a
-programación.
+económicas. Este proceso requirió imputación de datos faltantes y
+trabajo relacionado a programación.
 
 A partir de la base, se llevó a cabo un análisis univariado de las
 series temporales de la confianza de los productores agropecuarios de
 Argentina y Estados Unidos. Asimismo, se realizó un análisis bivariado
-para estudiar la posibilidad, mediante visualizaciones gráficas, de que
-exista relación entre los índices de confianza de ambos países,
-asociación entre los tres índices para cada país y relación entre el
-\emph{Ag Barometer} con las variables económicas y ciertos
+para estudiar la posibilidad, en mayor parte mediante visualizaciones
+gráficas, de que exista relación entre los índices de confianza de ambos
+países, asociación entre los tres índices para cada país y relación
+entre el \emph{Ag Barometer} con las variables económicas y ciertos
 acontecimientos.
 
 Los resultados obtenidos, en cuanto al análisis univariado, sugieren que
