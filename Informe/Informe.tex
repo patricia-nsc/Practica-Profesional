@@ -218,7 +218,7 @@
   \vfill
   
   % --- fecha ---
-  {\fontsize{14}{17}\selectfont Febrero 2027}
+  {\fontsize{14}{17}\selectfont Noviembre 2026}
   
   \end{center}
   
@@ -335,8 +335,9 @@ para estudiar la dinámica del \emph{Ag Barometer Austral} y el \emph{Ag
 Economy Barometer} se realizó un análisis univariado sugiriendo que, a
 partir de la inspección gráfica, ambas series exhiben cambios
 repentinos, no presentarían variancia constante, ni pauta estacional.
-Adicionalmente, se encontró que ambas son no estacionarias (poseen una
-raíz unitaria) y particularmente se comportan como paseo aleatorio.
+Adicionalmente, se encontró que ambas son no estacionarias (presentan
+evidencia compatible con procesos integrados de orden uno) y
+particularmente se comportan como paseo aleatorio.
 
 Luego se realizó un análisis bivariado del cual se desprenden tres
 resultados principales. Primero se aplicaron técnicas de correlación
@@ -469,12 +470,11 @@ Se determinan las siguientes tareas:
   ambos contextos, promoviendo una mirada comparativa a nivel
   internacional de manera exploratoria.
 \item
-  Identificar y analizar el impacto de eventos relevantes tales como
-  cambios en políticas económicas, variaciones en tasas de interés,
-  precios internacionales o crisis sanitarias sobre la evolución de los
-  índices, comprendiendo el efecto de factores macroeconómicos,
-  políticos y productivos sobre las expectativas y decisiones de los
-  productores agropecuarios.
+  Explorar posibles asociaciones temporales entre la evolución de los
+  índices y acontecimientos relevantes de los contextos económicos,
+  políticos y productivos, mediante un análisis descriptivo que permita
+  identificar patrones y formular hipótesis para futuras
+  investigaciones.
 \item
   Desarrollar una aplicación interactiva que permita visualizar y
   explorar los principales resultados obtenidos, facilitando el acceso a
@@ -495,10 +495,10 @@ Se determinan las siguientes tareas:
 \section{Materiales}\label{materiales}
 
 El objetivo de esta sección es mostrar las características de los
-índices en estudio tales como la definición de población, qué método se
-utiliza para seleccionar la muestra, especificaciones sobre el trabajo
-de campo, qué preguntas se realizan en cada edición y cómo se utilizan
-estas últimas para construir los indicadores.
+índices bajo estudio que permiten su construcción. En ese sentido,
+resulta relevante identificar la población bajo estudio, el diseño
+muestral, las características del trabajo de campo, los cuestionarios de
+cada edición y la metodología para construir el índice.
 
 \subsection{\texorpdfstring{Características del \emph{Ag Barometer
 Austral}}{Características del Ag Barometer Austral}}\label{sec-materiales_arg}
@@ -538,8 +538,7 @@ relevamiento se realiza en los meses de enero, marzo, mayo, julio,
 septiembre y noviembre. Éstos últimos se denominan \emph{meses de
 apertura bimestral} en este documento.
 
-En dicho relevamiento se formulan las siguientes cinco preguntas
-dicotómicas (de respuesta ``Sí'' / ``No'') fijas:
+En dicho relevamiento se formulan las siguientes cinco preguntas fijas:
 
 \begin{itemize}
 \tightlist
@@ -689,7 +688,7 @@ tenido en cuenta en el trabajo por no ser relevado a nivel local.
 
 \newpage
 
-\subsection{Los datos}\label{los-datos}
+\subsection{Resumen comparativo}\label{resumen-comparativo}
 
 Para facilitar la visualización de las semejanzas y diferencias entre
 estos dos índices, se muestra un resumen que permite comparar sus
@@ -1097,10 +1096,10 @@ pre-blanqueadas y agrupándolos en la figura que devuelve.
 
 \section{Armado de la base de datos}\label{armado-de-la-base-de-datos}
 
-El fin de este apartado es plasmar el camino que se siguió para armar
-una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne
-las series de Argentina, de Estados Unidos y otras sugeridas por los
-especialistas que fueron buscadas en diversas fuentes para poder
+El fin de este apartado es plasmar el camino que se siguió para
+consolidar una base de datos, que facilitó llevar a cabo los análisis.
+Ésta reúne las series de Argentina, de Estados Unidos y otras sugeridas
+por los especialistas que fueron buscadas en diversas fuentes para poder
 responder a ciertos objetivos de esta práctica profesional. Previamente
 a la unificación se aplicaron procesamientos sobre algunas de las series
 provistas como imputación de valores faltantes, eliminación de valores,
@@ -1362,7 +1361,7 @@ económicas}\label{buxfasqueda-de-variables-econuxf3micas}
 Además de los índices ya considerados en la base, resultó necesario
 incorporar otras variables con el fin de estudiar qué fenómenos podrían
 estar vinculados al \emph{Ag Barometer}. La búsqueda de estos factores
-fue guaada por los economistas del Centro de Agronegocios, y pueden
+fue guiada por los economistas del Centro de Agronegocios, y pueden
 agruparse en las siguientes categorías:
 
 \begin{itemize}
@@ -1476,7 +1475,7 @@ nota al pie de página en la Sección~\ref{sec-analisis_biv}.
 
 \newpage
 
-\section{Aplicación}\label{aplicaciuxf3n}
+\section{Resultados}\label{resultados}
 
 Una vez dispuestos los datos en una misma base, con el fin de conocer
 las características de los índices, se realizó un análisis exploratorio
@@ -1998,22 +1997,23 @@ el \emph{Ag Economy Barometer} pre-blanqueados en el período noviembre
 
 \end{figure}%
 
-Todos los rezagos de la Figura~\ref{fig-ccf_arg_usa} son no
-significativos, sugiriendo que ningún índice influye sobre el otro. En
-segundo lugar, se realizó la prueba de Engle-Granger\footnote{Tanto para
-  estimar la FCC como para poder realizar la prueba es necesario que las
-  dos series tengan la misma longitud y periodicidad. Por esta razón,
-  ambas series fueron consideradas sobre el período común noviembre 2018
-  - enero 2026 y con periodicidad bimestral. En este sentido, sólo se
-  utilizaron 44 datos estadounidenses los cuales representan un 34.92\%
-  de la totalidad. Considerando que este es el único análisis de todos
-  los realizados, en el que fue necesario que las series tengan período
-  común, se decidió compatibilizarlas de esta forma ya que es la más
-  pragmática.} (Enders, 2014, secc. 6.1) y se concluye en base a la
-evidencia muestral que los \emph{Barometers} no están cointegrados
-(\(p-value > 0.1000\)). Considerando los resultados de estos dos
-recursos empleados, se concluyó que la confianza de los productores
-argentinos no está asociada a la de los productores norteamericanos.
+La FCCM entre los índices pre-blanqueados (Figura~\ref{fig-ccf_arg_usa})
+no muestran evidencia estadísticamente significativa de asociación
+lineal entre ambos indicadores en los rezagos considerados. Asimismo, la
+prueba de Engle-Granger\footnote{Tanto para estimar la FCC como para
+  poder realizar la prueba es necesario que las dos series tengan la
+  misma longitud y periodicidad. Por esta razón, ambas series fueron
+  consideradas sobre el período común noviembre 2018 - enero 2026 y con
+  periodicidad bimestral. En este sentido, sólo se utilizaron 44 datos
+  estadounidenses los cuales representan un 34.92\% de la totalidad.
+  Considerando que este es el único análisis de todos los realizados, en
+  el que fue necesario que las series tengan período común, se decidió
+  compatibilizarlas de esta forma ya que es la más pragmática.} (Enders,
+2014, secc.6.1) no aporta evidencia de asociación contemporánea
+(\(p-value > 0.1000\)). En conjunto, estos resultados sugieren que, bajo
+los procedimientos empleados y para el período analizado, no se
+identifican relaciones lineales temporales significativas entre la
+confianza del productor argentino y la del norteamericano.
 
 \subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
 
@@ -2288,12 +2288,11 @@ confianza/actividad.
 
 \subsubsection{Análisis de eventos}\label{anuxe1lisis-de-eventos}
 
-Dado que aún no se habían identificado factores asociados al \emph{Ag
-Barometer}, la investigación no podía darse por concluida. Por esta
-razón, se revisó la situación con los expertos. Éstos sostienen que el
-índice bajo estudio probablemente esté vinculado a acontecimientos
-políticos, bélicos y/o globales como la pandemia de Covid-19. Se
-presentan dichas posibles relaciones.
+Habiendo observado en ambos países que los cambios en la confianza de
+los productores no parecen tener relación con los factores económicos
+considerados, se decidió evaluar de manera gráfica si los índices
+reaccionaban frente a acontecimientos nacionales o internacionales
+vinculados a factores principalmente políticos.
 
 \begin{figure}
 
@@ -2363,12 +2362,11 @@ países. Los cambios en Argentina no siguen el mismo comportamiento que
 los de Estados Unidos. En este último se observa que, cuando hay
 elecciones presidenciales de por medio, la confianza siempre sube
 independientemente del partido que resulte ganador y que unos meses
-después baja. Esto podría deberse a que los partidos estadounidenses no
-son tan heterogéneos entre sí. En Argentina, en cambio, el sentimiento
-puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó
-Alberto Fernández en 2019, se produjo la baja más abrupta histórica de
-la serie, generando al año siguiente la confianza promedio más baja de
-todo el período, y el pesimismo se sostuvo durante todo su mandato
+después baja. En Argentina, en cambio, el sentimiento puede subir o
+bajar según cuál sea el partido que triunfe. Cuando ganó Alberto
+Fernández en 2019, se produjo la baja más abrupta histórica de la serie,
+generando al año siguiente la confianza promedio más baja de todo el
+período, y el pesimismo se sostuvo durante todo su mandato
 (Figura~\ref{fig-acf_prom}). En cambio, al ganar Javier Milei en 2023,
 la confianza comenzó a crecer, pasando del pesimismo al optimismo. Es
 decir que alrededor de las elecciones presidenciales, los patrones en la
@@ -2428,15 +2426,17 @@ Los resultados obtenidos, en cuanto al análisis univariado, sugieren que
 tanto el \emph{Ag Barometer Austral} como el \emph{Ag Economy Barometer}
 presentan un comportamiento compatible con procesos integrados de orden
 uno, particularmente, con una dinámica de paseo aleatorio. Respecto al
-bivariado, primero se probó que la confianza de los productores
-argentinos no guarda relación lineal con la de los norteamericanos. En
-segundo lugar, se observó que los tres índices de cada país están
-relacionados linealmente entre sí de manera directa y contemporánea,
-acorde a lo esperado, no obstante, las Expectativas futuras de los
-productores no anticipan sus Condiciones presentes de posteriores
-relevamientos. Como tercer resultado, a partir de los recursos meramente
-descriptivos empleados, las percepciones de los productores no estarían
-relacionadas con factores económicos como precios, tasas de interés,
+análisis bivariado, se encontraron tres resultados. En primer lugar, no
+se encontró evidencia estadísticamente significativa de asociación
+lineal temporal entre los indicadores de confianza de Argentina y
+Estados Unidos, para el período y los rezagos analizados. Segundo, en
+ambos países, si bien los tres índices presentan asociaciones
+contemporáneas esperables por su construcción, no se identificó
+evidencia clara de una relación anticipatoria entre las Expectativas
+Futuras y las Condiciones Presentes en los rezagos estudiados. Como
+tercer resultado, a partir de los recursos meramente descriptivos
+empleados, las percepciones de los productores no estarían relacionadas
+con factores económicos considerados como precios, tasas de interés,
 insumos, índices bursátiles o de actividad. Sin embargo, a partir de la
 inspección gráfica, los cambios repentinos en las percepciones del
 productor presentan coincidencias temporales con ciertas elecciones.

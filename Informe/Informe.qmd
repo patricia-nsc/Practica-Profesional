@@ -72,7 +72,7 @@ Principalmente su desarrollo fue realizado en base a los índices de confianza r
 
 
 
-Con el fin de responder a los objetivos planteados, en primer lugar, para estudiar la dinámica del *Ag Barometer Austral* y el *Ag Economy Barometer* se realizó un análisis univariado sugiriendo que, a partir de la inspección gráfica, ambas series exhiben cambios repentinos, no presentarían variancia constante, ni pauta estacional. Adicionalmente, se encontró que ambas son no estacionarias (poseen una raíz unitaria) y particularmente se comportan como paseo aleatorio. 
+Con el fin de responder a los objetivos planteados, en primer lugar, para estudiar la dinámica del *Ag Barometer Austral* y el *Ag Economy Barometer* se realizó un análisis univariado sugiriendo que, a partir de la inspección gráfica, ambas series exhiben cambios repentinos, no presentarían variancia constante, ni pauta estacional. Adicionalmente, se encontró que ambas son no estacionarias (presentan evidencia compatible con procesos integrados de orden uno) y particularmente se comportan como paseo aleatorio. 
 
 
 Luego se realizó un análisis bivariado del cual se desprenden tres resultados principales. Primero se aplicaron técnicas de correlación cruzada y análisis de rezagos que permiten hablar de ausencia de asociación lineal entre la confianza de productores argentinos y la de los norteamericanos. En segundo lugar, el rezago utilizado y las técnicas para evitar correlaciones espurias, señalarían que las percepciones del productor no presentarían relación lineal con factores económicos. Finalmente, la inspección gráfica posibilita vislumbrar que los cambios repentinos en la confianza del productor coinciden temporalmente con algunos procesos electorales.
@@ -231,7 +231,7 @@ Se determinan las siguientes tareas:
 -   Desarrollar un análisis exploratorio de las series de tiempo, incluyendo el estudio de tendencia, estacionalidad, volatilidad y comportamiento general de los índices. 
 -   Analizar la dinámica temporal de los indicadores, identificando patrones, tendencias, estacionalidad y posibles cambios estructurales.
 -   Analizar la relación entre ambas series temporales, mediante técnicas como correlación cruzada y análisis de rezagos, con el fin de identificar posibles vínculos, sincronización o divergencias entre ambos contextos, promoviendo una mirada comparativa a nivel internacional de manera exploratoria. 
--   Identificar y analizar el impacto de eventos relevantes tales como cambios en políticas económicas, variaciones en tasas de interés, precios internacionales o crisis sanitarias sobre la evolución de los índices, comprendiendo el efecto de factores macroeconómicos, políticos y productivos sobre las expectativas y decisiones de los productores agropecuarios. 
+-   Explorar posibles asociaciones temporales entre la evolución de los índices y acontecimientos relevantes de los contextos económicos, políticos y productivos, mediante un análisis descriptivo que permita identificar patrones y formular hipótesis para futuras investigaciones. 
 -   Desarrollar una aplicación interactiva que permita visualizar y explorar los principales resultados obtenidos, facilitando el acceso a la información y su interpretación por parte de usuarios técnicos y no especializados.
 -   Participar en la elaboración de un informe final detallado, que documente la metodología utilizada, los resultados obtenidos y las principales conclusiones del análisis. 
 -   Integrar el trabajo en un enfoque interdisciplinario, articulando herramientas de la estadística con conceptos de economía y agronegocios.
@@ -245,15 +245,11 @@ Se determinan las siguientes tareas:
 
 # Materiales
 
-El objetivo de esta sección es mostrar las características de los índices en estudio tales como la definición de población, qué método se utiliza para seleccionar la muestra, especificaciones sobre el trabajo de campo, qué preguntas se realizan en cada edición y cómo se utilizan estas últimas para construir los indicadores.
+
+El objetivo de esta sección es mostrar las características de los índices bajo estudio que permiten su construcción. En ese sentido, resulta relevante identificar la población bajo estudio, el diseño muestral, las características del trabajo de campo, los cuestionarios de cada edición y la metodología para construir el índice.
 
 
-<!-- quiero mostrar las caracteristicas de los indices, presentar bien las diferencias entre los relevamientos -->
 
-<!-- y presentar los datos que han sido publicados por las universidades. 
-
-
-no seria presentar, seria mostrar que variables tengo de cada pais (no se como decirlo) -->
 
 ## Características del *Ag Barometer Austral* {#sec-materiales_arg}
 
@@ -268,7 +264,7 @@ La población está conformada por productores de la Pampa Húmeda abarcando las
 Se realizó un muestreo estratificado de productores teniendo en cuenta datos del INDEC y *Map of Ag*. Se detallan los estratos de productores en cuanto a su producción:
 
 -   50% de los encuestados con un valor bruto de producción entre USD 200,000 y USD 399,000 al año
--   30% de los encuestados con valor bruto de producción entre USD 414,000 y USD 999,999 al año
+-   30% de los encuestados con valor bruto de producción entre USD 400,000 y USD 999,999 al año
 -   20% de los encuestados con un valor bruto de producción mayor o igual a USD 1,000,000 al año.
 
 
@@ -287,7 +283,7 @@ En cuanto al trabajo de campo, la encuesta es realizada a 406 productores por te
 
 
 
-En dicho relevamiento se formulan las siguientes cinco preguntas dicotómicas (de respuesta "Sí" / "No") fijas: 
+En dicho relevamiento se formulan las siguientes cinco preguntas fijas: 
 
 -    $Q_1$: ¿Ud. diría que su operación actualmente está mejor, peor o igual financieramente con respecto a un año atrás?
 -    $Q_2$: Mirando hacia adelante: de acá a un año ¿considera que su explotación estará mejor, peor o igual financieramente?
@@ -368,7 +364,7 @@ Respecto al trabajo de campo, la encuesta se realiza por vía telefónica a una 
 
 
 
-Cada mes se entrevista a los productores realizándoles las mismas cinco preguntas fijas ya detalladas.
+Cada mes se entrevista a los productores realizándoles las mismas cinco preguntas fijas ya detalladas y otras adicionales para capturar la opinión del productor en cuanto a temas coyunturales.
 
 
 
@@ -384,7 +380,7 @@ En la Universidad de *Purdue* también construyen, aparte de los tres índices y
 
 \newpage
 
-## Los datos
+## Resumen comparativo
 
 Para facilitar la visualización de las semejanzas y diferencias entre estos dos índices, se muestra un resumen que permite comparar sus características:
 
@@ -633,7 +629,7 @@ En cuanto a la implementación computacional de este proceso de pre-blanqueo, se
 
 # Armado de la base de datos
 
-El fin de este apartado es plasmar el camino que se siguió para armar una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas que fueron buscadas en diversas fuentes para poder responder a ciertos objetivos de esta práctica profesional. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
+El fin de este apartado es plasmar el camino que se siguió para consolidar una base de datos, que facilitó llevar a cabo los análisis. Ésta reúne las series de Argentina, de Estados Unidos y otras sugeridas por los especialistas que fueron buscadas en diversas fuentes para poder responder a ciertos objetivos de esta práctica profesional. Previamente a la unificación se aplicaron procesamientos sobre algunas de las series provistas como imputación de valores faltantes, eliminación de valores, homogeneización de nombres de variables, etc.
 
 
 
@@ -922,7 +918,7 @@ Considerando estos aspectos, queda de manifiesto que no es necesario emplear rec
 ## Búsqueda de variables económicas
 
 
-Además de los índices ya considerados en la base, resultó necesario incorporar otras variables con el fin de estudiar qué fenómenos podrían estar vinculados al *Ag Barometer*. La búsqueda de estos factores fue guaada por los economistas del Centro de Agronegocios, y pueden agruparse en las siguientes categorías:
+Además de los índices ya considerados en la base, resultó necesario incorporar otras variables con el fin de estudiar qué fenómenos podrían estar vinculados al *Ag Barometer*. La búsqueda de estos factores fue guiada por los economistas del Centro de Agronegocios, y pueden agruparse en las siguientes categorías:
 
 -   Precios de la producción: Precio internacional de la soja, maíz, trigo, sorgo, carne vacuna, porcina y aviar
 -   Insumos: Precio internacional de la urea, petróleo y gas natural
@@ -987,7 +983,7 @@ Dado que los análisis realizados en este documento son, en mayor parte, de car�
 
 
 
-# Aplicación
+# Resultados
 
 
 
@@ -1826,7 +1822,8 @@ coint.test(d_cointeg$`Ag Economy Barometer`, d_cointeg$`Ag Barometer Austral`)
 
 
 
-Todos los rezagos de la @fig-ccf_arg_usa son no significativos, sugiriendo que ningún índice influye sobre el otro. En segundo lugar, se realizó la prueba de Engle-Granger[^obs_eeuu_usadas_en_ccf] (Enders, 2014, secc. 6.1) y se concluye en base a la evidencia muestral que los *Barometers* no están cointegrados ($p-value > 0.1000$). Considerando los resultados de estos dos recursos empleados, se concluyó que la confianza de los productores argentinos no está asociada a la de los productores norteamericanos.
+
+La FCCM entre los índices pre-blanqueados (@fig-ccf_arg_usa) no muestran evidencia estadísticamente significativa de asociación lineal entre ambos indicadores en los rezagos considerados. Asimismo, la prueba de Engle-Granger[^obs_eeuu_usadas_en_ccf] (Enders, 2014, secc.6.1) no aporta evidencia de asociación contemporánea ($p-value > 0.1000$). En conjunto, estos resultados sugieren que, bajo los procedimientos empleados y para el período analizado, no se identifican relaciones lineales temporales significativas entre la confianza del productor argentino y la del norteamericano.
 
 
 [^obs_eeuu_usadas_en_ccf]: Tanto para estimar la FCC como para poder realizar la prueba es necesario que las dos series tengan la misma longitud y periodicidad. Por esta razón, ambas series fueron consideradas sobre el período común noviembre 2018 - enero 2026 y con periodicidad bimestral. En este sentido, sólo se utilizaron 44 datos estadounidenses los cuales representan un 34.92% de la totalidad. Considerando que este es el único análisis de todos los realizados, en el que fue necesario que las series tengan período común, se decidió compatibilizarlas de esta forma ya que es la más pragmática.
@@ -2280,10 +2277,7 @@ En base a la información disponible y a la inspección gráfica de la @fig-vars
 ### Análisis de eventos 
 
 
-
- 
-Dado que aún no se habían identificado factores asociados al *Ag Barometer*, la investigación no podía darse por concluida. Por esta razón, se revisó la situación con los expertos. Éstos sostienen que el índice bajo estudio probablemente esté vinculado a acontecimientos políticos, bélicos y/o globales como la pandemia de Covid-19. Se presentan dichas posibles relaciones.
-
+Habiendo observado en ambos países que los cambios en la confianza de los productores no parecen tener relación con los factores económicos considerados, se decidió evaluar de manera gráfica si los índices reaccionaban frente a acontecimientos nacionales o internacionales vinculados a factores principalmente políticos.
 
 
 
@@ -2368,7 +2362,7 @@ En Argentina, tanto el cambio repentino en la confianza de 2019 como la tendenci
 
 
 
-Puede destacarse también una diferencia entre la confianza de ambos países. Los cambios en Argentina no siguen el mismo comportamiento que los de Estados Unidos. En este último se observa que, cuando hay elecciones presidenciales de por medio, la confianza siempre sube independientemente del partido que resulte ganador y que unos meses después baja. Esto podría deberse a que los partidos estadounidenses no son tan heterogéneos entre sí. En Argentina, en cambio, el sentimiento puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó Alberto Fernández en 2019, se produjo la baja más abrupta histórica de la serie, generando al año siguiente la confianza promedio más baja de todo el período, y el pesimismo se sostuvo durante todo su mandato (@fig-acf_prom). En cambio, al ganar Javier Milei en 2023, la confianza comenzó a crecer, pasando del pesimismo al optimismo. Es decir que alrededor de las elecciones presidenciales, los patrones en la confianza difieren entre ambos países. No obstante, el reducido número de elecciones comprendidas en el período analizado impide establecer patrones generales acerca de la dirección de los cambios.
+Puede destacarse también una diferencia entre la confianza de ambos países. Los cambios en Argentina no siguen el mismo comportamiento que los de Estados Unidos. En este último se observa que, cuando hay elecciones presidenciales de por medio, la confianza siempre sube independientemente del partido que resulte ganador y que unos meses después baja. En Argentina, en cambio, el sentimiento puede subir o bajar según cuál sea el partido que triunfe. Cuando ganó Alberto Fernández en 2019, se produjo la baja más abrupta histórica de la serie, generando al año siguiente la confianza promedio más baja de todo el período, y el pesimismo se sostuvo durante todo su mandato (@fig-acf_prom). En cambio, al ganar Javier Milei en 2023, la confianza comenzó a crecer, pasando del pesimismo al optimismo. Es decir que alrededor de las elecciones presidenciales, los patrones en la confianza difieren entre ambos países. No obstante, el reducido número de elecciones comprendidas en el período analizado impide establecer patrones generales acerca de la dirección de los cambios.
 
 
 
@@ -2427,7 +2421,7 @@ Como punto de partida, se logró construir una base de datos que reúne las seri
 
 A partir de la base, se llevó a cabo un análisis univariado de las series temporales de la confianza de los productores agropecuarios de Argentina y Estados Unidos. Asimismo, se realizó un análisis bivariado para estudiar la posibilidad, en mayor parte mediante visualizaciones gráficas, de que exista relación entre los índices de confianza de ambos países, asociación entre los tres índices para cada país y relación entre el *Ag Barometer* con las variables económicas y ciertos acontecimientos.
 
-Los resultados obtenidos, en cuanto al análisis univariado, sugieren que tanto el *Ag Barometer Austral* como el *Ag Economy Barometer* presentan un comportamiento compatible con procesos integrados de orden uno, particularmente, con una dinámica de paseo aleatorio. Respecto al bivariado, primero se probó que la confianza de los productores argentinos no guarda relación lineal con la de los norteamericanos. En segundo lugar, se observó que los tres índices de cada país están relacionados linealmente entre sí de manera directa y contemporánea, acorde a lo esperado, no obstante, las Expectativas futuras de los productores no anticipan sus Condiciones presentes de posteriores relevamientos. Como tercer resultado, a partir de los recursos meramente descriptivos empleados, las percepciones de los productores no estarían relacionadas con factores económicos como precios, tasas de interés, insumos, índices bursátiles o de actividad. Sin embargo, a partir de la inspección gráfica, los cambios repentinos en las percepciones del productor presentan coincidencias temporales con ciertas elecciones.
+Los resultados obtenidos, en cuanto al análisis univariado, sugieren que tanto el *Ag Barometer Austral* como el *Ag Economy Barometer* presentan un comportamiento compatible con procesos integrados de orden uno, particularmente, con una dinámica de paseo aleatorio. Respecto al análisis bivariado, se encontraron tres resultados. En primer lugar, no se encontró evidencia estadísticamente significativa de asociación lineal temporal entre los indicadores de confianza de Argentina y Estados Unidos, para el período y los rezagos analizados. Segundo, en ambos países, si bien los tres índices presentan asociaciones contemporáneas esperables por su construcción, no se identificó evidencia clara de una relación anticipatoria entre las Expectativas Futuras y las Condiciones Presentes en los rezagos estudiados. Como tercer resultado, a partir de los recursos meramente descriptivos empleados, las percepciones de los productores no estarían relacionadas con factores económicos considerados como precios, tasas de interés, insumos, índices bursátiles o de actividad. Sin embargo, a partir de la inspección gráfica, los cambios repentinos en las percepciones del productor presentan coincidencias temporales con ciertas elecciones.
 
 
 Además de lo anteriormente mencionado, también resulta relevante indicar limitaciones de estos resultados. Primero, sólo se investigó la eventual relación lineal entre variables, por ejemplo entre la confianza del productor en Argentina y la de Estados Unidos. En segundo lugar, a la hora de investigar la asociación entre el *Ag Barometer* y los factores económicos sólo se tuvieron en cuenta recursos descriptivos, limitándose a indagar una posible relación lineal y para un rezago específico. Por último, los hallazgos expuestos, en cuanto al estudio de factores asociados al *Ag Barometer*, se sustentan en un abordaje exploratorio, lo cual no sería suficiente para concluir con rigor estadístico tales asociaciones sugeridas. En consecuencia, para futuras líneas de investigación, sería interesante profundizar el estudio mediante métodos estadísticos que vayan más allá de lo heurístico, tales como la implementación de modelos dinámicos, análisis de intervención, etc, que permitan modelar formalmente estos impactos.
