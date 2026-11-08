@@ -38,8 +38,8 @@ de Rosario.
 1. En la terminal de RStudio escribir:
 
 ```bash
-git clone https://github.com/patricia-nsc/Practica-Profesional-Privado.git
-cd Practica-Profesional-Privado
+git clone https://github.com/patricia-nsc/Practica-Profesional.git
+cd Practica-Profesional
 ```
 
 2. En la consola de R instalar el siguiente paquete (en caso de no tenerlo):
