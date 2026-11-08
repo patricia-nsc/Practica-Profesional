@@ -57,7 +57,6 @@ Presentaciones Anteriores/
 # ignoro la carpeta renv/ q tiene cosas de las depencias
 renv/
 
-# ignoro app automatizada
-App/app_automatizada.R
+
 
 
