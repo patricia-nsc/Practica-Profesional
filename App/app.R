@@ -11,6 +11,7 @@ library(plotly)
 library(ggplot2)
 library(lubridate)
 library(shinyWidgets)   # sliderTextInput: permite saltar de bimestre en bimestre y fijar el inicio
+library(writexl)        # write_xlsx: descarga de la base en formato Excel
 
 
 
@@ -18,32 +19,42 @@ library(shinyWidgets)   # sliderTextInput: permite saltar de bimestre en bimestr
 # Datos
 # ----------------------------------------------------------- #
 
-ruta_data <- "agbarometer_ARG_imputado.xlsx"
+ruta_data <- file.path("Datos", "agbarometer_ARG_imputado.xlsx")
 
 
 
 
 # ----------------------------------------------------------- #
-# funciones y logo
+# funciones y logos
 # ----------------------------------------------------------- #
 
 source("funciones_app.R")
 
 
-# Logo: se busca en app/www/ o en la carpeta de app.R, y se sirve SOLO esa imagen
-# (se copia a una carpeta temporal, así no se expone el resto del proyecto).
-archivo_logo <- "logo_austral_ceag.png"
-ruta_logo <- c(file.path("www", archivo_logo), archivo_logo)
-ruta_logo <- ruta_logo[file.exists(ruta_logo)][1]
+# Logos: una línea por logo. Se buscan en la carpeta Logos/ (si no, en www/ o en la carpeta de app.R), y se sirven
+# SOLO esas imágenes (se copian a una carpeta temporal, así no se expone el resto del proyecto).
+# Para agregar un logo nuevo alcanza con sumar una línea acá y usarlo como "logo_dir/<archivo>".
+archivos_logos <- c(
+  "logo_austral_ceag_transparente.png",
+  "logo_agbarometer_blanco.png",
+  "logo_agbarometer_color.png",
+  "logo_basf.jpg",
+  "logo_john_deere.png",
+  "logo_austral_ceag.png"                 # versión a color, la usa el cartel de bienvenida (fondo blanco)
+)
 
-if (is.na(ruta_logo)) {
-  warning("No se encontró ", archivo_logo, " (buscado en www/ y en la carpeta de la app). Directorio actual: ", getwd())
-} else {
-  dir_logo <- file.path(tempdir(), "logo_siva")
-  dir.create(dir_logo, showWarnings = FALSE)
-  file.copy(ruta_logo, file.path(dir_logo, archivo_logo), overwrite = TRUE)
-  addResourcePath("logo_dir", dir_logo)
+dir_logo <- file.path(tempdir(), "logo_siva")
+dir.create(dir_logo, showWarnings = FALSE)
+for (archivo_logo in archivos_logos) {
+  ruta_logo <- c(file.path("Logos", archivo_logo), file.path("www", archivo_logo), archivo_logo)
+  ruta_logo <- ruta_logo[file.exists(ruta_logo)][1]
+  if (is.na(ruta_logo)) {
+    warning("No se encontró ", archivo_logo, " (buscado en Logos/, www/ y en la carpeta de la app). Directorio actual: ", getwd())
+  } else {
+    file.copy(ruta_logo, file.path(dir_logo, archivo_logo), overwrite = TRUE)
+  }
 }
+addResourcePath("logo_dir", dir_logo)
 
 
 # Fecha mínima a la que puede retroceder el fin del período (inclusive)
@@ -71,8 +82,8 @@ indice_minimo_periodo <- function(df) {
 ####################################################
 
 ui <- page_navbar(
-  # El logo ocupa ahora el lugar del título (izquierda); el título pasa a la derecha vía JS (ver footer)
-  title = tags$img(src = "logo_dir/logo_austral_ceag.png", height = "44px",
+  # Logo a la izquierda; el título y el logo del Ag Barometer van a la derecha vía JS (ver footer)
+  title = tags$img(src = "logo_dir/logo_austral_ceag_transparente.png", height = "44px",
                    style = "background: transparent;"),
   window_title = "Ag Barometer Austral",
   bg = "#7D212B",
@@ -270,23 +281,77 @@ ui <- page_navbar(
         display: none !important;
         pointer-events: none !important;
       }
+      /* Filtro de período más limpio: sin la línea gris horizontal,
+         marcas más suaves y fechas más espaciadas
+         (el padding de las fechas es la separación: más padding = menos fechas) */
+      #selector_rango_fechas_ui .irs-line {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+      }
+      /* Oculta la línea gris que marca el límite mínimo (Nov 2019); el límite sigue funcionando igual */
+      #selector_rango_fechas_ui .irs-shadow {
+        display: none !important;
+      }
+      #selector_rango_fechas_ui .irs-grid-pol {
+        opacity: 0.3;
+      }
+      #selector_rango_fechas_ui .irs-grid-text {
+        padding: 0 22px;
+        font-size: 0.75rem;
+        color: #8a8a8a;
+      }
     "))
   ),
   
-  # Título a la derecha de la barra (intercambiado de lugar con el logo)
+  # Título + logo del Ag Barometer a la derecha de la barra (mismo alto que el logo de la izquierda, no agranda la banda)
   footer = tags$script(HTML("
     $(document).ready(function() {
-      var tituloHtml = '<div class=\"navbar-titulo-derecha\"><span style=\"font-weight: bold; letter-spacing: 0.5px; color: white; font-size: 1.25rem;\">Ag Barometer Austral</span></div>';
+      var tituloHtml = '<div class=\"navbar-titulo-derecha\"><span style=\"font-weight: bold; letter-spacing: 0.5px; color: white; font-size: 1.25rem;\">Ag Barometer Austral</span><img src=\"logo_dir/logo_agbarometer_blanco.png\" height=\"38px\" style=\"margin-left: 10px; background: transparent;\"></div>';
       $('.navbar-nav').last().after(tituloHtml);
     });
   ")),
   
   # ------------------------------------------------------------- #
-  # PESTAÑA 1: inicio (por ahora en blanco, solo va a tener texto)
+  # PESTAÑA 1: bienvenida (texto de presentación y logos de quienes acompañan)
   # ------------------------------------------------------------- #
   nav_panel(
-    title = "Inicio",
-    div()
+    title = "Bienvenida",
+    fluidRow(
+      column(
+        width = 10, offset = 1,
+        div(
+          class = "card",
+          div(
+            style = "font-size: 1.05rem; line-height: 1.75; color: #222222; text-align: justify;",
+            p("El ", tags$em("Ag Barometer Austral"), " es un índice que elabora el Centro de Agronegocios y Alimentos de la Universidad Austral (CEAg). El mismo proporciona bimestralmente medidas nacionales sobre las percepciones del sector agropecuario en la Argentina que muestran la evolución de su confianza a lo largo del año."),
+            div(
+              style = "text-align: center; margin: 25px 0;",
+              tags$img(src = "logo_dir/logo_agbarometer_color.png", style = "height: 110px !important; width: auto;")
+            ),
+            p("El relevamiento recoge las respuestas de encuestas a 400 productores, cuyo valor bruto de producción es igual o mayor a USD 200.000 y es realizada por Map of Agriculture."),
+            p("La muestra se ha estratificado basada en datos de INDEC y Map of Agriculture, para que los resultados representen correctamente el universo total."),
+            p("Para más información acerca del relevamiento, consultar el siguiente ",
+              tags$a("link",
+                     href = "https://www.austral.edu.ar/rosario/agronegocios/investigacion-y-transferencia/barometer/",
+                     target = "_blank",
+                     style = "color: #7D212B; font-weight: 600;"),
+              ".")
+          ),
+          hr(),
+          div(
+            style = "text-align: center; margin-top: 10px;",
+            p(style = "font-size: 1.05rem; font-weight: 700; color: #7D212B; margin-bottom: 20px;",
+              "Nos acompañan en la construcción de los índices:"),
+            div(
+              style = "display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;",
+              tags$img(src = "logo_dir/logo_basf.jpg", style = "height: 80px !important; width: auto;"),
+              tags$img(src = "logo_dir/logo_john_deere.png", style = "height: 80px !important; width: auto;")
+            )
+          )
+        )
+      )
+    )
   ),
   
   # ------------------------------------------------------------- #
@@ -294,6 +359,21 @@ ui <- page_navbar(
   # ------------------------------------------------------------- #
   nav_panel(
     title = "Tablero Analítico",
+    
+    # DESCARGA DE LA BASE: Excel resaltado, CSV secundario
+    fluidRow(
+      column(
+        width = 12,
+        div(
+          style = "display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px;",
+          tags$span(style = "font-size: 0.85rem; font-weight: 700; color: #7D212B; text-transform: uppercase; letter-spacing: 1px;", "Descargar base:"),
+          downloadButton("btn_descargar_xlsx", "Excel (.xlsx)", icon = icon("file-excel"),
+                         class = "btn btn-custom-primary"),
+          downloadButton("btn_descargar_csv", "CSV (.csv)", icon = icon("file-csv"),
+                         class = "btn btn-sm btn-outline-secondary")
+        )
+      )
+    ),
     
     fluidRow(
       column(
@@ -380,7 +460,7 @@ ui <- page_navbar(
               downloadButton("btn_descargar_grafico", "", class = "btn btn-sm btn-outline-secondary", title = "Descargar")
             )
           ),
-          plotlyOutput("grafico_evolucion", height = "450px"),
+          plotlyOutput("grafico_evolucion", height = "500px"),
           div(
             style = "text-align: left; margin-top: 15px; font-size: 0.85rem; color: #333333; line-height: 1.4;",
             uiOutput("referencias_UI")
@@ -416,7 +496,7 @@ server <- function(input, output, session) {
   
   rv <- reactiveValues(
     data = {
-      archivo_a_leer <- if (file.exists(ruta_data)) ruta_data else "agbarometer_ARG_imputado.xlsx"
+      archivo_a_leer <- if (file.exists(ruta_data)) ruta_data else file.path("Datos", "agbarometer_ARG_imputado.xlsx")
       if (file.exists(archivo_a_leer)) {
         read_excel(archivo_a_leer) |> mutate(Bimestre = as.Date(Bimestre)) |> arrange(Bimestre)
       } else {
@@ -428,6 +508,34 @@ server <- function(input, output, session) {
           check.names = FALSE
         )
       }
+    }
+  )
+  
+  # ----------------------------------------------------------- #
+  # Descarga de la base (Bimestre + las 3 series)
+  # ----------------------------------------------------------- #
+  
+  base_descarga <- reactive({
+    rv$data |>
+      arrange(Bimestre) |>
+      select(Bimestre, `Ag Barometer Austral`, `Condiciones presentes`, `Expectativas futuras`)
+  })
+  
+  output$btn_descargar_xlsx <- downloadHandler(
+    filename = function() {
+      "ag_barometer_austral.xlsx"
+    },
+    content = function(file) {
+      write_xlsx(base_descarga(), path = file)
+    }
+  )
+  
+  output$btn_descargar_csv <- downloadHandler(
+    filename = function() {
+      "ag_barometer_austral.csv"
+    },
+    content = function(file) {
+      write.csv(base_descarga(), file, row.names = FALSE)
     }
   )
   
@@ -540,10 +648,13 @@ server <- function(input, output, session) {
     ggplotly(armar_grafico_estatico(), tooltip = "text") |>
       layout(
         hovermode = "x unified",
-        # Leyenda anclada debajo del área del gráfico con margen inferior fijo,
-        # así el gráfico no se achica al agregar series
-        legend = list(orientation = "h", x = 0, y = -0.2, yanchor = "top"),
-        margin = list(b = 120),
+        # Leyenda anclada debajo del área del gráfico con margen inferior fijo.
+        # autoexpand = FALSE evita que plotly agrande el margen cuando la leyenda crece
+        # (más series), así el área del gráfico mantiene siempre el mismo tamaño.
+        # xanchor = "left" fija el inicio de la leyenda en el borde izquierdo del gráfico (antes quedaba corrida y se cortaba).
+        # El margen es lo bastante alto para que entren las referencias completas (incluso en 2 o 3 filas)
+        legend = list(orientation = "h", x = 0, xanchor = "left", y = -0.25, yanchor = "top"),
+        margin = list(b = 170, autoexpand = FALSE),
         xaxis = list(zeroline = FALSE),
         yaxis = list(zeroline = FALSE)
       )
@@ -564,7 +675,7 @@ server <- function(input, output, session) {
   observeEvent(input$btn_zoom_grafico, {
     showModal(modalDialog(
       title = span(style = "color: #7D212B; font-weight: bold;", "Visualización Ampliada"),
-      plotlyOutput("grafico_zoom_modal", height = "550px"),
+      plotlyOutput("grafico_zoom_modal", height = "600px"),
       footer = modalButton("Cerrar"),
       easyClose = TRUE,
       size = "l"

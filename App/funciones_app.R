@@ -223,41 +223,30 @@ buscar_interanual <- function(df) {
   previo[1, ]
 }
 
-# Boxplot estático (se usa en pantalla y en la descarga)
-# titulo: opcional; si es NULL o vacío, no se agrega título
-armar_boxplot <- function(datos, variable, con_tooltip = TRUE, titulo = NULL) {
-  if (nrow(datos) == 0) {
-    p <- ggplot() + labs(x = "Año", y = variable, caption = "Sin datos en el rango seleccionado") + theme_bw()
-    return(p)
-  }
+
+
+# ----------------------------------------------------------- #
+# Gráfico de evolución (usa toda la serie, el filtro de período no lo afecta)
+# ----------------------------------------------------------- #
+
+armar_grafico_estatico <- function(titulo_personalizado = NULL) {
+  p <- graficar_eventos_app(
+    data = rv$data |> arrange(Bimestre) |> mutate(Bimestre = tsibble::yearmonth(Bimestre)),
+    elecciones_df = NULL,
+    ancho_sombreado = 0,
+    tiempo_col = Bimestre,
+    series_seleccionadas = input$series_sel,
+    colores_series = c(
+      "Ag Barometer Austral" = input$color_ag,
+      "Condiciones presentes" = input$color_cond,
+      "Expectativas futuras" = input$color_exp
+    ),
+    fuente = "Fuente: Elaboración en base a datos de la Universidad Austral"
+  )
   
-  df <- datos |> mutate(anio = factor(year(Bimestre)))
-  
-  if (con_tooltip) {
-    p <- ggplot(df, aes(x = anio, y = .data[[variable]],
-                        text = paste0("<b>Año: </b>", anio, "<br><b>", variable, ": </b>",
-                                      round(.data[[variable]], 1))))
-  } else {
-    p <- ggplot(df, aes(x = anio, y = .data[[variable]]))
-  }
-  
-  p <- p +
-    geom_boxplot(fill = "#7D212B", alpha = 0.7, color = "#401015") +
-    labs(
-      x = "Año",
-      y = variable,
-      caption = "Fuente: Elaboración en base a datos de la Universidad Austral"
-    ) +
-    scale_y_continuous(breaks = scales::breaks_width(20)) +
-    theme_bw() +
-    theme(
-      plot.caption = element_text(hjust = 0, size = 9, color = "gray20"),
-      axis.title = element_text(face = "bold", color = "#333333")
-    )
-  
-  # Título opcional: a la izquierda, en negro y sin negrita
-  if (!is.null(titulo) && titulo != "") {
-    p <- p + labs(title = titulo) +
+  # Título opcional (solo descarga): a la izquierda, en negro y sin negrita
+  if (!is.null(titulo_personalizado) && titulo_personalizado != "") {
+    p <- p + labs(title = titulo_personalizado) + 
       theme(plot.title = element_text(face = "plain", size = 14, hjust = 0, color = "black"))
   }
   p
