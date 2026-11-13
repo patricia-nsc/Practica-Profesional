@@ -308,7 +308,7 @@ especial para Marian por haberme bancado en situaciones que me
 sobrepasaban, para Karen por haberme introducido al mundo del mate, para
 Pri y Sabi por las miles de fotos y ovaciones en los días especiales.
 
-A Dios, por haber permitido que todo esto suceda.
+A Dios. Por todo lo que pasó y todo lo que se viene.
 
 \newpage
 
@@ -361,6 +361,11 @@ dado que los hallazgos expuestos se apoyan principalmente en
 herramientas exploratorias, sería interesante en futuras líneas de
 investigación incorporar métodos analíticos que aporten mayor solidez a
 las conclusiones.
+
+Como producto complementario a los informes elaborados periódicamente
+por el CEAg, se desarrolló una
+\href{https://patri7.shinyapps.io/ag_barometer_austral/}{aplicación} que
+permitiera explorar los principales resultados de cada relevamiento.
 
 \textbf{\emph{Palabras clave:}} confianza, productor agropecuario,
 series de tiempo, asociaciones, Argentina, Estados Unidos.
@@ -2403,6 +2408,82 @@ Austral}.
 
 \newpage
 
+\section{Aplicación para visualizar
+resultados}\label{aplicaciuxf3n-para-visualizar-resultados}
+
+Además de los análisis realizados, se elaboró una
+\href{https://patri7.shinyapps.io/ag_barometer_austral/}{aplicación
+interactiva} cuya finalidad principal es facilitar la visualización de
+los principales resultados, a nivel exploratorio, de cada relevamiento
+local a los fines de complementar los informes elaborados por el CEAg.
+Fue desarrollada con el \emph{software} RShiny, que permite el acceso
+sencillo y público para cualquier usuario que desee permanecer informado
+sobre la evolución del \emph{Ag Barometer Austral}.
+
+Esta herramienta se organiza en dos pestañas. La primera presenta un
+breve resumen sobre dicho índice. La segunda es un tablero que tiene
+varias funciones como descargar la base de datos que contiene: los
+valores del \emph{Ag Barometer Austral}, Condiciones presentes y
+Expectativas futuras y la fecha del relevamiento. La página web del CEAg
+no disponía de esta función previamente.
+
+Adicionalmente, el tablero presenta tres secciones. La primera
+proporciona una manera interactiva de visualizar las variaciones
+bimestrales e interanuales de los tres indicadores. A continuación, se
+muestra la comparación entre la aplicación y el informe de enero 2026 en
+cuanto a la mencionada característica.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.55\linewidth,height=0.55\textheight]{Capturas/variaciones_informe.png}
+
+}
+
+\caption{\label{fig-variaciones_informe}Variaciones bimestrales e
+interanuales de los índices en el informe de enero 2026 del CEAg}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.85\linewidth,height=0.3\textheight]{Capturas/variaciones_app.png}
+
+}
+
+\caption{\label{fig-variaciones_app}Variaciones bimestrales e
+interanuales de los índices en la aplicación}
+
+\end{figure}%
+
+Si bien los documentos periódicos del CEAg son muy informativos y
+completos en materia de interpretación económica, el hecho de que la
+aplicación tenga la posibilidad de cambiar el período
+(Figura~\ref{fig-variaciones_app}), representa una ventaja. Esto es así
+porque si el usuario desea observar los cambios en los índices en otro
+momento del tiempo distinto al del último relevamiento, basta con
+deslizar la fecha máxima y automáticamente las tarjetas implementadas
+muestran las variaciones ocurridas para el instante seleccionado. Es
+decir, si el usuario utiliza la aplicación, puede ver cómo fueron las
+fluctuaciones en los indicadores en cualquier relevamiento anterior, de
+manera sencilla, rápida y minimizando posibles errores de cálculo. En
+cambio, el informe sólo presenta las variaciones de la edición
+consultada (Figura~\ref{fig-variaciones_informe}), de manera que, si es
+de interés explorar las variaciones de otro relevamiento, se debe
+recurrir a su correspondiente informe.
+
+Por otro lado, la segunda sección del tablero permite observar la
+evolución de cualquiera de los tres índices argentinos. Finalmente, la
+tercera sección muestra cómo se distribuyen las respuestas de los
+productores en cada una de las cinco preguntas, que constituyen los
+valores de los índices del relevamiento más reciente. Ambas secciones
+admiten la descarga de todas las figuras.
+
+\newpage
+
 \section{Discusión}\label{discusiuxf3n}
 
 En este informe se documentan los análisis que han sido realizados en el
@@ -2457,6 +2538,13 @@ líneas de investigación, sería interesante profundizar el estudio
 mediante métodos estadísticos que vayan más allá de lo heurístico, tales
 como la implementación de modelos dinámicos, análisis de intervención,
 etc, que permitan modelar formalmente estos impactos.
+
+Por otro lado, se logró elaborar una herramienta digital que
+posibilitara visualizar las principales características observadas en
+cada relevamiento, con el fin de acompañar los reportes elaborados
+periódicamente por el CEAg y ofrecer funcionalidades que el sitio del
+CEAg carecía anteriormente, como la opción de que el público pudiera
+descargar los datos.
 
 \newpage
 

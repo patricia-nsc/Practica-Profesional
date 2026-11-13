@@ -34,7 +34,7 @@ para q NO me ponga header en las primeras secciones! (resumen, agradecimientos, 
 Quiero expresar mis más profundos agradecimientos.
 
 
-En primer lugar, a Nanda y Fede. Gracias por confiar en que yo podría hacer este análisis. Gracias por todo el tiempo que invirtieron en leer mis intentos y por todas las sugerencias que hacían para juntos lograr que este informe alcance su mejor versión. Supongo que no debe ser fácil leer este tipo de escritos, noto y valoro muchísimo todo su esfuerzo. Gracias por haber estado tan comprometidos, por haberme acompañado en este último tiempo. Ojalá muchos otros alumnos también tengan la oportunidad de terminar sus carreras junto a ustedes. Siempre voy a estar inmensamente agradecida. Ojalá pudiera devolver todo lo que recibí.
+En primer lugar, a Nanda y Fede. Por confiar en que yo podría hacer este análisis. Por todo el tiempo que invirtieron en leer mis intentos y por todas las sugerencias que hacían para juntos lograr que este informe alcance su mejor versión. Supongo que no debe ser fácil leer este tipo de escritos, noto y valoro muchísimo todo su esfuerzo. Gracias por haber estado tan comprometidos, por haberme acompañado en este último tiempo. Ojalá muchos otros alumnos también tengan la oportunidad de terminar sus carreras junto a ellos. Siempre voy a estar inmensamente agradecida. Ojalá pudiera devolverles todo lo que recibí.
 
 
 
@@ -80,7 +80,7 @@ Luego se realizó un análisis bivariado del cual se desprenden tres resultados 
 
 Dichos resultados presentan algunas limitaciones. En primer lugar, todas las conclusiones sobre relaciones, por ejemplo entre la confianza del productor en Argentina y la de Estados Unidos o entre el *Ag Barometer* y las variables económicas, son de carácter lineal. Segundo, el análisis del *Ag Barometer* y los factores económicos fue llevado a cabo a partir de recursos descriptivos, limitándose a indagar una posible relación lineal y para un rezago específico. Por último, dado que los hallazgos expuestos se apoyan principalmente en herramientas exploratorias, sería interesante en futuras líneas de investigación incorporar métodos analíticos que aporten mayor solidez a las conclusiones.
 
-
+Como producto complementario a los informes elaborados periódicamente por el CEAg, se desarrolló una [aplicación](https://patri7.shinyapps.io/ag_barometer_austral/) que permitiera explorar los principales resultados de cada relevamiento.
 
 
 ***Palabras clave:*** confianza, productor agropecuario, series de tiempo, asociaciones, Argentina, Estados Unidos.
@@ -2409,6 +2409,58 @@ A partir de la inspección gráfica (@fig-eventos_globales), el *Ag Barometer* n
 \newpage
 
 
+# Aplicación para visualizar resultados
+
+
+Además de los análisis realizados, se elaboró una [aplicación interactiva](https://patri7.shinyapps.io/ag_barometer_austral/) cuya finalidad principal es facilitar la visualización de los principales resultados, a nivel exploratorio, de cada relevamiento local a los fines de complementar los informes elaborados por el CEAg. Fue desarrollada con el *software* RShiny, que permite el acceso sencillo y público para cualquier usuario que desee permanecer informado sobre la evolución del *Ag Barometer Austral*.
+
+
+Esta herramienta se organiza en dos pestañas. La primera presenta un breve resumen sobre dicho índice. La segunda es un tablero que tiene varias funciones como descargar la base de datos que contiene: los valores del *Ag Barometer Austral*, Condiciones presentes y Expectativas futuras y la fecha del relevamiento. La página web del CEAg no disponía de esta función previamente.
+
+
+Adicionalmente, el tablero presenta tres secciones. La primera proporciona una manera interactiva de visualizar las variaciones bimestrales e interanuales de los tres indicadores. A continuación, se muestra la comparación entre la aplicación y el informe de enero 2026 en cuanto a la mencionada característica.
+
+
+
+```{r}
+#| label: fig-variaciones_informe
+#| fig-cap: "Variaciones bimestrales e interanuales de los índices en el informe de enero 2026 del CEAg"
+#| out-width: "55%"
+#| out-height: "55%"
+
+knitr::include_graphics("Capturas/variaciones_informe.png")
+```
+
+```{r}
+#| label: fig-variaciones_app
+#| fig-cap: "Variaciones bimestrales e interanuales de los índices en la aplicación"
+#| out-width: "85%"
+#| out-height: "30%"
+
+knitr::include_graphics("Capturas/variaciones_app.png")
+```
+
+
+
+Si bien los documentos periódicos del CEAg son muy informativos y completos en materia de interpretación económica, el hecho de que la aplicación tenga la posibilidad de cambiar el período (@fig-variaciones_app), representa una ventaja. Esto es así porque si el usuario desea observar los cambios en los índices en otro momento del tiempo distinto al del último relevamiento, basta con deslizar la fecha máxima y automáticamente las tarjetas implementadas muestran las variaciones ocurridas para el instante seleccionado. Es decir, si el usuario utiliza la aplicación, puede ver cómo fueron las fluctuaciones en los indicadores en cualquier relevamiento anterior, de manera sencilla, rápida y minimizando posibles errores de cálculo. En cambio, el informe sólo presenta las variaciones de la edición consultada (@fig-variaciones_informe), de manera que, si es de interés explorar las variaciones de otro relevamiento, se debe recurrir a su correspondiente informe.
+
+Por otro lado, la segunda sección del tablero permite observar la evolución de cualquiera de los tres índices argentinos. Finalmente, la tercera sección muestra cómo se distribuyen las respuestas de los productores en cada una de las cinco preguntas, que constituyen los valores de los índices del relevamiento más reciente. Ambas secciones admiten la descarga de todas las figuras.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+
 # Discusión
 
 
@@ -2426,7 +2478,7 @@ Los resultados obtenidos, en cuanto al análisis univariado, sugieren que tanto 
 
 Además de lo anteriormente mencionado, también resulta relevante indicar limitaciones de estos resultados. Primero, sólo se investigó la eventual relación lineal entre variables, por ejemplo entre la confianza del productor en Argentina y la de Estados Unidos. En segundo lugar, a la hora de investigar la asociación entre el *Ag Barometer* y los factores económicos sólo se tuvieron en cuenta recursos descriptivos, limitándose a indagar una posible relación lineal y para un rezago específico. Por último, los hallazgos expuestos, en cuanto al estudio de factores asociados al *Ag Barometer*, se sustentan en un abordaje exploratorio, lo cual no sería suficiente para concluir con rigor estadístico tales asociaciones sugeridas. En consecuencia, para futuras líneas de investigación, sería interesante profundizar el estudio mediante métodos estadísticos que vayan más allá de lo heurístico, tales como la implementación de modelos dinámicos, análisis de intervención, etc, que permitan modelar formalmente estos impactos.
 
-
+Por otro lado, se logró elaborar una herramienta digital que posibilitara visualizar las principales características observadas en cada relevamiento, con el fin de acompañar los reportes elaborados periódicamente por el CEAg y ofrecer funcionalidades que el sitio del CEAg carecía anteriormente, como la opción de que el público pudiera descargar los datos.
 
 
 
