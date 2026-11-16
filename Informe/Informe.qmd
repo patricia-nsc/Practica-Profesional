@@ -523,7 +523,7 @@ Un proceso estacionario muy importante es el llamado *proceso ruido blanco*, den
 
 1.   $E(a_t) = \mu_a, \quad \forall t, \quad \mu_a \in \mathbb{R}$. Generalmente se asume que $\mu_a = 0$.
 2.   $V(a_t) = \sigma^2_a, \quad \forall t$
-3.   $cov(a_t, a_{t-k}) = 0 \quad \forall k \in \mathbb{Z}$
+3.   $cov(a_t, a_{t-k}) = 0 \quad \forall k \in \mathbb{Z} - \{0\}$
 
 Por la tercera condición, las variables del proceso ruido blanco están incorreladas sin importar la separación entre ellas, en estos procesos ocurre que conocer los valores pasados no proporciona ninguna información sobre el futuro. Por esto se dice que el proceso "no tiene memoria" (Peña, 2010, pp. 95-96).
 
