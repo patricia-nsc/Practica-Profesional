@@ -961,14 +961,23 @@ si \(z_t\) es un paseo aleatorio, entonces su primera diferencia
 \subsection{Análisis de la relación entre dos
 series}\label{anuxe1lisis-de-la-relaciuxf3n-entre-dos-series}
 
-Supóngase que en esta ocasión no se tiene una sino dos variables \(x_t\)
-e \(y_t\) y se pretende estudiar la relación entre ellas. La
-problemática no es tan sencilla porque además de la intuitiva asociación
-instantánea, la relación podría ser más compleja y transmitirse con
-ciertos retardos. Por ejemplo, un aumento del precio del pasaje en avión
-hoy (\(x_t\)) tendrá poco efecto sobre la cantidad de pasajeros hoy
-(\(y_t\)), ya que la mayoría habrán hecho la compra con anticipación.
-Sin embargo, afectará al número de pasajeros de los días posteriores
+Hasta el momento se establecieron definiciones para el caso univariado.
+Sin embargo, cuando se dispone de más de una serie, un concepto que
+resulta relevante definir es el de cointegración. Enders (2014, cap. 6)
+señala que puede ocurrir que una combinación lineal de variables
+integradas sea estacionaria, en ese caso las variables se dicen
+\emph{cointegradas}. Esto implica que las tendencias estocásticas de las
+series están vinculadas, es decir, que existe una relación de equilibrio
+a largo plazo entre ellas. Resulta entonces de interés estudiar cómo se
+relacionan varias series entre sí.
+
+Supóngase que se tienen en cuenta dos variables \(x_t\) e \(y_t\) y se
+pretende estudiar la relación entre ellas. El problema no es sencillo,
+porque la relación podría ser más compleja y transmitirse con ciertos
+retardos. Por ejemplo, un aumento del precio del pasaje en avión hoy
+(\(x_t\)) tendrá poco efecto sobre la cantidad de pasajeros hoy
+(\(y_t\)), ya que la mayoría habrá hecho la compra con anticipación. Sin
+embargo, afectará al número de pasajeros de los días posteriores
 (\(y_{t+1}, y_{t+2}, \dots, y_{t+k}\)).
 
 En este contexto se presentan dos funciones que contemplan esta
@@ -2018,7 +2027,7 @@ prueba de Engle-Granger\footnote{Tanto para estimar la FCC como para
   Considerando que este es el único análisis de todos los realizados, en
   el que fue necesario que las series tengan período común, se decidió
   compatibilizarlas de esta forma ya que es la más pragmática.} (Enders,
-2014, secc.6.1) no aporta evidencia de asociación contemporánea
+2014, secc.6.1) no aporta evidencia de cointegración entre las series
 (\(p-value > 0.1000\)). En conjunto, estos resultados sugieren que, bajo
 los procedimientos empleados y para el período analizado, no se
 identifican relaciones lineales temporales significativas entre la
@@ -2026,10 +2035,10 @@ confianza del productor argentino y la del norteamericano.
 
 \subsubsection{Análisis de los índices argentinos}\label{sec-ccfs_arg}
 
-Descartada la relación entre las percepciones de Argentina y las de
-Estados Unidos, se analizaron las asociaciones entre los índices
-argentinos. Para esto, se estimaron las FCC entre pares de índices
-locales. Estos últimos fueron pre-blanqueados para evitar que la no
+Luego de analizar la posible relación entre los indicadores de ambos
+países, se estudiaron las asociaciones entre los índices argentinos.
+Para esto, se estimaron las FCC entre pares de índices locales. Estos
+últimos fueron pre-blanqueados para evitar que la no
 estacionariedad\footnote{La no estacionariedad del \emph{Ag Barometer
   Austral} fue probada en la Sección~\ref{sec-univ_arg} y la de las
   series Condiciones presentes y Expectativas futuras de Argentina en la
@@ -2492,6 +2501,28 @@ productores en cada una de las cinco preguntas, que constituyen los
 valores de los índices del relevamiento más reciente. Ambas secciones
 admiten la descarga de todas las figuras.
 
+Todas las funcionalidades expuestas anteriormente de la app demuestran
+que se trata de una herramienta diseñada para potenciar los informes del
+CEAg, ya que permite al usuario observar los resultados principales de
+manera resumida e interactiva. Sin embargo, sólo representa una
+propuesta inicial siendo necesario explicar los aspectos en cuanto a su
+mantenimiento. Para actualizar las síntesis de variaciones y los
+gráficos de las series (primera y segunda sección del tablero) de tal
+manera que tengan en cuenta hasta el último relevamiento, se deben
+agregar las filas correspondientes a los últimos relevamientos a la base
+\texttt{App/Datos/agbarometer\_ARG\_imputado.xlsx}. Mientras que para
+que se muestren las distribuciones de las respuestas de las cinco
+preguntas para el último relevamiento (tercera sección del tablero), se
+debe reemplazar \texttt{App/Datos/base\_preguntas.xlsx} por el conjunto
+de datos que contenga las respuestas de los productores de dicho
+relevamiento. Dado que la aplicación desarrollada es sólo una propuesta
+inicial, podrían considerarse en el futuro mejoras para la tercera
+sección del tablero. Por ejemplo, en primer lugar, que el usuario tenga
+la posibilidad de seleccionar para cuál relevamiento desea explorar las
+respuestas de los productores. Segundo, que sea posible visualizar cómo
+se distribuyen las respuestas de las preguntas coyunturales, además de
+las cinco fijas.
+
 \newpage
 
 \section{Discusión}\label{discusiuxf3n}
@@ -2543,11 +2574,17 @@ limitándose a indagar una posible relación lineal y para un rezago
 específico. Por último, los hallazgos expuestos, en cuanto al estudio de
 factores asociados al \emph{Ag Barometer}, se sustentan en un abordaje
 exploratorio, lo cual no sería suficiente para concluir con rigor
-estadístico tales asociaciones sugeridas. En consecuencia, para futuras
-líneas de investigación, sería interesante profundizar el estudio
-mediante métodos estadísticos que vayan más allá de lo heurístico, tales
-como la implementación de modelos dinámicos, análisis de intervención,
-etc, que permitan modelar formalmente estos impactos.
+estadístico tales asociaciones sugeridas. En consecuencia, futuras
+investigaciones podrían profundizar el estudio mediante modelos
+dinámicos multivariados que permitan explorar relaciones temporales y
+posibles efectos rezagados entre los indicadores de confianza y
+distintas variables económicas. Asimismo, los cambios observados
+alrededor de determinados acontecimientos políticos y económicos podrían
+analizarse mediante modelos de intervención, con el propósito de evaluar
+formalmente la existencia, magnitud y persistencia de cambios asociados
+a dichos eventos. La incorporación de nuevos relevamientos también
+permitiría ampliar el período de análisis y fortalecer la evidencia
+disponible.
 
 Por otro lado, se logró elaborar una herramienta digital que
 posibilitara visualizar las principales características observadas en
